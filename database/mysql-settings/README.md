@@ -58,7 +58,7 @@ CREATE USER '{username}'@'localhost' IDENTIFIED BY '{password}';
   ```
 ### 현재 생성된 계정 목록 조회하기
 ```mysql
-select user, ssafy from mysql.user;
+select user, host from mysql.user;
 ```
 그러면 user와 host로 나눠서 목록이 나오게 된다.
 
