@@ -23,7 +23,7 @@
     <div class="staticClass" :class="{ on: isOn, in: inIn }">Hello</div>
     ```
   결과
-  `<div class="static in">Hello</div>
+  `<div class="static in">Hello</div>`
 - inline 방식으로 말고 객체에 말아서 객체를 한 번에 전달할 수도 있다.
     ```vue
     const isOn = ref(false)

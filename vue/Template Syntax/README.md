@@ -88,6 +88,13 @@ const dynamicId = ref('my-id')
     Not A/B/C
 </div>
 ```
+```vue
+const canView = ref(true)
+
+<p v-if="canView">Hello!</p>
+<p v-else>i'll be invisible when "canView"</p>
+<button @click="canView = !canView">상태 변경</button>
+```
 6. v-for
 ```vue
 <div v-for="item in items">
@@ -98,6 +105,75 @@ const dynamicId = ref('my-id')
 <div v-for="(value, key) in object"></div>
 <div v-for="(value, name, index) in object"></div>
 ```
+```vue
+<div v-for="item in myArr" :key="item.id">
+    <!-- {{ key }}: {{ item }} -->
+    <!-- {{item.key}}: {{item}} -->
+    <!-- key에는 접근이 안 된다. -->
+    {{item.id }}: {{item}}
+</div>
+
+const myArr = ref([{
+    id: 1,
+    name: "hello"
+}, {
+    id: 2,
+    name: "hi"
+}])
+```
+실행 결과  
+![v_for_myarr.png](../res/v_for_myarr.png)
+
+### v-for와 v-if는 같이 사용하면 안 된다.
+다음과 같은 방식으로 선택적으로 반복문을 활용할 수 있다.
+1. computed 활용
+```vue
+let id = 0
+
+const myArr = ref ([
+    { id: id++, name: 'hello', willFilter: true},
+    { id: id++, name: 'hi', willFilter: false},
+    { id: id++, name: '안녕하세요', willFilter: true},
+    { id: id++, name: '안녕', willFilter: true},
+    { id: id++, name: '안뇽', willFilter: false},
+])
+
+const filteredElements = computed(() => myArr.value.filter((elem) => elem.willFilter))
+
+<ul>
+    <li v-for="elem in filteredElements" :key="elem.id">
+        {{ elem.name }}
+    </li>
+</ul>
+```
+실행결과  
+![v_for_computed.png](../res/v_for_computed.png)
+
+2. `<template>` 사용
+```vue
+let id = 0
+
+const myArr = ref ([
+    { id: id++, name: 'hello', willFilter: true},
+    { id: id++, name: 'hi', willFilter: false},
+    { id: id++, name: '안녕하세요', willFilter: true},
+    { id: id++, name: '안녕', willFilter: true},
+    { id: id++, name: '안뇽', willFilter: false},
+])
+
+<ul>
+    <template v-for="elem in myArr" :key="elem.id">
+        <li v-if="elem.willFilter">
+            {{ elem.name }}
+        </li>
+    </template>
+</ul>
+```
+실행결과  
+![v_for_computed.png](../res/v_for_computed.png)
+<br>  
+<br>  
+
 7. v-on
 ```vue
 <button v-on:click="doThis"></button>
