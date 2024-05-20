@@ -128,3 +128,40 @@ router.push({ name: 'myName', query: { param2: 'hello2' } })
 2. 현재 위치 바꾸기 : `router.replace()`
 - push()와 거의 동일하다.
 - 다만 stack에 새로운 항목을 push하지 않고 바로 url을 이동시키기 때문에 뒤로가기를 사용할 수 없게 이동시키는 방법이다.
+
+## Navigation Guard
+### Globally 전역 가드
+- 애플리케이션 전역에서 동작시킬 때 사용한다.
+- index.js에서 정의한다.
+- `router.beforeEach()`: 다른 URL로 이동하기 직전에 실행되는 함수다.
+```js
+router.beforeEach((to, from) => {
+    // ...
+   return false
+})
+```
+- to: 이동할 URL 정보가 담긴 Route 객체다.
+- from: 현재 URL 정보가 담긴 Route 객체다.
+- `return false`: 다른 URL로의 이동을 취소한다.
+- `return { name: 'Hello' }`: 해당 Route를 호출하고, return이 없다면 `to` 객체의 Route로 이동한다. 
+### Per-route 라우터 가드
+- 특정 route에서만 동작시킬 때 사용한다.
+- index.js의 각 routes에서 정의한다.
+- `router.beforeEnter()`: 다른 Route에서 들어올 때만 실행된다. (자신에서 자신으로는 파라미터나 쿼리가 바뀌어서 다시 호출되든 상관없다.)
+
+```json5
+{
+   path: '/member/:id',
+   name: 'member',
+   beforeEnter: (to, from) => {
+     // ...
+    return
+    false
+   }
+}
+```
+### In-component 컴포넌트 가드
+- 특정 컴포넌트 내에서만 동작시킬 때 사용한다.
+- 해당 컴포넌트의 Script에서 정의한다.
+- `onBeforeRouteLeave()`: 현재 Route에서 다른 Route로 이동하기 전에 실행된다.
+- `onBeforeRouteUpdate()`: 이미 렌더링된 컴포넌트에서 업데이트되기 전에 실행된다.

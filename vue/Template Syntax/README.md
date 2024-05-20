@@ -20,7 +20,7 @@ const rawHtml = ref('<span style="color:red">This should be red.</span>')
 ```
 - 콧수염 구문은 데이터를 일반 텍스트로 해석하기 때문에 실제 HTML을 출력하려면 v-html을 사용해야 한다.
 
-## Attribue Bindins
+## Attribute Bindings
 ```vue
 <div v-bind:id="dynamicId"></div>
 const dynamicId = ref('my-id')
