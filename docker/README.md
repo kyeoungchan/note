@@ -10,7 +10,7 @@
 - 스냅샷이라고도 하고, 특정 시점의 애플리케이션과 가상 환경을 나타낸다.
 - 일관성
   - Docker의 큰 특징 중 하나다.
-  - 개발자가 안정적이고 균일한 조건에서 소프트웨어를 테스트하고 실험할 수 있도록 한다.
+  - 개발자가 안정적이고 균일한 조건에서 소프트웨어를 테스트하고 실험할 수 있도록 한다.  
 ![docker-image-vs-container.png](res/docker-image-vs-container.png)
 - 컨테이너를 생성하는 이미지 베이스는 별도로 존재하며, 변경할 수 없다.
 - 기본적으로 컨테이너 내부에 해당 파일 시스템(즉, Docker 이미지)의 읽기-쓰기 가능한 복사본을 만든다.
@@ -23,7 +23,7 @@
 ## Docker container란
 - 사용자가 기본 시스템에서 애플리케이션을 분리할 수 있는 가상화된 런타임 환경이다.
 - 중요 기능: 컨테이너 내부에서 실행되는 컴퓨팅 환경의 표준화 => 응용 프로그램이 동일한 환경에서 작동하도록 하고, 다른 사람과의 공유도 단순화한다.
-- 격리(strong isolation): 자율적이어서 서로 방해하지 않는다.
+- 격리(strong isolation): 자율적이어서 서로 방해하지 않는다.  
 ![docker-container-vs-virtual-machine.png](res/docker-container-vs-virtual-machine.png)
 - VM과의 차이점
   - VM
