@@ -143,7 +143,7 @@
 
     - 다른 예
 
-      ![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/7e2a6846-a8d2-4b23-b9ee-3c2631afe354/Untitled.png)
+      ![phantom_read](../res/phantom_read.png)
 
 
 ## **SERIALIZABLE**
@@ -154,6 +154,6 @@
 - InnoDB에서 기본적으로 순수한 SELECT 작업은 아무런 잠금을 걸지않고 동작하는데, 격리수준이 SERIALIZABLE일 경우 읽기 작업에도 공유 잠금을 설정하게 되고, 이러면 동시에 다른 트랜잭션에서 이 레코드를 변경하지 못하게 된다.
 - 이러한 특성 때문에 동시처리 능력이 다른 격리수준보다 떨어지고, 성능저하가 발생하게 된다.
 
-[[db] 트랜잭션 격리 수준(isolation level)](https://joont92.github.io/db/트랜잭션-격리-수준-isolation-level/)
-
+출처  
+[[db] 트랜잭션 격리 수준(isolation level)](https://joont92.github.io/db/트랜잭션-격리-수준-isolation-level/)  
 [데이터베이스 트랜잭션 격리 수준과 격리 수준에 따른 문제점](https://hudi.blog/transaction-isolation-level/)
