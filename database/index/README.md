@@ -1,6 +1,7 @@
 # 인덱스(Index)
 ## ✔️ DB 테이블에 인덱스가 필요한 이유
 <hr>
+
 ### 만약 table에 index를 걸지 않는다면?
 ```sql
 SELECT *
@@ -11,7 +12,7 @@ WHERE first_name = "charles";
 => 따라서, 시간복잡도: `O(N)`
 
 ### 만약 index를 걸었다면?
-시간복잡도: `O(longN)`
+시간복잡도: `O(logN)`
 (B-tree based Index)
 
 ## 1. 이미 테이블과 데이터가 존재하는 경우
@@ -73,7 +74,7 @@ SELECT * FROM player WHERE team_id = 105 and back_number = 7;
 
 <br>
 
-**❓만약 `WHERE back_number=7` 조건문이 들어오면 성능은 어떨까?**
+**❓만약 `WHERE back_number=7` 조건문이 들어오면 성능은 어떨까?**  
 ➡️ 현재 multi column index는 우선 team_id를 기준으로 정렬되어 있다. 그래서 성능이 full scan과 같거나 더 좋지 않을 수도 있다.
 - 그래서 이럴 경우에는 back_number만 single column index를 생성하여 조회하거나 인덱스를 타지 않는 방법이 있다.
 - 따라서, multi column index를 생성할 때 순서에 따라 성능이 달라질 수 있기 때문에 이 점을 고려하여 개발해야 한다.
@@ -129,7 +130,7 @@ SELECT team_id, back_number FROM player WHERE team_id = 5;
 > 출처: [Database - Primary Index vs Secondary Index](https://velog.io/@hyoeunla/Database-Primary-Index-vs-Secondary-Index)
 
 ### Multi-level indexes
-- 인덱스 자체가 큰 경우 인덱스를 탐색하는 시간도 오래 걸릴 수 있다.\
+- 인덱스 자체가 큰 경우 인덱스를 탐색하는 시간도 오래 걸릴 수 있다.
 - 인덱스 엔트리를 탐색하는 시간을 줄이기 위해서 Single-Level Ordered Indexes를 디스크 상의 하나의 순서로 파일로 생각하고, 이것에 대해 다시 인덱스를 정의할 수 있다.
 - 가장 상위 단계 인덱스를 마스터 인덱스(master index)
 - 대부분은 B+ 트리를 사용한다.
@@ -142,8 +143,8 @@ DB index에 자주 쓰이는 자료구조는 `B-Tree`, `B+Tree`, `Hash Table`이
 ### B-tree
 > 시간복잡도: `O(longN)`
 - B-tree란 자식 노드가 2개 이상인 트리
-- 균형 트리(Balanced Tree)로서, 최상위 루트 노듸에서 리프 노드까지의 거리가 모두 동일하다.
-- 
+- 균형 트리(Balanced Tree)로서, 최상위 루트 노드에서 리프 노드까지의 거리가 모두 동일하다.
+
 ### B+tree
 - B+tree는 B-tree를 확장 및 개선한 자료구조
 - 데이터의 빠른 접근을 위한 인덱스 역할만 하는 비단말 노드(not leaf)가 분리되어 있다.
@@ -153,7 +154,7 @@ DB index에 자주 쓰이는 자료구조는 `B-Tree`, `B+Tree`, `Hash Table`이
 ### Hash Table
 > 시간복잡도: `O(1)`
 
-![hash_table.png](hash_table.png)
+![hash_table.png](hash_table.png)  
 B-tree보다 시간복잡도가 좋은데 왜 B-tree 계열을 쓸까?
 - 해시는 등호(=) 연산에만 특화되어 있어 부등호 연산이 자주 사용되는 데이터베이스 검색에는 적합하지 않다.
 - multi column index의 경우, 전체 attributes에 대한 조회만 가능하다.
