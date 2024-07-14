@@ -7,6 +7,7 @@
 - 데이터통신기술
   - [피코넷](https://github.com/kyeoungchan/note/tree/main/data_communications/piconet)
   - [지그비](https://github.com/kyeoungchan/note/tree/main/data_communications/zigbee)
+  - [UWB](https://github.com/kyeoungchan/note/tree/main/data_communications/UWB)
 - 데이터베이스
   - [병행성 제어](https://github.com/kyeoungchan/note/tree/main/database/concurrency-control)
   - [인덱스](https://github.com/kyeoungchan/note/tree/main/database/index)
