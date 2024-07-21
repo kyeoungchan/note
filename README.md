@@ -17,6 +17,10 @@
   - [로킹기법](https://github.com/kyeoungchan/note/tree/main/database/locking)
   - SQL문
     - [외래키 제약 조건 설정하기](https://github.com/kyeoungchan/note/tree/main/database/sql/foreign-key)
+    - dcl
+      - [REVOKE](https://github.com/kyeoungchan/note/tree/main/database/sql/dcl/revoke)
+    - dml
+      - [INSERT](https://github.com/kyeoungchan/note/tree/main/database/sql/dml/insert)
 - 자료구조
   - [레드-블랙 트리](https://github.com/kyeoungchan/note/tree/main/datastructure/redblacktree)
 - 보안
