@@ -25,6 +25,8 @@
   - [절차형 SQL](https://github.com/kyeoungchan/note/tree/main/database/procedural-sql)
 - 자료구조
   - [레드-블랙 트리](https://github.com/kyeoungchan/note/tree/main/datastructure/redblacktree)
+- [도커](https://github.com/kyeoungchan/note/tree/main/docker)
+- [Git](https://github.com/kyeoungchan/note/tree/main/git)
 - 보안
   - [네트워크 보안](https://github.com/kyeoungchan/note/tree/main/security/network_security_solution)
 - 소프트웨어 공학
