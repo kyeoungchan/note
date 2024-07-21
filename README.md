@@ -14,6 +14,7 @@
   - [격리수준](https://github.com/kyeoungchan/note/tree/main/database/isolation-level)
   - [MySql 설정 관련](https://github.com/kyeoungchan/note/tree/main/database/mysql-settings)
   - [정규화](https://github.com/kyeoungchan/note/tree/main/database/normalization)
+  - [로킹기법](https://github.com/kyeoungchan/note/tree/main/database/locking)
   - SQL문
     - [외래키 제약 조건 설정하기](https://github.com/kyeoungchan/note/tree/main/database/sql/foreign-key)
 - 자료구조
