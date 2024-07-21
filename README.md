@@ -30,3 +30,4 @@
 - 소프트웨어 공학
   - [검증 vs 확인](https://github.com/kyeoungchan/note/tree/main/software_engineering/verification_vs_validation)
   - [EAI(Enterprise Application Integration)](https://github.com/kyeoungchan/note/tree/main/software_engineering/eai)
+  - [객체지향 설계](https://github.com/kyeoungchan/note/tree/main/software_engineering/object-oriented-programming)
