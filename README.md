@@ -21,6 +21,7 @@
       - [REVOKE](https://github.com/kyeoungchan/note/tree/main/database/sql/dcl/revoke)
     - dml
       - [INSERT](https://github.com/kyeoungchan/note/tree/main/database/sql/dml/insert)
+      - [JOIN](https://github.com/kyeoungchan/note/tree/main/database/sql/dml/join)
 - 자료구조
   - [레드-블랙 트리](https://github.com/kyeoungchan/note/tree/main/datastructure/redblacktree)
 - 보안
