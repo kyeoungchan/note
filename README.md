@@ -32,6 +32,7 @@
   - [네트워크 보안](https://github.com/kyeoungchan/note/tree/main/security/network_security_solution)
 - [시멘틱 웹과 온톨로지](https://github.com/kyeoungchan/note/tree/main/semantic-web-ontology)
 - 소프트웨어 공학
+  - [결합도](https://github.com/kyeoungchan/note/tree/main/software_engineering/coupling)
   - [검증 vs 확인](https://github.com/kyeoungchan/note/tree/main/software_engineering/verification_vs_validation)
   - [EAI(Enterprise Application Integration)](https://github.com/kyeoungchan/note/tree/main/software_engineering/eai)
   - [객체지향 설계](https://github.com/kyeoungchan/note/tree/main/software_engineering/object-oriented-programming)
