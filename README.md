@@ -18,6 +18,7 @@
   - SQL문
     - [외래키 제약 조건 설정하기](https://github.com/kyeoungchan/note/tree/main/database/sql/foreign-key)
     - dcl
+      - [GRANT](https://github.com/kyeoungchan/note/tree/main/database/sql/dcl/grant)
       - [REVOKE](https://github.com/kyeoungchan/note/tree/main/database/sql/dcl/revoke)
     - dml
       - [INSERT](https://github.com/kyeoungchan/note/tree/main/database/sql/dml/insert)
@@ -27,9 +28,21 @@
   - [레드-블랙 트리](https://github.com/kyeoungchan/note/tree/main/datastructure/redblacktree)
 - [도커](https://github.com/kyeoungchan/note/tree/main/docker)
 - [Git](https://github.com/kyeoungchan/note/tree/main/git)
+- 해킹
+  - [CSRF](https://github.com/kyeoungchan/note/tree/main/hacking/csrf)
+  - [세션 하이재킹](https://github.com/kyeoungchan/note/tree/main/hacking/session-hijacking)
+  - [SQL 삽입](https://github.com/kyeoungchan/note/tree/main/hacking/sql-injection)
+  - [XSS](https://github.com/kyeoungchan/note/tree/main/hacking/xss)
+- 네트워크
+  - [라우팅 프로토콜](https://github.com/kyeoungchan/note/tree/main/network/routing-protocol)
+  - [전송계층](https://github.com/kyeoungchan/note/tree/main/network/transport-layer)
 - 보안
+  - 암호화
+    - [대칭키](https://github.com/kyeoungchan/note/tree/main/security/encryption/symmetric-key)
   - [네트워크 보안](https://github.com/kyeoungchan/note/tree/main/security/network_security_solution)
+- [시멘틱 웹과 온톨로지](https://github.com/kyeoungchan/note/tree/main/semantic-web-ontology)
 - 소프트웨어 공학
+  - [결합도](https://github.com/kyeoungchan/note/tree/main/software_engineering/coupling)
   - [검증 vs 확인](https://github.com/kyeoungchan/note/tree/main/software_engineering/verification_vs_validation)
   - [EAI(Enterprise Application Integration)](https://github.com/kyeoungchan/note/tree/main/software_engineering/eai)
   - [객체지향 설계](https://github.com/kyeoungchan/note/tree/main/software_engineering/object-oriented-programming)

@@ -18,4 +18,5 @@ ON A.책번호 = B.책변호;
 - 오른쪽 외부 조인: `RIGHT [OUTER] JOIN`
 - 완전 외부 조인: `FULL [OUTER] JOIN`
 - 교차 조인: `CROSS JOIN`
+
 사용하는 구조는 모두 같다.
