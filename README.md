@@ -18,6 +18,7 @@
   - SQL문
     - [외래키 제약 조건 설정하기](https://github.com/kyeoungchan/note/tree/main/database/sql/foreign-key)
     - dcl
+      - [GRANT](https://github.com/kyeoungchan/note/tree/main/database/sql/dcl/grant)
       - [REVOKE](https://github.com/kyeoungchan/note/tree/main/database/sql/dcl/revoke)
     - dml
       - [INSERT](https://github.com/kyeoungchan/note/tree/main/database/sql/dml/insert)
