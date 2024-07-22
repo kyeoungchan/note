@@ -14,12 +14,22 @@
   - [격리수준](https://github.com/kyeoungchan/note/tree/main/database/isolation-level)
   - [MySql 설정 관련](https://github.com/kyeoungchan/note/tree/main/database/mysql-settings)
   - [정규화](https://github.com/kyeoungchan/note/tree/main/database/normalization)
+  - [로킹기법](https://github.com/kyeoungchan/note/tree/main/database/locking)
   - SQL문
     - [외래키 제약 조건 설정하기](https://github.com/kyeoungchan/note/tree/main/database/sql/foreign-key)
+    - dcl
+      - [REVOKE](https://github.com/kyeoungchan/note/tree/main/database/sql/dcl/revoke)
+    - dml
+      - [INSERT](https://github.com/kyeoungchan/note/tree/main/database/sql/dml/insert)
+      - [JOIN](https://github.com/kyeoungchan/note/tree/main/database/sql/dml/join)
+  - [절차형 SQL](https://github.com/kyeoungchan/note/tree/main/database/procedural-sql)
 - 자료구조
   - [레드-블랙 트리](https://github.com/kyeoungchan/note/tree/main/datastructure/redblacktree)
+- [도커](https://github.com/kyeoungchan/note/tree/main/docker)
+- [Git](https://github.com/kyeoungchan/note/tree/main/git)
 - 보안
   - [네트워크 보안](https://github.com/kyeoungchan/note/tree/main/security/network_security_solution)
 - 소프트웨어 공학
   - [검증 vs 확인](https://github.com/kyeoungchan/note/tree/main/software_engineering/verification_vs_validation)
   - [EAI(Enterprise Application Integration)](https://github.com/kyeoungchan/note/tree/main/software_engineering/eai)
+  - [객체지향 설계](https://github.com/kyeoungchan/note/tree/main/software_engineering/object-oriented-programming)
