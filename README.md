@@ -29,6 +29,8 @@
 - [도커](https://github.com/kyeoungchan/note/tree/main/docker)
 - [Git](https://github.com/kyeoungchan/note/tree/main/git)
 - 보안
+  - 암호화
+    - [대칭키](https://github.com/kyeoungchan/note/tree/main/security/encryption/symmetric-key)
   - [네트워크 보안](https://github.com/kyeoungchan/note/tree/main/security/network_security_solution)
 - [시멘틱 웹과 온톨로지](https://github.com/kyeoungchan/note/tree/main/semantic-web-ontology)
 - 소프트웨어 공학
