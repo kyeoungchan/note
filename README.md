@@ -28,6 +28,11 @@
   - [레드-블랙 트리](https://github.com/kyeoungchan/note/tree/main/datastructure/redblacktree)
 - [도커](https://github.com/kyeoungchan/note/tree/main/docker)
 - [Git](https://github.com/kyeoungchan/note/tree/main/git)
+- 해킹
+  - [CSRF](https://github.com/kyeoungchan/note/tree/main/hacking/csrf)
+  - [세션 하이재킹](https://github.com/kyeoungchan/note/tree/main/hacking/session-hijacking)
+  - [SQL 삽입](https://github.com/kyeoungchan/note/tree/main/hacking/sql-injection)
+  - [XSS](https://github.com/kyeoungchan/note/tree/main/hacking/xss)
 - 네트워크
   - [라우팅 프로토콜](https://github.com/kyeoungchan/note/tree/main/network/routing-protocol)
   - [전송계층](https://github.com/kyeoungchan/note/tree/main/network/transport-layer)
