@@ -1,4 +1,4 @@
-# 전송 계층(Transport Layer)
+# 🚀 전송 계층(Transport Layer)
 1. 물리 계층(Physical Layer)
    - 0과 1의 비트 정보를 회선에 보내기 위한 전기적 신호 변환
    - 프로토콜: RS-232C
