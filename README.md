@@ -30,6 +30,7 @@
 - [Git](https://github.com/kyeoungchan/note/tree/main/git)
 - 해킹
   - [CSRF](https://github.com/kyeoungchan/note/tree/main/hacking/csrf)
+  - [Rootkit](https://github.com/kyeoungchan/note/tree/main/hacking/rootkit)
   - [세션 하이재킹](https://github.com/kyeoungchan/note/tree/main/hacking/session-hijacking)
   - [SQL 삽입](https://github.com/kyeoungchan/note/tree/main/hacking/sql-injection)
   - [XSS](https://github.com/kyeoungchan/note/tree/main/hacking/xss)
