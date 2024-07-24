@@ -35,6 +35,7 @@
   - [SQL 삽입](https://github.com/kyeoungchan/note/tree/main/hacking/sql-injection)
   - [XSS](https://github.com/kyeoungchan/note/tree/main/hacking/xss)
 - 네트워크
+  - [IPv6](https://github.com/kyeoungchan/note/tree/main/network/ipv6)
   - [온프레미스](https://github.com/kyeoungchan/note/tree/main/network/on-premise)
   - [라우팅 프로토콜](https://github.com/kyeoungchan/note/tree/main/network/routing-protocol)
   - [전송계층](https://github.com/kyeoungchan/note/tree/main/network/transport-layer)
