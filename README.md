@@ -11,10 +11,12 @@
 - 데이터베이스
   - [병행성 제어](https://github.com/kyeoungchan/note/tree/main/database/concurrency-control)
   - [인덱스](https://github.com/kyeoungchan/note/tree/main/database/index)
+  - [로킹기법](https://github.com/kyeoungchan/note/tree/main/database/locking)
   - [격리수준](https://github.com/kyeoungchan/note/tree/main/database/isolation-level)
   - [MySql 설정 관련](https://github.com/kyeoungchan/note/tree/main/database/mysql-settings)
   - [정규화](https://github.com/kyeoungchan/note/tree/main/database/normalization)
-  - [로킹기법](https://github.com/kyeoungchan/note/tree/main/database/locking)
+  - [절차형 SQL](https://github.com/kyeoungchan/note/tree/main/database/procedural-sql)
+  - [회복 기법](https://github.com/kyeoungchan/note/tree/main/database/recovery)
   - SQL문
     - [외래키 제약 조건 설정하기](https://github.com/kyeoungchan/note/tree/main/database/sql/foreign-key)
     - dcl
@@ -28,7 +30,6 @@
     - dml
       - [INSERT](https://github.com/kyeoungchan/note/tree/main/database/sql/dml/insert)
       - [JOIN](https://github.com/kyeoungchan/note/tree/main/database/sql/dml/join)
-  - [절차형 SQL](https://github.com/kyeoungchan/note/tree/main/database/procedural-sql)
 - 자료구조
   - [레드-블랙 트리](https://github.com/kyeoungchan/note/tree/main/datastructure/redblacktree)
 - [도커](https://github.com/kyeoungchan/note/tree/main/docker)
