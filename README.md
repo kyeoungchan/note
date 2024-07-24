@@ -20,6 +20,11 @@
     - dcl
       - [GRANT](https://github.com/kyeoungchan/note/tree/main/database/sql/dcl/grant)
       - [REVOKE](https://github.com/kyeoungchan/note/tree/main/database/sql/dcl/revoke)
+    - ddl
+      - [Alter Table](https://github.com/kyeoungchan/note/tree/main/database/sql/ddl/alter-table)
+      - [Database Handling](https://github.com/kyeoungchan/note/tree/main/database/sql/ddl/database_handling)
+      - [Foreign Key](https://github.com/kyeoungchan/note/tree/main/database/sql/ddl/foreign-key)
+      - [Table Handling](https://github.com/kyeoungchan/note/tree/main/database/sql/ddl/table_handling)
     - dml
       - [INSERT](https://github.com/kyeoungchan/note/tree/main/database/sql/dml/insert)
       - [JOIN](https://github.com/kyeoungchan/note/tree/main/database/sql/dml/join)
