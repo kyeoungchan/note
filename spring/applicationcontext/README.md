@@ -5,19 +5,21 @@ ApplicationContext는 일종의 DI 컨테이너, 스프링 컨테이너다.
 ### 스프링 컨테이너 생성 과정
 1. 스프링 컨테이너 생성
 ![spring_container_creation1](../res/spring_container_creation1.png)
-- 구성정보를 지정하여(즉, AppConfig.class 파일을 통해)
-  - 스프링 컨테이너가 생성이 된다.
-  - 스프링 빈 저장소도 같이 만들어진다.
+   - 구성정보를 지정하여(즉, AppConfig.class 파일을 통해)
+     - 스프링 컨테이너가 생성이 된다.
+     - 스프링 빈 저장소도 같이 만들어진다.
 2. 스프링 빈 등록
 ![spring_container_creation2](../res/spring_container_creation2.png)
-- 스프링 컨테이너는 파라미터로 넘어온 설정 클래스 정보(위에 있는 AppConfig.class)를 사용하여 스프링 빈을 등록한다.
-  - `@Bean`이 붙은 것들을 전부 호출한다.
-- 빈 이름
-  - 빈 이름은 메서드 이름을 사용한다.
-  - 직접 부여하는 방법도 있다.
-    - `@Bean(name="memberService2")`
+   - 스프링 컨테이너는 파라미터로 넘어온 설정 클래스 정보(위에 있는 AppConfig.class)를 사용하여 스프링 빈을 등록한다.
+     - `@Bean`이 붙은 것들을 전부 호출한다.
+   - 빈 이름
+     - 빈 이름은 메서드 이름을 사용한다.
+     - 직접 부여하는 방법도 있다.
+       - `@Bean(name="memberService2")`
+    > 참고로 `@Component`는 객체 위에서 스프링 빈으로 지정하고, `@Bean`은 메서드 위에서 메서드의 반환 객체를 스프링 빈으로 등록한다.
 3. 스프링 빈 의존관계 설정 - 준비
 ![spring_container_creation3](../res/spring_container_creation3.png)
+    > 참고로 의존관계 주입 방식이 필드방식이면 의존관계 설정 준비 단계와 완료 단계가 동시에 이루어진다.
 4. 스프링 빈 의존관계 설정 - 완료
 ![spring_container_creation4](../res/spring_container_creation4.png)
 
