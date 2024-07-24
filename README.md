@@ -15,10 +15,11 @@
   - [격리수준](https://github.com/kyeoungchan/note/tree/main/database/isolation-level)
   - [MySql 설정 관련](https://github.com/kyeoungchan/note/tree/main/database/mysql-settings)
   - [정규화](https://github.com/kyeoungchan/note/tree/main/database/normalization)
+  - 객체
+    - [VO와 DTO](https://github.com/kyeoungchan/note/tree/main/database/object/vo-dto)
   - [절차형 SQL](https://github.com/kyeoungchan/note/tree/main/database/procedural-sql)
   - [회복 기법](https://github.com/kyeoungchan/note/tree/main/database/recovery)
-  - SQL문
-    - [외래키 제약 조건 설정하기](https://github.com/kyeoungchan/note/tree/main/database/sql/foreign-key)
+  - SQL
     - dcl
       - [GRANT](https://github.com/kyeoungchan/note/tree/main/database/sql/dcl/grant)
       - [REVOKE](https://github.com/kyeoungchan/note/tree/main/database/sql/dcl/revoke)
