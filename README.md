@@ -15,8 +15,6 @@
   - [격리수준](https://github.com/kyeoungchan/note/tree/main/database/isolation-level)
   - [MySql 설정 관련](https://github.com/kyeoungchan/note/tree/main/database/mysql-settings)
   - [정규화](https://github.com/kyeoungchan/note/tree/main/database/normalization)
-  - 객체
-    - [VO와 DTO](https://github.com/kyeoungchan/note/tree/main/database/object/vo-dto)
   - [절차형 SQL](https://github.com/kyeoungchan/note/tree/main/database/procedural-sql)
   - [회복 기법](https://github.com/kyeoungchan/note/tree/main/database/recovery)
   - SQL
@@ -46,6 +44,8 @@
   - [온프레미스](https://github.com/kyeoungchan/note/tree/main/network/on-premise)
   - [라우팅 프로토콜](https://github.com/kyeoungchan/note/tree/main/network/routing-protocol)
   - [전송계층](https://github.com/kyeoungchan/note/tree/main/network/transport-layer)
+- 객체
+  - [VO와 DTO](https://github.com/kyeoungchan/note/tree/main/database/object/vo-dto)
 - 운영체제
   - [단편화](https://github.com/kyeoungchan/note/tree/main/operating-system/memory-fragmentation)
     - [외부 단편화](https://github.com/kyeoungchan/note/tree/main/operating-system/memory-fragmentation/external-fragmentation)
