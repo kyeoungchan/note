@@ -11,19 +11,24 @@
 - 데이터베이스
   - [병행성 제어](https://github.com/kyeoungchan/note/tree/main/database/concurrency-control)
   - [인덱스](https://github.com/kyeoungchan/note/tree/main/database/index)
+  - [로킹기법](https://github.com/kyeoungchan/note/tree/main/database/locking)
   - [격리수준](https://github.com/kyeoungchan/note/tree/main/database/isolation-level)
   - [MySql 설정 관련](https://github.com/kyeoungchan/note/tree/main/database/mysql-settings)
   - [정규화](https://github.com/kyeoungchan/note/tree/main/database/normalization)
-  - [로킹기법](https://github.com/kyeoungchan/note/tree/main/database/locking)
-  - SQL문
-    - [외래키 제약 조건 설정하기](https://github.com/kyeoungchan/note/tree/main/database/sql/foreign-key)
+  - [절차형 SQL](https://github.com/kyeoungchan/note/tree/main/database/procedural-sql)
+  - [회복 기법](https://github.com/kyeoungchan/note/tree/main/database/recovery)
+  - SQL
     - dcl
       - [GRANT](https://github.com/kyeoungchan/note/tree/main/database/sql/dcl/grant)
       - [REVOKE](https://github.com/kyeoungchan/note/tree/main/database/sql/dcl/revoke)
+    - ddl
+      - [Alter Table](https://github.com/kyeoungchan/note/tree/main/database/sql/ddl/alter-table)
+      - [Database Handling](https://github.com/kyeoungchan/note/tree/main/database/sql/ddl/database_handling)
+      - [Foreign Key](https://github.com/kyeoungchan/note/tree/main/database/sql/ddl/foreign-key)
+      - [Table Handling](https://github.com/kyeoungchan/note/tree/main/database/sql/ddl/table_handling)
     - dml
       - [INSERT](https://github.com/kyeoungchan/note/tree/main/database/sql/dml/insert)
       - [JOIN](https://github.com/kyeoungchan/note/tree/main/database/sql/dml/join)
-  - [절차형 SQL](https://github.com/kyeoungchan/note/tree/main/database/procedural-sql)
 - 자료구조
   - [레드-블랙 트리](https://github.com/kyeoungchan/note/tree/main/datastructure/redblacktree)
 - [도커](https://github.com/kyeoungchan/note/tree/main/docker)
@@ -35,8 +40,15 @@
   - [SQL 삽입](https://github.com/kyeoungchan/note/tree/main/hacking/sql-injection)
   - [XSS](https://github.com/kyeoungchan/note/tree/main/hacking/xss)
 - 네트워크
+  - [IPv6](https://github.com/kyeoungchan/note/tree/main/network/ipv6)
+  - [온프레미스](https://github.com/kyeoungchan/note/tree/main/network/on-premise)
   - [라우팅 프로토콜](https://github.com/kyeoungchan/note/tree/main/network/routing-protocol)
   - [전송계층](https://github.com/kyeoungchan/note/tree/main/network/transport-layer)
+- 객체
+  - [VO와 DTO](https://github.com/kyeoungchan/note/tree/main/database/object/vo-dto)
+- 운영체제
+  - [단편화](https://github.com/kyeoungchan/note/tree/main/operating-system/memory-fragmentation)
+    - [외부 단편화](https://github.com/kyeoungchan/note/tree/main/operating-system/memory-fragmentation/external-fragmentation)
 - 보안
   - 암호화
     - [대칭키](https://github.com/kyeoungchan/note/tree/main/security/encryption/symmetric-key)
