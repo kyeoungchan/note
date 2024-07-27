@@ -31,6 +31,9 @@
       - [JOIN](https://github.com/kyeoungchan/note/tree/main/database/sql/dml/join)
 - 자료구조
   - [레드-블랙 트리](https://github.com/kyeoungchan/note/tree/main/datastructure/redblacktree)
+- [버전/의존성 관리 도구](https://github.com/kyeoungchan/note/tree/main/dependency_management)
+  - [형상 관리](https://github.com/kyeoungchan/note/tree/main/dependency_management/configuration-management)
+- [디자인 패턴](https://github.com/kyeoungchan/note/tree/main/design-pattern)
 - [도커](https://github.com/kyeoungchan/note/tree/main/docker)
 - [Git](https://github.com/kyeoungchan/note/tree/main/git)
 - 해킹
@@ -49,12 +52,15 @@
 - 운영체제
   - [단편화](https://github.com/kyeoungchan/note/tree/main/operating-system/memory-fragmentation)
     - [외부 단편화](https://github.com/kyeoungchan/note/tree/main/operating-system/memory-fragmentation/external-fragmentation)
+  - [CPU 스케줄링](https://github.com/kyeoungchan/note/tree/main/operating-system/cpu-scheduling)
 - 보안
   - 암호화
     - [대칭키](https://github.com/kyeoungchan/note/tree/main/security/encryption/symmetric-key)
   - [네트워크 보안](https://github.com/kyeoungchan/note/tree/main/security/network_security_solution)
+  - [3대 요소](https://github.com/kyeoungchan/note/tree/main/security/three-element)
 - [시멘틱 웹과 온톨로지](https://github.com/kyeoungchan/note/tree/main/semantic-web-ontology)
 - 소프트웨어 공학
+  - [응집도](https://github.com/kyeoungchan/note/tree/main/software_engineering/cohesion)
   - [결합도](https://github.com/kyeoungchan/note/tree/main/software_engineering/coupling)
   - [검증 vs 확인](https://github.com/kyeoungchan/note/tree/main/software_engineering/verification_vs_validation)
   - [EAI(Enterprise Application Integration)](https://github.com/kyeoungchan/note/tree/main/software_engineering/eai)
