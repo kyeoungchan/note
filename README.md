@@ -31,6 +31,7 @@
       - [JOIN](https://github.com/kyeoungchan/note/tree/main/database/sql/dml/join)
 - 자료구조
   - [레드-블랙 트리](https://github.com/kyeoungchan/note/tree/main/datastructure/redblacktree)
+- [디자인 패턴](https://github.com/kyeoungchan/note/tree/main/design-pattern)
 - [도커](https://github.com/kyeoungchan/note/tree/main/docker)
 - [Git](https://github.com/kyeoungchan/note/tree/main/git)
 - 해킹
