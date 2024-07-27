@@ -57,6 +57,7 @@
   - 암호화
     - [대칭키](https://github.com/kyeoungchan/note/tree/main/security/encryption/symmetric-key)
   - [네트워크 보안](https://github.com/kyeoungchan/note/tree/main/security/network_security_solution)
+  - [3대 요소](https://github.com/kyeoungchan/note/tree/main/security/three-element)
 - [시멘틱 웹과 온톨로지](https://github.com/kyeoungchan/note/tree/main/semantic-web-ontology)
 - 소프트웨어 공학
   - [응집도](https://github.com/kyeoungchan/note/tree/main/software_engineering/cohesion)
