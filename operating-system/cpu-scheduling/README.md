@@ -56,11 +56,11 @@
   - 단점
     - 설정한 `time quantum`이 너무 커지면 FCFS와 같아진다.
     - 설정한 `time quantum`이 너무 작아지면 Context Switching으로 인한 Overhead가 증가한다.
-- 다단계 큐(Multi Level Queue)
+- 다단계 큐(Multi Level Queue)  
   ![multi_level_queue.png](../res/multi_level_queue.png)
   - 작업들을 여러 종류 그룹으로 분할, 여러 개의 큐를 이용하여 상위 단계 작업이 선점
   - 각 큐는 자신만의 독자적인 스케줄링을 가짐
-- 다단계 피드백 큐(Multi Level Feedback Queue)
+- 다단계 피드백 큐(Multi Level Feedback Queue)  
   ![multi_level_feedback_queue.png](../res/multi_level_feedback_queue.png)
   - 입출력 위주와 CPU 위주인 프로세스의 특성에 따라 큐마다 서로 다른 CPU 시간 할당량을 부여
   - FCFS(FIFO)와 라운드 로빈 기법을 혼합
