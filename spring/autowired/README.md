@@ -160,7 +160,8 @@ void createOrder() {
 - 실행시켜야 오류를 발견할 수 있다.
 
 ![constructor_injection_compile_error.png](../res/constructor_injection_compile_error.png)  
-반면에 생성자 주입 방식을 하면 위와 같이 컴파일 에러가 누락 여부를 알려준다.
+- 반면에 생성자 주입 방식을 하면 위와 같이 컴파일 에러가 누락 여부를 알려준다.
+
 3. final 키워드
     - 생성자 주입을 사용하면 필드에 `final` 키워드를 사용할 수 있다.
     - 그래서 생성자에서 혹시라도 값이 설정되지 않는 오류를 컴파일 시점에 막아준다.
