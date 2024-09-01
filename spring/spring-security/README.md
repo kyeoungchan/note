@@ -440,10 +440,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
 ```java
 public static String getCurrentUserSocialId() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User currentUser = (User) principal;
-        Social social = currentUser.getSocial();
-        return social.getId();
+    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    User currentUser = (User) principal;
+    Social social = currentUser.getSocial();
+    return social.getId();
 }
 ```
 
@@ -455,15 +455,15 @@ public static String getCurrentUserSocialId() {
 
 ```java
 @PostMapping("/{challengeRoomId}/create")
-    public Response<CreateRecordResponse> createRecord(
-            // Principal 또는 Authentication
-            Principal principal,
-            Authentication authentication
-            ) {
-            .
-            .
-            .
-     }
+public Response<CreateRecordResponse> createRecord(
+        // Principal 또는 Authentication
+        Principal principal,
+        Authentication authentication
+        ) {
+        .
+        .
+        .
+ }
 ```
 
 <br>
@@ -476,13 +476,13 @@ Spring Security 3.2부터는 annotation을 이용하여 현재 로그인한 사�
 
 ```java
 @PostMapping("/{challengeRoomId}/create")
-    public Response<CreateRecordResponse> createRecord(
-            @AuthenticationPrincipal CustomUserDetails customUserDetails
-            ) {
-            .
-            .
-            .
-     }
+public Response<CreateRecordResponse> createRecord(
+        @AuthenticationPrincipal CustomUserDetails customUserDetails
+        ) {
+        .
+        .
+        .
+ }
 ```
 
 다음과 같은 방법으로 넘겨줄 수 있다.
