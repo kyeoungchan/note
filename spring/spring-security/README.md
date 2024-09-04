@@ -288,11 +288,40 @@ public class UsernamePasswordAuthenticationToken extends AbstractAuthenticationT
  
 인증에 성공하면 두 번째 생성자를 이용해 객체를 생성하여 `SecurityContext`에 저장한다.
 
+```java
+public interface AuthenticationManager { 
+    Authentication authenticate(Authentication authentication) throws AuthenticationException;
+}
+```
+
 <br>
 
 ### [ AuthenticationProvider ]
 
-`AuthenticationProvider`에서는 실제 인증에 대한 부분을 처리하는데, 인증 전의 `Authentication` 객체를 받아서 인증이 완료된 객체를 반환하는 역할을 한다.
+- `AuthenticationProvider`에서는 실제 인증에 대한 부분을 처리하는데, 인증 전의 `Authentication` 객체를 받아서 인증이 완료된 객체를 반환하는 역할을 한다.
+- `ProviderManager`는 특정 타입에 대한 인증을 진행하는 역할을 하고, 두 가지 메서드가 정의 되어있다.
+  - `AuthenticationProvider`는 루프를 돌며 자기가 갖고 있는 `AuthenticationProvider`들 하나씩 적합한지 체크한다. 
+- `authentication()`메서드는 말그대로 `Authentication`을 실행하는 로직이 담겨있다. 
+- `supports()`는 이 `Provider`가 해당 타입에 대한 인증을 진행하는지 `boolean`으로 알려준다.
+
+```java
+package org.springframework.security.authentication;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+
+public interface AuthenticationProvider {
+  Authentication authenticate(Authentication authentication) throws AuthenticationException;
+
+  boolean supports(Class<?> authentication);
+}
+```
+<div align='center'>
+    <img src="../res/authentication_provider.png" width="650px">
+</div>
+<div align='center'>
+    <img src="../res/authentication_provider2.png" width="650px">
+</div>
 
 <br>
 
@@ -411,10 +440,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
 ```java
 public static String getCurrentUserSocialId() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User currentUser = (User) principal;
-        Social social = currentUser.getSocial();
-        return social.getId();
+    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    User currentUser = (User) principal;
+    Social social = currentUser.getSocial();
+    return social.getId();
 }
 ```
 
@@ -426,15 +455,15 @@ public static String getCurrentUserSocialId() {
 
 ```java
 @PostMapping("/{challengeRoomId}/create")
-    public Response<CreateRecordResponse> createRecord(
-            // Principal 또는 Authentication
-            Principal principal,
-            Authentication authentication
-            ) {
-            .
-            .
-            .
-     }
+public Response<CreateRecordResponse> createRecord(
+        // Principal 또는 Authentication
+        Principal principal,
+        Authentication authentication
+        ) {
+        .
+        .
+        .
+ }
 ```
 
 <br>
@@ -447,13 +476,13 @@ Spring Security 3.2부터는 annotation을 이용하여 현재 로그인한 사�
 
 ```java
 @PostMapping("/{challengeRoomId}/create")
-    public Response<CreateRecordResponse> createRecord(
-            @AuthenticationPrincipal CustomUserDetails customUserDetails
-            ) {
-            .
-            .
-            .
-     }
+public Response<CreateRecordResponse> createRecord(
+        @AuthenticationPrincipal CustomUserDetails customUserDetails
+        ) {
+        .
+        .
+        .
+ }
 ```
 
 다음과 같은 방법으로 넘겨줄 수 있다.
