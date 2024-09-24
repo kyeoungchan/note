@@ -42,6 +42,8 @@
   - [세션 하이재킹](https://github.com/kyeoungchan/note/tree/main/hacking/session-hijacking)
   - [SQL 삽입](https://github.com/kyeoungchan/note/tree/main/hacking/sql-injection)
   - [XSS](https://github.com/kyeoungchan/note/tree/main/hacking/xss)
+- JAVA
+  - [정규식 사용하기](https://github.com/kyeoungchan/note/tree/main/java/regular-expression)
 - 네트워크
   - [IPv6](https://github.com/kyeoungchan/note/tree/main/network/ipv6)
   - [온프레미스](https://github.com/kyeoungchan/note/tree/main/network/on-premise)
