@@ -43,8 +43,9 @@
   - [SQL 삽입](https://github.com/kyeoungchan/note/tree/main/hacking/sql-injection)
   - [XSS](https://github.com/kyeoungchan/note/tree/main/hacking/xss)
 - JAVA
-  - [정규식 사용하기](https://github.com/kyeoungchan/note/tree/main/java/regular-expression)
   - [Java 컴파일 과정](https://github.com/kyeoungchan/note/tree/main/java/compile)
+  - [리플렉션](https://github.com/kyeoungchan/note/tree/main/java/reflection)
+  - [정규식 사용하기](https://github.com/kyeoungchan/note/tree/main/java/regular-expression)
 - 네트워크
   - [IPv6](https://github.com/kyeoungchan/note/tree/main/network/ipv6)
   - [온프레미스](https://github.com/kyeoungchan/note/tree/main/network/on-premise)
