@@ -80,8 +80,9 @@ public class ExampleCyclicBarrier {
     }
 }
 ```
-![img.png](../res/cyclicbarrier_result.png)
-메인 쓰레드가 멈추면 다른 쓰레드가 동작을 하는데 각각의 쓰레드가 다 대기 상태에 들어가면 재귀함수처럼 마지막 대기에서부터 출력이 이루어진다.
+![img.png](../res/cyclicbarrier_result.png)  
+- 메인 쓰레드가 멈추면 다른 쓰레드가 동작을 하는데 각각의 쓰레드가 다 대기 상태에 들어가면 재귀함수처럼 마지막 대기에서부터 출력이 이루어진다.
+- 매개변수로 5로 전달했는데, for문을 4로 하는 이유는 메인 쓰레드까지 포함해서 쓰레드가 5개로 카운트되기 때문이다.
 
 출처  
 [CountdownLatch vs CyclicBarrier](https://github.com/devFancy/2023-CS-Study/blob/main/java/java_countdownlatch_cyclicbarrier.md)
