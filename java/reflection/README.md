@@ -138,6 +138,20 @@ private void dynamicCall(Method method, Object target) throws Exception {
 - 그리고 런타임 시점에 클래스를 분석하기 때문에 JVM을 최적화할 수 없기 때문에 성능 저하가 발생하므로 일반 메서드 호출보다 성능이 훨씬 떨어진다.
 - 따라서 리플렉션은 일반적으로 사용하면 안 된다.
 
+### 🤔 리플렉션을 사용하는 곳은 어디일까?
+=> 프레임워크나 라이브러리에서 주로 사용된다.
+1. JPA
+2. Jackson
+3. Mockito
+4. Intellij 자동완성 기능
+![reflection_intellij_auto_completion.png](../res/reflection_intellij_auto_completion.png)
+
+### 🤔 어노테이션은 어떻게 작동할까?
+1. Reflection을 통해 클래스나 메서드, 파라미터 정보를 가져온다.
+2. Reflection의 getAnnotation(s), getDeclaredAnnotation(s) 등의 메서드를 통해 원하는 어노테이션이 붙어있는지 확인한다.
+3. 어노테이션이 붙어있다면 원하는 로직을 수행한다.
+
 출처  
 [스프링 핵심 원리 - 고급편](https://www.inflearn.com/course/%EC%8A%A4%ED%94%84%EB%A7%81-%ED%95%B5%EC%8B%AC-%EC%9B%90%EB%A6%AC-%EA%B3%A0%EA%B8%89%ED%8E%B8)  
+[java_reflection](https://github.com/devFancy/2023-CS-Study/blob/main/java/java_reflection.md)  
 [java_reflection](https://github.com/devFancy/2023-CS-Study/blob/main/java/java_reflection.md)
