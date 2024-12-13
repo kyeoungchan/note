@@ -36,6 +36,7 @@
 - [디자인 패턴](https://github.com/kyeoungchan/note/tree/main/design-pattern)
   - [어댑터 패턴](https://github.com/kyeoungchan/note/tree/main/design-pattern/adapter-pattern)
   - [데코레이터 패턴](https://github.com/kyeoungchan/note/tree/main/design-pattern/docorator-pattern)
+  - [전략 패턴](https://github.com/kyeoungchan/note/tree/main/design-pattern/strategy-pattern)
 - [도커](https://github.com/kyeoungchan/note/tree/main/docker)
 - [Git](https://github.com/kyeoungchan/note/tree/main/git)
 - 해킹
