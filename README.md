@@ -61,6 +61,7 @@
   - [단편화](https://github.com/kyeoungchan/note/tree/main/operating-system/memory-fragmentation)
     - [외부 단편화](https://github.com/kyeoungchan/note/tree/main/operating-system/memory-fragmentation/external-fragmentation)
   - [CPU 스케줄링](https://github.com/kyeoungchan/note/tree/main/operating-system/cpu-scheduling)
+  - [시스템 콜](https://github.com/kyeoungchan/note/tree/main/operating-system/system-call)
 - 보안
   - 암호화
     - [대칭키](https://github.com/kyeoungchan/note/tree/main/security/encryption/symmetric-key)
