@@ -98,5 +98,5 @@ cp in.txt out.txt
 만약 저장하고자 하는 파일 이름이 겹치지 않는다면, 파일을 저장해야하는데 이 때도 시스템 콜을 이용한다.
 
 ### 참고자료
-[os_system_call.md](https://github.com/devSquad-study/2023-CS-Study/blob/main/OS/os_system_call.md)
+[os_system_call.md](https://github.com/devSquad-study/2023-CS-Study/blob/main/OS/os_system_call.md)  
 [SystemCall_hongseo.md](https://github.com/cs-study-2023/archive/blob/main/operatingsystem/SystemCall_hongseo.md)
