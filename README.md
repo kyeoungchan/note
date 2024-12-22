@@ -58,9 +58,10 @@
 - 객체
   - [VO와 DTO](https://github.com/kyeoungchan/note/tree/main/database/object/vo-dto)
 - 운영체제
+  - [CPU 스케줄링](https://github.com/kyeoungchan/note/tree/main/operating-system/cpu-scheduling)
   - [단편화](https://github.com/kyeoungchan/note/tree/main/operating-system/memory-fragmentation)
     - [외부 단편화](https://github.com/kyeoungchan/note/tree/main/operating-system/memory-fragmentation/external-fragmentation)
-  - [CPU 스케줄링](https://github.com/kyeoungchan/note/tree/main/operating-system/cpu-scheduling)
+  - [PCB와 Context Switching](https://github.com/kyeoungchan/note/tree/main/operating-system/pcb-context-switching)
   - [시스템 콜](https://github.com/kyeoungchan/note/tree/main/operating-system/system-call)
 - 보안
   - 암호화
