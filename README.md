@@ -62,6 +62,7 @@
   - [단편화](https://github.com/kyeoungchan/note/tree/main/operating-system/memory-fragmentation)
     - [외부 단편화](https://github.com/kyeoungchan/note/tree/main/operating-system/memory-fragmentation/external-fragmentation)
   - [PCB와 Context Switching](https://github.com/kyeoungchan/note/tree/main/operating-system/pcb-context-switching)
+  - [세그먼테이션](https://github.com/kyeoungchan/note/tree/main/operating-system/segmentation)
   - [시스템 콜](https://github.com/kyeoungchan/note/tree/main/operating-system/system-call)
 - 보안
   - 암호화
