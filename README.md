@@ -61,6 +61,7 @@
   - [CPU 스케줄링](https://github.com/kyeoungchan/note/tree/main/operating-system/cpu-scheduling)
   - [단편화](https://github.com/kyeoungchan/note/tree/main/operating-system/memory-fragmentation)
     - [외부 단편화](https://github.com/kyeoungchan/note/tree/main/operating-system/memory-fragmentation/external-fragmentation)
+  - [Paging: Smaller Table](https://github.com/kyeoungchan/note/tree/main/operating-system/paging-smaller-table)
   - [PCB와 Context Switching](https://github.com/kyeoungchan/note/tree/main/operating-system/pcb-context-switching)
   - [세그먼테이션](https://github.com/kyeoungchan/note/tree/main/operating-system/segmentation)
   - [시스템 콜](https://github.com/kyeoungchan/note/tree/main/operating-system/system-call)
@@ -81,3 +82,6 @@
   - [ApplicationContext](https://github.com/kyeoungchan/note/tree/main/spring/applicationcontext)
   - [Autowired](https://github.com/kyeoungchan/note/tree/main/spring/autowired)
   - [DI(Dependency Injection)](https://github.com/kyeoungchan/note/tree/main/spring/dependency-injection)
+- WEB
+  - [bootstrap](https://github.com/kyeoungchan/note/tree/main/web/bootstrap)
+  - [JWT](https://github.com/kyeoungchan/note/tree/main/web/jwt)

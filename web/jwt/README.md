@@ -75,16 +75,50 @@ JSESSIONID는 유의미한 값이 아니라 서버에서 세션(사용자) 정�
   - JWT 토큰을 만들 때 헤더에 kid를 포함하여 제공한다.
   - 서버에서 토큰을 해석할 때 kid로 Secret Key를 찾아서 Signature를 검증한다.
 
+## Access Token과 Refresh Token
+### Refresh Token이 필요한 이유
+- Access Token만을 통한 인증 방식의 문제는 탈취당할 경우 보안에 취약하다는 점이다.
+  - Access Token은 발급된 이후, 서버에 저장되지 않고 토큰 자체로 검증을 하여 사용자 권한을 인증한다.
+  - 따라서 Access Token이 만료되기 전까지는, 토큰을 획득한 사람이면 누구나 권한 접근이 가능해진다.
+  - JWT는 발급한 후 삭제가 불가능하기 때문에, 접근에 관여하는 토큰에 유효기간을 부여하는 식으로 탈취 문제에 대응한다.
+- 유효기간의 딜레마
+  - 유효기간을 짧게 하면, 보안 취약 문제를 개선할 수 있지만, 그만큼 사용자가 로그인을 자주 해서 새롭게 Token을 발급받아야 하기 때문에 불편하다.
+  - 유효기간을 길게 하면, 토큰을 탈취 당했을 때, 보안에 취약해진다.
+- 용어 비교
+  - Access Token
+    - 접근에 관여하는 Token.
+    - JWT 그 자체
+  - Refresh Token
+    - 재발급에 관여하는 Token.
+    - 마찬가지로 JWT 그 자체.
+
 ### Refresh Token
 - AccessToken을 탈취했을 경우에 대한 최소한의 대비(완벽한 해결책은 아니다.)
 - AccessToken의 유효기간을 짧게 설정하여 탈취되어도 사용기간을 줄이는 효과가 있다.
 - RefreshToken을 통해 다시 AccessToken을 발급받아 사용한다.
 - RefreshToken은 인증 정보를 담고 있지 않고 오로지 AccessToken 재발급 용도로만 사용한다.
 
-**AcessToken과 RefreshToken을 사용한 Logic Process**
+### AcessToken과 RefreshToken을 사용한 Logic Process
+**Access Token과 Refresh Token을 따로 보내는 로직**  
 1. 클라이언트가 ID, PW로 서버에게 인증을 요청하고 서버는 이를 확인하여 Acess Token과 Refresh Token을 발급받는다.
 2. 클라이언트는 이를 받아 Refresh Token을 저장하고 Access Token을 가지고 서버에 자유롭게 요청한다.
 3. 요청을 하던 도중 Access Token이 만료된다면 서버로부터 오류를 전달받는다.
 4. 클라이언트는 본인이 사용한 Access Token이 만료되었다는 사실을 인지하고 본인이 가지고 있던 Refresh Token을 서버로 전달하여 새로운 Access Token의 발급을 요청한다.
 5. 서버는 Refresh Token을 받아 서버의 Refresh Token Storage에 해당 토큰이 있는지 확인하고, 있다면 Acess Token을 생성하여 전달한다.
 6. 이후 2번으로 돌아가서 동일한 작업을 진행한다.
+
+<br>
+
+**Access Token과 Refresh Token을 따로 보내는 로직**  
+1. 클라이언트가 ID, PW로 서버에게 인증을 요청하고 서버는 이를 확인하여 Acess Token과 Refresh Token을 발급받는다.
+2. 서버는 Refresh Token을 데이터베이스에 저장한다.
+3. 클라이언트는 이를 받아 Access Token과 Refresh Token을 쿠키, 세션 혹은 웹스토리지에 저장한다.
+4. 요청이 있을 때마다 클라이언트는 Access Token과 Refresh Token 둘을 헤더에 담아 서버에 자유롭게 요청한다.
+5. 요청을 하던 도중 Access Token이 만료된다면, 서버는 같이 보내진 Refresh Token을 DB의 것과 비교해서 일치하면 다시 Access Token을 발급해준다.
+6. 사용자가 로그아웃을 하면 저장소에서 Refresh Token을 삭제하여 사용이 불가능하도록 하고, 새로 로그인하면 서버에서 다시 재발급하여 DB에 저장한다.
+
+
+### Access Token & Refresh Token 재발급 원리
+
+참고  
+[Access Token & Refresh Token](https://inpa.tistory.com/entry/WEB-%F0%9F%93%9A-Access-Token-Refresh-Token-%EC%9B%90%EB%A6%AC-feat-JWT)
