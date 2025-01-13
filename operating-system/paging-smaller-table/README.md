@@ -28,17 +28,21 @@
 
 ## ✅ Hybrid Approach: paging and segments
 > segmentation과 paging을 섞어서 장점만 취하는 방법이다.  
+> page table의 memory overhead를 줄이기 위해 생겨났다.   
 > 말 그래도, 주소 체계를 page로만 나누지 말고, segmentation도 함께 사용하는 것이다.
 
 ![hybrid_approach_page_table.png](../res/hybrid_approach_page_table.png)
 - `base reg`: 실제 주소의 page table을 가리키는 데 사용한다.
-  - Process가 실행중 일때 각 Segment의 `base reg`는 해당 Segment에 대한 Linear Page Table의 **실제 주소(Physical Address)`** 가 포함된다.
+  - Process가 실행중 일때 각 Segment의 `base reg`는 해당 Segment에 대한 Linear Page Table의 **`실제 주소(Physical Address)`** 가 포함된다.
 - `bound reg`: 해당 page table의 끝을 나타내는 데 사용된다.
 
 ### ❗️ TLB miss
 - 하드웨어는 Page Table로부터 실제 주소를 얻을 수 있다.
   - 하드웨어는 `세그먼트 비트(SN)`를 사용하여 사용할 `base` 및 `bound` 쌍을 결정한다.
   - 하드웨어는 그 다음 실제 주소(Physical Address)를 가져와서 다음과 같이 VPN과 결합하여 Page Table Entry(PTE)의 주소를 형성한다.
+    1. SN으로 segment를 결정한다.
+    2. base register로 physical address를 구한다.
+    3. VPN을 통하여 PTE 주소를 구한다.
 
 ![hybrid_approach_paging_and_segments.png](../res/hybrid_approach_paging_and_segments.png)
 - 위 예시는 `Code Segment` (10)과 VPN 값 4를 가지고 있다.
@@ -65,8 +69,8 @@ Linear Page Table(선형 페이지 테이블)을 Tree(트리)와 같은 무언�
 
 ### ❗️ Page directory entries
 - Page Directory는 page당 하나의 page entry만 가지고 있다. (즉, page table의 시작부분, base 레지스터와 같은 역할을 한다고 보면 된다)
-  - 그리고 Page Directory는 다수의 page directory entries(PDE) 로 구성되어 있다. 
-- PDE 는 유효한 `bit`과 `page frame number(PFN)`을 가지고 있다. 
+  - 그리고 `Page Directory`는 다수의 `Page Directory Entries(PDE)`로 구성되어 있다. 
+- `PDE`는 유효한 `bit`과 `Page Frame Number(PFN)`을 가지고 있다. 
   - Invalid : Page table의 전체 page에 유효한 page가 없는 것을 의미한다. 
   - Valid : 이 PDE가 가리키는 해당 페이지의 PTE가 적어도 하나는 유효하다는 것을 의미한다.
 
@@ -88,3 +92,4 @@ Linear Page Table(선형 페이지 테이블)을 Tree(트리)와 같은 무언�
 [Paging: Smaller Table](https://github.com/devSquad-study/2023-CS-Study/blob/main/OS/os_smaller_table.md)  
 [paging : smaller table](https://star-peanuts.tistory.com/97)  
 [[OS/OSTEP] 18.vm-paging : 메모리 페이징,PFN과 VPN #12](https://devforyou.tistory.com/80)  
+[[OS] Paging - Smaller Table](https://rond-o.tistory.com/267)
