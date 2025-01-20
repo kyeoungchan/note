@@ -34,6 +34,7 @@
 - [버전/의존성 관리 도구](https://github.com/kyeoungchan/note/tree/main/dependency_management)
   - [형상 관리](https://github.com/kyeoungchan/note/tree/main/dependency_management/configuration-management)
 - [디자인 패턴](https://github.com/kyeoungchan/note/tree/main/design-pattern)
+  - [추상 팩토리 패턴](https://github.com/kyeoungchan/note/tree/main/design-pattern/abstract-factory-pattern)
   - [어댑터 패턴](https://github.com/kyeoungchan/note/tree/main/design-pattern/adapter-pattern)
   - [데코레이터 패턴](https://github.com/kyeoungchan/note/tree/main/design-pattern/docorator-pattern)
   - [전략 패턴](https://github.com/kyeoungchan/note/tree/main/design-pattern/strategy-pattern)
