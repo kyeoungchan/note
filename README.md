@@ -38,6 +38,7 @@
   - [어댑터 패턴](https://github.com/kyeoungchan/note/tree/main/design-pattern/adapter-pattern)
   - [데코레이터 패턴](https://github.com/kyeoungchan/note/tree/main/design-pattern/docorator-pattern)
   - [전략 패턴](https://github.com/kyeoungchan/note/tree/main/design-pattern/strategy-pattern)
+  - [템플릿 메서드 패턴](https://github.com/kyeoungchan/note/tree/main/design-pattern/template-method-pattern)
 - [도커](https://github.com/kyeoungchan/note/tree/main/docker)
 - [Git](https://github.com/kyeoungchan/note/tree/main/git)
 - 해킹
@@ -50,7 +51,11 @@
   - [Java 컴파일 과정](https://github.com/kyeoungchan/note/tree/main/java/compile)
   - [CountDownLatch vs. CyclicBarrier](https://github.com/kyeoungchan/note/tree/main/java/countdownlatch-cyclicbarrier)
   - [리플렉션](https://github.com/kyeoungchan/note/tree/main/java/reflection)
+  - [Comparable vs Comparator](https://kyeoungchan.tistory.com/7)
   - [정규식 사용하기](https://github.com/kyeoungchan/note/tree/main/java/regular-expression)
+  - 지네릭스
+    - [지네릭스 part1](https://kyeoungchan.tistory.com/11)
+    - [지네릭스 part2](https://kyeoungchan.tistory.com/12)
 - 네트워크
   - [IPv6](https://github.com/kyeoungchan/note/tree/main/network/ipv6)
   - [온프레미스](https://github.com/kyeoungchan/note/tree/main/network/on-premise)
