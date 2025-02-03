@@ -1,4 +1,4 @@
-## Blocking
+### Blocking
 자신의 작업을 진행하다가 다른 주체의 작업이 시작되면 다른 작업이 끝날 때까지 기다렸다가 자신의 작업을 시작하는 것
 
 ### Non-Blocking
@@ -42,8 +42,3 @@ Blocking/Non-blocking과 Sync/Async는 서로 다른 개념이며, 이 둘은 �
    - 일반적으로 비효율적으로 간주되는 방식으로, 함수 호출 후 해당 함수의 작업이 완료될 때까지 대기한다.
    - 호출된 함수가 작업을 수행하는 동안 호출한 함수는 대기하며, 호출된 함수의 결과 처리도 해당 함수가 스스로 한다.
    - 특정 상황에서만 사용되며, 일반적인 경우에는 권장되지 않는다.
-
-<br>
-
-**참고 출처**  
-[Blocking_NonBlocking_Asyn_Syn 정리](https://github.com/cs-study-2023/archive/blob/main/network/Blocking_NonBlocking_Asyn_Syn_jaehwa.md)
