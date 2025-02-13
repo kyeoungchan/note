@@ -24,6 +24,15 @@
 `ConcurrentHashMap`은 동시에 여러 쓰레드가 접근해도 안전하게 데이터를 관리할 수 있도록 동기화를 제공한다.  
 또한, `HashMap`을 동기화할 경우에는 동기화된 블록으로 `HashMap`의 접근을 제어하여 데이터의 일관성을 보장할 수 있다.
 
+```java
+public class HashMap<K,V> extends AbstractMap<K,V>
+    implements Map<K,V>, Cloneable, Serializable {
+
+    public V get(Object key) {}
+    public V put(K key, V value) {}
+}
+```
+
 <br>
 
 ## ✅ HashTable
@@ -38,6 +47,20 @@
   - 따라서, 동기화를 제공함으로써 멀티쓰레드 환경에서 데이터 일관성 문제를 방지할 수 있다.
 - 하지만, `synchronized` 키워드를 사용하면 성능이 저하될 수 있기 때문에, Java 1.5부터는 `ConcurrentHashMap`이나 `Collections.synchronizedMap` 메서드를 사용하여 동시성을 보장하는 Map 자료구조를 사용하는 것이 권장된다.
   - 이러한 자료구조들은 `HashTable`과 달리, 락(lock)을 더욱 세분화하여 성능을 향상시킨다.
+
+```java
+public class Hashtable<K,V>
+    extends Dictionary<K,V>
+    implements Map<K,V>, Cloneable, java.io.Serializable {
+
+    public synchronized int size() { }
+
+    @SuppressWarnings("unchecked")
+    public synchronized V get(Object key) { }
+
+    public synchronized V put(K key, V value) { }
+}
+```
 
 <br>
 
@@ -60,6 +83,7 @@
 각 세그먼트는 자체적으로 동기화 되어있으므로, 여러 쓰레드에서 동시에 접근해도 안전하게 데이터를 처리할 수 있다.
 
 ![hash_bucket_and_segment.png](../res/hash_bucket_and_segment.png)
+
 **해시버킷**  
 해시 테이블에서 데이터를 저장하는 공간이다.  
 해시버킷은 일반적으로 `LinkedList` 혹은 `Tree` 구조로 구성되어 있다.  
@@ -88,7 +112,88 @@ map.put("honeydew", 8);
 > 예를 들어, "apple"의 해시 값이 0이면, 0번 세그먼트에 저장되고, "banana"의 해시 값이 1이면, 1번 세그먼트에 저장된다.  
 > 각각의 세그먼트는 독립적으로 잠금을 가지고 있으므로, 여러 쓰레드에서 동시에 접근하더라도 세그먼트 간의 충돌이나 경합 없이 안전하게 작업을 처리할 수 있다.
 
+```java
+public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
+    implements ConcurrentMap<K,V>, Serializable {
 
+    private static final int DEFAULT_CAPACITY = 16;
+
+    // 동시에 업데이트를 수행하는 쓰레드 수
+    private static final int DEFAULT_CONCURRENCY_LEVEL = 16;
+    
+    public V get(Object key) {}
+
+    public boolean containsKey(Object key) { }
+
+    public V put(K key, V value) {
+        return putVal(key, value, false);
+    }
+
+    final V putVal(K key, V value, boolean onlyIfAbsent) {
+        if (key == null || value == null) throw new NullPointerException();
+        int hash = spread(key.hashCode());
+        int binCount = 0;
+        for (Node<K,V>[] tab = table;;) {
+            Node<K,V> f; int n, i, fh;
+            if (tab == null || (n = tab.length) == 0)
+                tab = initTable();
+            else if ((f = tabAt(tab, i = (n - 1) & hash)) == null) {
+                if (casTabAt(tab, i, null,
+                             new Node<K,V>(hash, key, value, null)))
+                    break;                   // no lock when adding to empty bin
+            }
+            else if ((fh = f.hash) == MOVED)
+                tab = helpTransfer(tab, f);
+            else {
+                V oldVal = null;
+                synchronized (f) {
+                    if (tabAt(tab, i) == f) {
+                        if (fh >= 0) {
+                            binCount = 1;
+                            for (Node<K,V> e = f;; ++binCount) {
+                                K ek;
+                                if (e.hash == hash &&
+                                    ((ek = e.key) == key ||
+                                     (ek != null && key.equals(ek)))) {
+                                    oldVal = e.val;
+                                    if (!onlyIfAbsent)
+                                        e.val = value;
+                                    break;
+                                }
+                                Node<K,V> pred = e;
+                                if ((e = e.next) == null) {
+                                    pred.next = new Node<K,V>(hash, key,
+                                                              value, null);
+                                    break;
+                                }
+                            }
+                        }
+                        else if (f instanceof TreeBin) {
+                            Node<K,V> p;
+                            binCount = 2;
+                            if ((p = ((TreeBin<K,V>)f).putTreeVal(hash, key,
+                                                           value)) != null) {
+                                oldVal = p.val;
+                                if (!onlyIfAbsent)
+                                    p.val = value;
+                            }
+                        }
+                    }
+                }
+                if (binCount != 0) {
+                    if (binCount >= TREEIFY_THRESHOLD)
+                        treeifyBin(tab, i);
+                    if (oldVal != null)
+                        return oldVal;
+                    break;
+                }
+            }
+        }
+        addCount(1L, binCount);
+        return null;
+    }
+}
+```
 <br>
 
 ## ✅ LinkedHashMap
@@ -100,4 +205,6 @@ map.put("honeydew", 8);
 
 
 **출처**  
-[[JAVA] HashMap, HashTable, ConcurrentHashMap,LinkedHashMap 차이](https://peonyf.tistory.com/entry/JAVA-HashMap%EC%99%80-Enum)
+[[JAVA] HashMap, HashTable, ConcurrentHashMap,LinkedHashMap 차이](https://peonyf.tistory.com/entry/JAVA-HashMap%EC%99%80-Enum)  
+[[Java] ConcurrentHashMap 이란 무엇일까?](https://devlog-wjdrbs96.tistory.com/269)  
+[ConcurrentHashMap에 대해 알아보자](https://parkmuhyeun.github.io/woowacourse/2023-09-09-Concurrent-Hashmap/)
