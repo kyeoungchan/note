@@ -92,6 +92,8 @@
   - [ApplicationContext](https://github.com/kyeoungchan/note/tree/main/spring/applicationcontext)
   - [Autowired](https://github.com/kyeoungchan/note/tree/main/spring/autowired)
   - [DI(Dependency Injection)](https://github.com/kyeoungchan/note/tree/main/spring/dependency-injection)
+  - 예외처리
+    - [API 예외 처리](https://github.com/kyeoungchan/note/tree/main/spring/exception/api-exception-handling)
   - [IoC vs DI vs DIP](https://github.com/kyeoungchan/note/tree/main/spring/ioc-di-dip)
   - [Spring Security](https://github.com/kyeoungchan/note/tree/main/spring/spring-security)
 - WEB
