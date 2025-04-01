@@ -511,3 +511,600 @@ class Book(var name: String, var price: Int) {
 apply a 18000
  */
 ```
+
+### run
+apply랑 똑같은 기능이지만 마지막 구문에 있는 값을 반환해주는 차이가 있다.
+```kotlin
+fun main() {
+    var a = Book("a", 20000)
+    var b = a.run {
+        name = "apply $name"
+        dc()
+        "retun B" // 반환
+    }
+    print(b)
+}
+
+class Book(var name: String, var price: Int) {
+    fun dc() {
+        price -= 2000
+    }
+    
+    fun printName() {
+        println("$name $price")
+    }
+}
+// 출력: return B
+```
+
+### with
+run이랑 똑같지만 사용법만 다름  
+`a.run -> with(a)`
+```kotlin
+fun main() {
+    var a = Book("a", 2000)
+    var b = with(a) {
+        name = "apply $name"
+        dc()
+        "return B"
+    }
+    print(b)
+}
+
+class Book(var name:String, var price:Int) {
+    fun dc() {
+        price -= 2000
+    }
+    
+    fun printName() {
+        println("$name $price")
+    }
+}
+
+// 출력: return B
+```
+
+### let/also
+`apply = also`  
+`run = let`  
+기능은 위처럼 같다.  
+하지만 also, let의 공통된 차이점은 `it` 키워드를 사용해 객체 변수를 참조한다는 것이다.  
+이유는 같은 이름 변수로 혼동이 올 수 있기 때문이다.
+```kotlin
+fun main() {
+    var price = 5000
+    var a = Book("a", 20000)
+    a.run {
+        // 20000원이 출력되어야하지만 main문의 price가 스코프 우선순위가 높아 5000원 출력
+        println(price)
+    }
+}
+
+class Book(var name:String, var price:Int) {
+    
+}
+// 출력: 5000
+```
+let을 사용할 경우(also도 동일)
+```kotlin
+fun main() {
+    var price = 5000
+    var a = Book("a", 20000)
+    a.let {
+        println(it.price)
+    }
+}
+
+class Book(var name:String, var price:Int) {
+    
+}
+
+// 출력: 20000
+```
+
+### Object
+객체가 하나만 필요해서 사용하는 경우에 쓰는 키워드 -> 싱글톤 디자인 패턴
+
+```kotlin
+fun main() {
+    Counter.countUp()
+    println(Counter.count)
+    Counter.clear()
+    println(Counter.count)
+}
+
+object Counter {
+    var count = 0
+    fun countUp() {
+        count++
+    }
+    fun clear() {
+        count = 0
+    }
+}
+/*
+출력
+1
+0
+ */
+```
+class 안에도 object를 만들 수 있는데, 기존 Java에서의 `static`과 비슷하다고 생각하면 된다.  
+키워드는 `companion object`이다.
+```kotlin
+fun main() {
+    var a = Food()
+    var b = Food()
+    a.up() // 공용 변수 증가
+    b.up() // 공용 변수 증가
+    println("${Food.total}")
+}
+
+class Food() {
+    companion object {
+        var total = 0
+    }
+    fun up() {
+        total++
+    }
+}
+// 출력: 2
+```
+
+<br>
+
+## ✅ 옵저버(Observer) 패턴
+`listener.callback`이라고 부른다.  
+간단히 말하면 어떠한 이벤트가 발생을 감지해 이벤트 발생시 기능이 호출되도록 하는 패턴이다.
+예제만 보고 해석하자.
+
+```kotlin
+fun main() {
+    EventPrinter().start()
+}
+
+interface EventListener {
+    fun onEvent(count: Int)
+}
+
+class Counter(var listener: EventListener) {
+    fun count() {
+        for (i in 0..20) {
+            if (i % 5 == 0) {
+                listener.onEvent(i)
+            }
+        }
+    }
+}
+
+class EventPrinter : EventListener {
+    // 이벤트 함수
+    override fun onEvent(count: Int) {
+        println(count)
+    }
+    fun start() {
+        var count = Counter(this)
+        count.count()
+    }
+}
+/*
+출럭
+0
+5
+10
+15
+20
+ */
+```
+```kotlin
+fun main() {
+    EventPrinter().start()
+}
+
+interface EventListener {
+    fun onEvent(count: Int)
+}
+
+class Counter(var listener: EventListener) {
+    fun count() {
+        for (i in 0..20) {
+            if (i % 5 == 0) {
+                listener.onEvent(i)
+            }
+        }
+    }
+}
+
+class EventPrinter {
+    fun start() {
+        // 리스너를 익명클래스로 정의
+        Counter(object: EventListener {
+            override fun onEvent(count: Int) {
+                println(cout)
+            }
+        }).count()
+    }
+}
+/*
+출력
+0
+5
+10
+15
+20
+ */
+```
+
+<br>
+
+## ✅ 다형성 as
+`as`는 클래스를 casting 하는 역할을 한다.
+
+```kotlin
+fun main() {
+    var a = Drink()
+    a.drink()
+    
+    var b: Drink = Coke()
+    b.drink()
+
+    if (b is Coke) { // if문안에서 일시적으로 캐스팅
+        b.washD()
+    }
+    
+    var c = b as Coke // Coke로 캐스팅된 c. 동시에 b도 캐스팅된다.
+    c.washD()
+    b.washD()
+}
+
+open class Drink {
+    var name = "음료"
+    open fun drink() {
+        println("${name}을 마십니다.")
+    }
+}
+
+class Coke : Drink() {
+    var type = "콜라"
+    override fun drink() {
+        println("${type}을 마십니다.")
+    }
+    fun washD() {
+        println("${type}으로 설거지합니다.")
+    }
+}
+/*
+출력
+음료을 마십니다.
+콜라을 마십니다.
+콜라으로 설거지합니다.
+콜라으로 설거지합니다.
+콜라으로 설거지합니다.
+ */
+```
+
+<br>
+
+## ✅ Generic
+
+```kotlin
+fun main() {
+    UsingGeneric(A()).doShout()
+    UsingGeneric(B()).doShout()
+
+    funGeneric(A())
+    funGeneric(B())
+}
+
+fun <T : A> funGeneric(t: T) {
+    t.shout()
+}
+
+open class A {
+    open fun shout() {
+        println("A shout")
+    }
+}
+
+class B : A() {
+    override fun shout() {
+        println("B shout")
+    }
+}
+
+class UsingGeneric<T : A>(val t: T) {
+    fun doShout() {
+        t.shout()
+    }
+}
+/*
+출력
+A shout
+B shout
+A shout
+B shout
+ */
+```
+
+<br>
+
+## ✅ Collection List
+리스트에는 `listOf`, `mutableListOf`가 있다.
+- `listOf`는 생성시 넣은 객체를 대체, 추가, 삭제 못함
+- `mutableListOf`는 대체, 추가, 삭제 가능(add, sort, shuffle) 등 함수 지원
+```kotlin
+fun main() {
+    val a = listOf<Int>(1, 2, 3)
+    val b = mutableListOf<Int>()
+
+    b.add(1)
+    b.add(2)
+    b.add(3)
+    b.add(2, 6) // 2번 인덱스에 6 추가
+    println(a)
+    println(b)
+}
+/*
+출력
+[1, 2, 3]
+[1, 2, 6, 3]
+ */
+```
+
+<br>
+
+## ✅ String function
+```kotlin
+fun main() {
+    val test = "a.b.c.d"
+    println(test.length)
+
+    var spl = test.split(".")
+    println(spl)
+    
+    // 배열 값들을 string으로 합쳐줌
+    println(spl.joinToString())
+    println(spl.joinToString("-"))
+
+    println(test.subString(0..2))
+    
+    // 시작단어 boolean
+    println(test.startWith("a."))
+    // 끝단어 boolean
+    println(test.endsWith(".d"))
+    // 포함 단어 boolean
+    println(test.contains("b.c"))
+}
+/*
+출력
+7
+[a, b, c, d]
+a, b, c, d
+a-b-c-d
+a.b
+true
+true
+true
+ */
+```
+
+<br>
+
+## ✅ null 처리
+Java에서는 보통 `if (변수 == null)` 형식으로 null 값을 처리한다.  
+코틀린은 `?` `?:` `!!`을 통해 null 값을 처리한다.
+```kotlin
+fun main() {
+    val a = listOf<String?>("charles", null, "wkc")
+    val c = mutableListOf<String>()
+    val e = mutableListOf<String>()
+    val f = mutableListOf<String>()
+
+    for (b in a) {
+        // b가 null이면 .let 구문을 실행하지 않는다.
+        b?.let { c.add(it) }
+        
+        // b가 null이면 default 값이 대신 추가된다.
+        e.add(b?:"default")
+    }
+
+    println(c)
+    println(e)
+
+    for (b in a) {
+        // b가 null인 것을 의도적으로 방치 -> 오류 발생
+        f.add(b!!)
+    }
+    println(f)
+}
+/*
+출력
+[charles, wkc]
+[charles, default, wkc]
+Exception in thread "main" kotlin.KotlinNullPointerException
+	at AppKt.main(app.kt:15)
+	at AppKt.main(app.kt)
+ */
+```
+
+<br>
+
+## ✅ infix
+함수를 연산자처럼 사용 가능
+```kotlin
+fun main() {
+    println("charles" strSum 1)
+    println("charles".strSum(2))
+
+    println(3 mul 4)
+    println(3.mul(4))
+}
+
+// infix fun (this에 해당되는 타입).함수이름(인자이름: 타입) : 반환 = 구문
+infix fun String.strSum(x: Int): String = this + x
+infix fun Int.mul(x: Int): Int = this * x
+/*
+출력
+charles1
+charles2
+12
+12
+ */
+```
+> 참고: 클래스 안에 infix 함수를 적용할 경우 `this`는 클래스 객체 자신이므로 함수 이름 왼쪽에 클래스 이름은 쓰지 않는다.  
+> ex) `infix fun mul(x: Int): Int = this * x`
+
+<br>
+
+## ✅ Data 클래스
+클래스에 `has()`, `equals()`, `toString()`, `copy()`, `componentX()`를 자동으로 구현해주는 클래스
+```kotlin
+fun main() {
+    val va = a("a", 123)
+
+    println(va == a("a", 123))
+    println(va)
+
+    val vb = b("a", 123)
+
+    println(vb == b("a", 123))
+    println(vb)
+    
+    // 복사
+    println(vb.copy())
+    println(vb.copy(name = "b"))
+    println(vb.copy(id = 234))
+    
+    val list = listOf<b> (
+        b("a", 123),
+        b("b", 234), 
+        b("c", 345)
+    )
+    // 자동으로 변수의 위치를 판별해 a, b에 값을 넣어준다.
+    for ((a, b) in list) {
+        println("$a $b")
+    }
+}
+
+class a(val name: String, val id: Int)
+data class b(val name: String, val id: Int)
+/*
+출력
+false
+a@65ab7765
+true
+b(name=a, id=123)
+b(name=a, id=123)
+b(name=b, id=123)
+b(name=a, id=234)
+a 123
+b 234
+c 345
+ */
+```
+
+<br>
+
+## ✅ enum 클래스
+enum처럼 사용하는 클래스다.
+```kotlin
+fun main() {
+    var a = St.A
+    println(a)
+    println(a.msg)
+    println(a.isA())
+}
+
+enum class St(val msg: String) {
+    A("a"),
+    B("b"),
+    C("c");
+    
+    fun isA() = this == St.A
+}
+/*
+출력
+A
+a
+true
+ */
+```
+
+<br>
+
+## ✅ Map 컬렉션
+```kotlin
+fun main() {
+    var a: MutableMap<Int, String> = mutableMapOf()
+    a[1] = "a"
+    b[2] = "b"
+
+    for (i in a) {
+        println("${i.key} ${i.value}")
+    }
+    a.remove(1)
+
+    println(a)
+    println(a[2])
+}
+/*
+출력
+1 a
+2 b
+{2=b}
+b
+ */
+```
+
+<br>
+
+## ✅ lateinit
+기본 자료형을 제외(String 가능)하고 객체 생성시 초기화를 하지 않고 변수만 선언할 수 있게 하는 키워드
+```kotlin
+fun main() {
+    var t = a()
+    println(t.test())
+    t.a = "charles"
+    println(t.test())
+}
+
+class a {
+    lateinit var a: String
+    
+    fun test(): String {
+        // a가 초기화됐는지 체크
+        if (::a.isInitialized) {
+            return a
+        } else {
+            return "null"
+        }
+    }
+}
+/*
+출력
+null
+charles 
+ */
+```
+
+<br>
+
+## ✅ lazy
+변수의 초기화 시점을 사용할 때 초기화하게 해주는 키워드
+```kotlin
+fun main() {
+    val num: Int by lazy {
+        println("초기화")
+        7
+    }
+    println("start")
+    println(num)
+    println(num)
+}
+/*
+출력
+start
+초기화
+7
+7
+ */
+```
