@@ -115,9 +115,9 @@ GRANT ALL PRIVILEGES ON *.* TO {userName}@localhost;
 - connection name: 아무 이름 넣으면 된다.
 - hostname: 그냥 냅둔다.
     > 127.0.0.1이란  
-    > loopback 혹은 localhost라고도 불린다.  
-    > 네트워크 계층에서 패킷을 외부로 전송하지 않고 자신이 다시 받은 것처럼 처리한다.  
-    > 따라서 localhost라고 입력해도 정상 작동한다.
+      loopback 혹은 localhost라고도 불린다.  
+      네트워크 계층에서 패킷을 외부로 전송하지 않고 자신이 다시 받은 것처럼 처리한다.  
+      따라서 localhost라고 입력해도 정상 작동한다.
 - username: 설정한 계정 이름
 - password: 설정한 비밀번호
 
@@ -127,3 +127,43 @@ show grants for {userName}@localhost;
 ```
 물론 localhost 대신 %를 넣어도 된다.
 
+<br>
+
+## 💻 스프링부트와 연동하기
+
+```text
+mysql -u root -p
+```
+mysql에 root 계정으로 접속
+
+<br>
+
+```text
+create database {database 명};
+```
+데이터베이스 생성
+
+<br>
+
+```text
+show databases;
+``` 
+생성된 데이터베이스 목록 조회(잘 생성됐는지 확인)
+
+<br>
+
+**application.properties**에 작성
+```properties
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+spring.datasource.url=jdbc:mysql://localhost:3306/database명?serverTimezone=UTC
+# url은 mysql:// [데이터베이스 URL] : [포트 번호] / [데이터베이스 이름]?serverTimezone=UTC으로 설정한다.
+spring.datasource.username=root
+spring.datasource.password=1234
+```
+- 포트 번호를 건드리지 않고 mysql을 설치했다면 데이터베이스 포트 번호는 3306일 것이다.(Work Bench에 들어가서 확인할 수 있다.)
+- mysql에 로그인 하기 위한 username과 그에 해당하는 비밀번호도 적어준다.
+
+<br>
+
+**출처**  
+[[Spring] 스프링 mysql 데이터베이스와 jpa 연동](https://growth-coder.tistory.com/111)

@@ -41,6 +41,7 @@
   - [전략 패턴](https://github.com/kyeoungchan/note/tree/main/design-pattern/strategy-pattern)
   - [템플릿 메서드 패턴](https://github.com/kyeoungchan/note/tree/main/design-pattern/template-method-pattern)
 - [도커](https://github.com/kyeoungchan/note/tree/main/docker)
+- 에러 핸들링
 - [Git](https://github.com/kyeoungchan/note/tree/main/git)
 - 해킹
   - [CSRF](https://github.com/kyeoungchan/note/tree/main/hacking/csrf)
@@ -57,6 +58,7 @@
   - 지네릭스
     - [지네릭스 part1](https://kyeoungchan.tistory.com/11)
     - [지네릭스 part2](https://kyeoungchan.tistory.com/12)
+- [코틀린](https://github.com/kyeoungchan/note/tree/main/kotlin)
 - 네트워크
   - [Blocking vs Non Blocking vs Synchronous vs Asynchronous](https://github.com/kyeoungchan/note/tree/main/network/blocking-nonblocking-syn-asyn)
   - [IPv6](https://github.com/kyeoungchan/note/tree/main/network/ipv6)
@@ -73,6 +75,7 @@
   - [PCB와 Context Switching](https://github.com/kyeoungchan/note/tree/main/operating-system/pcb-context-switching)
   - [세그먼테이션](https://github.com/kyeoungchan/note/tree/main/operating-system/segmentation)
   - [시스템 콜](https://github.com/kyeoungchan/note/tree/main/operating-system/system-call)
+- [레디스(Redis)](https://github.com/kyeoungchan/note/tree/main/redis)
 - 보안
   - 암호화
     - [대칭키](https://github.com/kyeoungchan/note/tree/main/security/encryption/symmetric-key)
@@ -91,8 +94,20 @@
   - [ApplicationContext](https://github.com/kyeoungchan/note/tree/main/spring/applicationcontext)
   - [Autowired](https://github.com/kyeoungchan/note/tree/main/spring/autowired)
   - [DI(Dependency Injection)](https://github.com/kyeoungchan/note/tree/main/spring/dependency-injection)
+  - 예외처리
+    - [API 예외 처리](https://github.com/kyeoungchan/note/tree/main/spring/exception/api-exception-handling)
   - [IoC vs DI vs DIP](https://github.com/kyeoungchan/note/tree/main/spring/ioc-di-dip)
   - [Spring Security](https://github.com/kyeoungchan/note/tree/main/spring/spring-security)
+- Vue
+  - [Template Syntax](https://github.com/kyeoungchan/note/tree/main/vue/template-syntax)
+    - [computed](https://github.com/kyeoungchan/note/tree/main/vue/template-syntax/computed)
+    - [v-bind](https://github.com/kyeoungchan/note/tree/main/vue/template-syntax/v-bind)
+    - [v-model](https://github.com/kyeoungchan/note/tree/main/vue/template-syntax/v-model)
+    - [v-on](https://github.com/kyeoungchan/note/tree/main/vue/template-syntax/v-on)
+    - [watchers](https://github.com/kyeoungchan/note/tree/main/vue/template-syntax/watchers)
+  - [pinia](https://github.com/kyeoungchan/note/tree/main/vue/pinia)
+  - [props](https://github.com/kyeoungchan/note/tree/main/vue/props)
+  - [router](https://github.com/kyeoungchan/note/tree/main/vue/router)
 - WEB
   - [bootstrap](https://github.com/kyeoungchan/note/tree/main/web/bootstrap)
   - [JWT](https://github.com/kyeoungchan/note/tree/main/web/jwt)
