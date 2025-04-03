@@ -75,6 +75,7 @@
   - [PCB와 Context Switching](https://github.com/kyeoungchan/note/tree/main/operating-system/pcb-context-switching)
   - [세그먼테이션](https://github.com/kyeoungchan/note/tree/main/operating-system/segmentation)
   - [시스템 콜](https://github.com/kyeoungchan/note/tree/main/operating-system/system-call)
+- [레디스(Redis)](https://github.com/kyeoungchan/note/tree/main/redis)
 - 보안
   - 암호화
     - [대칭키](https://github.com/kyeoungchan/note/tree/main/security/encryption/symmetric-key)
