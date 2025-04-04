@@ -443,7 +443,7 @@ fun main() {
     // 람다 함수로 작성된 c
     // (입력 타입) -> 반환 타입 = {변수이름:입력타입 -> 구문}
     // 아래 두 개의 c, d처럼 타입 생략 가능
-    var c: (String) -> Unit = {s -> pringln(s)}
+    var c: (String) -> Unit = {s -> println(s)}
     var d = {s:String -> println(s)}
     var e = {s:String -> s} // s를 반환
     var f = {
@@ -719,7 +719,7 @@ class EventPrinter {
         // 리스너를 익명클래스로 정의
         Counter(object: EventListener {
             override fun onEvent(count: Int) {
-                println(cout)
+                println(count)
             }
         }).count()
     }
