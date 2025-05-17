@@ -17,7 +17,7 @@
   - [정규화](https://github.com/kyeoungchan/note/tree/main/database/normalization)
   - [절차형 SQL](https://github.com/kyeoungchan/note/tree/main/database/procedural-sql)
   - [회복 기법](https://github.com/kyeoungchan/note/tree/main/database/recovery)
-  - SQL
+  - [SQL문](https://github.com/kyeoungchan/note/tree/main/database/sql)
     - dcl
       - [GRANT](https://github.com/kyeoungchan/note/tree/main/database/sql/dcl/grant)
       - [REVOKE](https://github.com/kyeoungchan/note/tree/main/database/sql/dcl/revoke)
