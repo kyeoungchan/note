@@ -6,6 +6,7 @@ SQL의 SELECT 쿼리문이 어떤 순서로 실행이 되는지 알면 올바르
 ### ✅ SQL 문법 순서
 - SELECT
 - FROM
+- JOIN
 - WHERE
 - GROUP BY
 - HAVING
