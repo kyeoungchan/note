@@ -1,18 +1,19 @@
 # 💻 Elastic Search
 > 모든 검색엔진의 시초는 루씬(Lucene)이었지만, 현재는 루씬을 기반으로 한 Elastic Search가 등장해 검색엔진 분야에서 지배적인 위치에 있다.
 
-## ✅ Elastic Search와 RDMS
+## ✅ Elastic Search와 RDBMS
 조금 더 쉬운 개념 파악을 위해서 ES에서 사용되는 데이터 구조를 RDBM에 대응해보면 다음과 같이 매핑된다.
 
-|ES| RDBMS  |
-|---|--------|
-|Index|Database|
-|Shard|Position|
-|Type|Table|
-|Document|Row|
-|Field|Column|
-|Mapping|Schema|
-|QueryDSL|SQL|
+|ES| RDBMS    |
+|---|----------|
+|Index| Table    |
+|Shard| Position |
+|Document| Row      |
+|Field| Column   |
+|Mapping| Schema   |
+|QueryDSL| SQL      |
+
+> 엘라스틱서치 7.x 이전 버전에서는 타입이 존재했으므로 타입과 테이블이 매칭됐지만, 이제는 타입이 사라졌으므로 유효하지 않다.
 
 Elastic Search는 기본적으로 HTTP 프로토콜로 접근이 가능한 REST API를 통해 데이터 조작을 지원한다.  
 이를 역시 RDBMS의 SQL과 매핑해본다면 다음과 같다.
