@@ -17,7 +17,7 @@
   - [정규화](https://github.com/kyeoungchan/note/tree/main/database/normalization)
   - [절차형 SQL](https://github.com/kyeoungchan/note/tree/main/database/procedural-sql)
   - [회복 기법](https://github.com/kyeoungchan/note/tree/main/database/recovery)
-  - SQL
+  - [SQL문](https://github.com/kyeoungchan/note/tree/main/database/sql)
     - dcl
       - [GRANT](https://github.com/kyeoungchan/note/tree/main/database/sql/dcl/grant)
       - [REVOKE](https://github.com/kyeoungchan/note/tree/main/database/sql/dcl/revoke)
@@ -41,6 +41,8 @@
   - [전략 패턴](https://github.com/kyeoungchan/note/tree/main/design-pattern/strategy-pattern)
   - [템플릿 메서드 패턴](https://github.com/kyeoungchan/note/tree/main/design-pattern/template-method-pattern)
 - [도커](https://github.com/kyeoungchan/note/tree/main/docker)
+- [엘라스틱 서치](https://github.com/kyeoungchan/note/tree/main/elastic-search)
+  - [설정](https://github.com/kyeoungchan/note/tree/main/elastic-search/settings)
 - 에러 핸들링
 - [Git](https://github.com/kyeoungchan/note/tree/main/git)
 - 해킹
