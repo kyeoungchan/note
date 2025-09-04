@@ -1,7 +1,7 @@
 # 💻 Elastic Search 설치 및 실행
 
 ## ✅ 다운로드
-Download URL: https://www.elastic.co/kr/downloads/elasticsearch
+Download URL: https://www.elastic.co/kr/downloads/elasticsearch  
 → 참고로 내 맥 환경을 알고 싶다면?
 ```text
 $ arch
@@ -52,24 +52,24 @@ Download URL: https://www.elastic.co/downloads/kibana
 
 <br>
 
-마찬가지로 압축을 풀고, 홈 화면에 kibana 폴더가 있다는 전제하에 다음과 같은 명령어를 실행시키면 된다.
-그 다음, localhost:5601 에 접속하면 된다.
-단, elastic search 가 구동 중일 때 실행해야 한다.
+마찬가지로 압축을 풀고, 홈 화면에 kibana 폴더가 있다는 전제하에 다음과 같은 명령어를 실행시키면 된다.  
+그 다음, localhost:5601 에 접속하면 된다.  
+단, elastic search 가 구동 중일 때 실행해야 한다.  
 ```text
 $ ./kibana-9.1.3/bin/kibana
 ```
 
 <br>
 
-참고로, enrollment token을 요구하는데, 이건 elastic search 를 처음 구동시킨 후 30분 이내에 사라진다.
+참고로, enrollment token을 요구하는데, 이건 elastic search 를 처음 구동시킨 후 30분 이내에 사라진다.  
 새로 토큰을 발급받기 위해서는 하기의 명령어를 입력한다.  
 ```text
 ./elasticsearch-9.1.2/bin/elasticsearch-create-enrollment-token -s kibana
 ```
 
-그 다음 코드를 입력하라고 뜨는데, 키바나를 실행시킨 터미널 창에 localhost:5601?code=000000 → 이런식으로 6자리 코드를 준 상태일텐데, 이것을 입력하면 된다.
+그 다음 코드를 입력하라고 뜨는데, 키바나를 실행시킨 터미널 창에 localhost:5601?code=000000 → 이런식으로 6자리 코드를 준 상태일텐데, 이것을 입력하면 된다.  
   
-마지막으로, 로그인을 하라고 하는데, 위에 elastic search를 로그인할 때와 마찬가지로 user: elastic, password: 발급 받은 비밀번호를 입력하면 된다.
+마지막으로, 로그인을 하라고 하는데, 위에 elastic search를 로그인할 때와 마찬가지로 user: elastic, password: 발급 받은 비밀번호를 입력하면 된다.  
 
-그럼 이렇게 화면 접속에 성공한다.
+그럼 이렇게 화면 접속에 성공한다.  
 ![kibana_index_page.png](../res/kibana_index_page.png)
