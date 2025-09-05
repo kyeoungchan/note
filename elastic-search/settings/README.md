@@ -73,3 +73,29 @@ $ ./kibana-9.1.3/bin/kibana
 
 그럼 이렇게 화면 접속에 성공한다.  
 ![kibana_index_page.png](../res/kibana_index_page.png)
+
+<br>
+
+### 🚫 에러 발생
+Kibana 로컬 설치를 끝내고 다음날 기분 좋게 재접속하는데 안 되었다.  
+에러 로그가 굉장히 많았는데, 이게 핵심이다.  
+```text
+[ERROR][elasticsearch-service] Unable to retrieve version information from Elasticsearch nodes. Request timed out
+```  
+ElasticSearch에 연결이 안되는 것인데, kibana.yml을 수정해주면 된다.
+
+<br>
+
+```text
+cd kibana-9.1.3/config
+vi kibana.yml
+```
+
+<br>
+
+그러면 `elasticsearch.hosts:`의 값이 셋팅이 되어있을텐데, 일단 로컬 환경에서 공부가 목적이라면 해당 셋팅은 주석처리하고, 다음과 같이 작성하고 재실행하니 해결되었다.  
+
+```text
+#elasticsearch.hosts: [https://XXX.XXX.XX.X:9200]
+elasticsearch.hosts: [https://localhost:9200]
+```
