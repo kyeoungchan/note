@@ -15,6 +15,16 @@ GET kibana_sample_data_ecommerce/_search
     },
     "explain": true
 }
+
+# 이렇게 해도 마찬가지로 실행된다.
+GET kibana_sample_data_ecommerce/_search?explain=true
+{
+    "query": {
+        "match": {
+          "products.product_name": "Pants"
+        }
+    }
+}
 ```
 
 <br>
