@@ -99,3 +99,68 @@ vi kibana.yml
 #elasticsearch.hosts: [https://XXX.XXX.XX.X:9200]
 elasticsearch.hosts: [https://localhost:9200]
 ```
+
+<br>
+
+# 💻 logstash 에서 elasticsearch 출력 플러그인 연결
+- Mac 환경  
+- elasticsearch: 9.1.2 버전    
+- logstash: 9.1.3 버전  
+
+<br>
+
+**`logstash-test.conf`** 파일 작성  
+> logstash-test.conf 파일 위치: /logstash-9.1.3/config
+```text
+input {
+  file {
+    path => "{원하는 디렉토리 위치}/logstash-9.1.3/config/filter-example.log"
+    start_position => "beginning"
+    sincedb_path => "/dev/null"
+  }
+}
+
+output {
+  file {
+    path => "{원하는 디렉토리 위치}/logstash-9.1.3/config/output.json"
+  }
+  elasticsearch {
+    hosts => ["https://127.0.0.1:9200"]
+    index => "output"
+    user => "elastic"
+    password => "비밀번호"
+    ssl_enabled => true
+    ssl_certificate_authorities => ["{원하는 디렉토리 위치}/elasticsearch-9.1.2/config/certs/http_ca.crt"]
+  }
+}
+```
+
+<br>
+
+이후 logstash를 다음의 명령어와 함께 실행한다.  
+```shell
+$ ./logstash-9.1.3/bin/logstash -f config/logstash-test.conf
+```  
+
+<br>
+
+다음과 같이 엘라스틱서치 output 인덱스를 확인할 수 있다.
+```shell
+$ curl -kX GET https://localhost:9200/output -u elastic:비밀번호
+```  
+결과  
+```json
+{"output":{"aliases":{},"mappings":{"properties":{"@timestamp":{"type":"date"},"@version":{"type":"text","fields":{"keyword":{"type":"keyword","ignore_above":256}}},"event":{"properties":{"original":{"type":"text","fields":{"keyword":{"type":"keyword","ignore_above":256}}}}},"host":{"properties":{"name":{"type":"text","fields":{"keyword":{"type":"keyword","ignore_above":256}}}}},"log":{"properties":{"file":{"properties":{"path":{"type":"text","fields":{"keyword":{"type":"keyword","ignore_above":256}}}}}}},"message":{"type":"text","fields":{"keyword":{"type":"keyword","ignore_above":256}}}}},"settings":{"index":{"routing":{"allocation":{"include":{"_tier_preference":"data_content"}}},"number_of_shards":"1","provided_name":"output","creation_date":"1757751555078","number_of_replicas":"1","uuid":"rEp-EdDWQW6cTY-P_LFytQ","version":{"created":"9033000"}}}}}
+```
+
+<br>
+
+그리고 {원하는 디렉토리 위치}/logstash-9.1.3/config에 들어가보면 `output.json` 파일이 생성된 것도 확인할 수 있다.  
+```shell
+$ cd ~/logstash-9.1.3/config
+$ ls -arlth
+
+
+# 결과 중 하나
+2.1K  9 13 17:19 output.json
+```
