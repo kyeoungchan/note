@@ -164,3 +164,83 @@ $ ls -arlth
 # 결과 중 하나
 2.1K  9 13 17:19 output.json
 ```
+
+
+<br>
+
+# 💻 파일 비트 셋업
+파일 비트를 설치하고 압축해제를 한 뒤, `filebeat.yml`을 다음과 같이 수정해준다.
+```yml
+# ============================== Filebeat inputs ===============================
+
+filebeat.inputs:
+
+  # Each - is an input. Most options can be set at the input level, so
+  # you can use different inputs for various configurations.
+  # Below are the input-specific configurations.
+
+  # filestream is an input for collecting log messages from files.
+  
+  # log로 하면 deprecated 되었다고 뜬다.
+- type: filestream
+
+  # Unique ID among all inputs, an ID is required.
+  id: my-filestream-id
+
+  # Change to true to enable this input configuration.
+  enabled: true
+
+  # Paths that should be crawled and fetched. Glob based paths.
+  paths:
+    - /Users/kyeongchanwoo/elasticsearch-9.1.2/logs/*.log
+
+# =================================== Kibana ===================================
+setup.kibana:
+
+  # Kibana Host
+  # Scheme and port can be left out and will be set to the default (http and 5601)
+  # In case you specify and additional path, the scheme is required: http://localhost:5601/path
+  # IPv6 addresses should always be defined as: https://[2001:db8::1]:5601
+  host: "localhost:5601"
+
+# ---------------------------- Elasticsearch Output ----------------------------
+output.elasticsearch:
+  # Array of hosts to connect to.
+  hosts: ["localhost:9200"]
+
+  # Performance preset - one of "balanced", "throughput", "scale",
+  # "latency", or "custom".
+  preset: balanced
+
+  # Protocol - either `http` (default) or `https`.
+  protocol: "https"
+
+  # Authentication credentials - either API key or username/password.
+  #api_key: "id:api_key"
+  username: "elastic"
+  password: "패스워드"
+  ssl.certificate_authorities: ["/Users/kyeongchanwoo/elasticsearch-9.1.2/config/certs/http_ca.crt"]
+```
+
+<br>
+
+그리고 다음과 같이 setup 옵션을 실행시켜준다.(물론 엘라스틱서치와 키바나도 모두 실행시킨 상태여야한다)  
+```shell
+Kyeongchanui-MacBookPro:filebeat-9.1.3-darwin-aarch64 kyeongchanwoo$ ./filebeat setup -e
+```
+> -e는 모니터에 오류나 로그를 보여주는 옵션이다.
+
+<br>
+
+성공하면 로그의 마지막에 `Loaded Ingest pipelines`가 뜬다.
+
+<br>
+
+키바나의 Dashboards 는 다음과 같이 된다.  
+![filebeat_kibana_dashboards.png](../res/filebeat_kibana_dashboards.png)
+
+<br>
+
+
+**참고 자료**  
+[엘라스틱 스택 개발부터 운영까지](https://product.kyobobook.co.kr/detail/S000001932755)
