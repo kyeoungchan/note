@@ -42,6 +42,7 @@
   - [템플릿 메서드 패턴](https://github.com/kyeoungchan/note/tree/main/design-pattern/template-method-pattern)
 - [도커](https://github.com/kyeoungchan/note/tree/main/docker)
 - [엘라스틱 스택](https://github.com/kyeoungchan/note/tree/main/elastic-stack)
+  - [비츠](https://github.com/kyeoungchan/note/tree/main/elastic-stack/beat) 
   - [엘라스틱서치](https://github.com/kyeoungchan/note/tree/main/elastic-stack/elasticsearch)
     - [엘라스틱서치: 기본](https://github.com/kyeoungchan/note/tree/main/elastic-stack/elasticsearch/basic)
     - 엘라스틱서치: 검색
