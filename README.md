@@ -1,5 +1,5 @@
 # 📚 Note
-## 리스트
+## 💡 리스트
 - 알고리즘
   - [다이나믹 프로그래밍](https://github.com/kyeoungchan/note/tree/main/algorithm/dynamic-programming)
     - [이항계수 다이나믹 프로그래밍 활용](https://github.com/kyeoungchan/note/tree/main/algorithm/dynamic-programming/binomialcoefficient)
@@ -118,3 +118,6 @@
 - WEB
   - [bootstrap](https://github.com/kyeoungchan/note/tree/main/web/bootstrap)
   - [JWT](https://github.com/kyeoungchan/note/tree/main/web/jwt)
+
+## 🚫 트러블 슈팅
+- 엘라스틱 스택(https://github.com/kyeoungchan/note/tree/main/elastic-stack/settings)

@@ -46,6 +46,38 @@ $ ./elasticsearch-9.1.2/bin/elasticsearch
 
 <br>
 
+### 🚫 `libvec.dylib` 네이티브 라이브러리 불러오지 못하는 에러
+Mac OS arm64 환경에서 elasticsearch를 실행하다보면 `libvec.dylib`를 mac에서 자동으로 차단했다는 경고가 뜬다.  
+이것을 해결하지 않으면 `zstd` 네이티브 라이브러리 초기화가 실패돼서 추후에 파일비트 연결할 때 `NullPointerException`이 발생하게 된다.
+
+<br>
+
+**`Gatekeeper` 허용 처리**를 해보자.  
+```shell
+# 보안 격리 해제 (Gatekeeper quarantine 제거)
+cd /Users/kyeongchanwoo/elasticsearch-9.1.4/lib/platform/darwin-aarch64
+xattr -d com.apple.quarantine libvec.dylib
+xattr -d com.apple.quarantine libzstd.dylib
+```
+`xattr -l 파일명` 하면 현재 보안 속성이 걸려있는지 확인할 수 있다.
+> `xattr`: 확장속성  
+> `-d`: 특정 속성 제거
+
+
+<br>
+
+```shell
+# 재서명 (codesign)
+codesign --force --deep --sign - libvec.dylib
+codesign --force --deep --sign - libzstd.dylib
+```
+> `codesign`: 서명을 하는 명령어  
+> `--force`: 이미 서명된 파일을 강제로 다시 서명한다.  
+> `--deep`: 앱 번들 내의 모든 하위 구성요소를 재귀적으로 서명한다.  
+
+그 후 Elasticsearch 재시작을 하면 경고창이 뜨지 않는다.
+
+
 # 💻 Kibana 설치 및 실행
 ## ✅ 다운로드
 Download URL: https://www.elastic.co/downloads/kibana
