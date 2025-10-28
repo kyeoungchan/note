@@ -123,7 +123,8 @@
   - [JWT](https://github.com/kyeoungchan/note/tree/main/web/jwt)
 
 ## 🚫 트러블 슈팅
-- 엘라스틱 스택(https://github.com/kyeoungchan/note/tree/main/elastic-stack/settings)
+- [엘라스틱 스택](https://github.com/kyeoungchan/note/tree/main/elastic-stack/settings)
 
 ## ✍🏻 그냥 기록
-- 리눅스 환경설정(https://github.com/kyeoungchan/note/tree/main/linux/settings)
+- [리눅스 환경설정](https://github.com/kyeoungchan/note/tree/main/linux/settings)
+- [클러스터 백업](https://github.com/kyeoungchan/note/tree/main/elastic-stack/cluster-node/cluster)
