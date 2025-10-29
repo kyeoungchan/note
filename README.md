@@ -1,5 +1,5 @@
 # 📚 Note
-## 💡 리스트
+## 📖 공부
 - 알고리즘
   - [다이나믹 프로그래밍](https://github.com/kyeoungchan/note/tree/main/algorithm/dynamic-programming)
     - [이항계수 다이나믹 프로그래밍 활용](https://github.com/kyeoungchan/note/tree/main/algorithm/dynamic-programming/binomialcoefficient)
@@ -42,7 +42,10 @@
   - [템플릿 메서드 패턴](https://github.com/kyeoungchan/note/tree/main/design-pattern/template-method-pattern)
 - [도커](https://github.com/kyeoungchan/note/tree/main/docker)
 - [엘라스틱 스택](https://github.com/kyeoungchan/note/tree/main/elastic-stack)
-  - [비츠](https://github.com/kyeoungchan/note/tree/main/elastic-stack/beat) 
+  - [비츠](https://github.com/kyeoungchan/note/tree/main/elastic-stack/beat)
+  - 클러스터와 노드
+    - [클러스터](https://github.com/kyeoungchan/note/tree/main/elastic-stack/cluster-node/cluster)
+    - [노드](https://github.com/kyeoungchan/note/tree/main/elastic-stack/cluster-node/node)
   - [엘라스틱서치](https://github.com/kyeoungchan/note/tree/main/elastic-stack/elasticsearch)
     - [엘라스틱서치: 기본](https://github.com/kyeoungchan/note/tree/main/elastic-stack/elasticsearch/basic)
     - 엘라스틱서치: 검색
@@ -120,4 +123,8 @@
   - [JWT](https://github.com/kyeoungchan/note/tree/main/web/jwt)
 
 ## 🚫 트러블 슈팅
-- 엘라스틱 스택(https://github.com/kyeoungchan/note/tree/main/elastic-stack/settings)
+- [엘라스틱 스택](https://github.com/kyeoungchan/note/tree/main/elastic-stack/settings)
+
+## ✍🏻 그냥 기록
+- [리눅스 환경설정](https://github.com/kyeoungchan/note/tree/main/linux/settings)
+- [클러스터 백업](https://github.com/kyeoungchan/note/tree/main/elastic-stack/cluster-node/cluster)
