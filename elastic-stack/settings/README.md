@@ -46,6 +46,18 @@ $ ./elasticsearch-9.1.2/bin/elasticsearch
 
 <br>
 
+### 🚫 JDK 번들이 인증되지 않아 elasticsearch jdk.app을 열지 않음 에러
+elasticsearch의 macOS 배포판에는 자체적으로 번들된 JDK가 포함되어 있다(`jdk.app`).  
+macOS에서는 서명되지 않은 .app 파일을 실행하려 하면 자동으로 "열 수 없음" 경고를 띄운다.  
+```shell
+// 이런식으로 경로에 맞게 실행하고 elasticsearch를 다시 시작하면 에러가 해결된다.
+sudo xattr -dr com.apple.quarantine ~/elasticsearch-9.1.4
+```
+
+xattr 명령은 macOS의 "격리 속성(quarantine attribute)"을 제거해서 실행 제한을 해제한다는 뜻이다.
+
+<br>
+
 ### 🚫 `libvec.dylib` 네이티브 라이브러리 불러오지 못하는 에러
 Mac OS arm64 환경에서 elasticsearch를 실행하다보면 `libvec.dylib`를 mac에서 자동으로 차단했다는 경고가 뜬다.  
 이것을 해결하지 않으면 `zstd` 네이티브 라이브러리 초기화가 실패돼서 추후에 파일비트 연결할 때 `NullPointerException`이 발생하게 된다.
