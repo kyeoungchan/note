@@ -110,3 +110,13 @@ es@es-vm:~$ sudo /usr/share/elasticsearch/bin/elasticsearch-create-enrollment-to
 es@es-vm:~$ sudo /bin/systemctl stop kibana.service
 ```
 
+## ✅ 우분투 데스크톱 없이 키바나 접속(웹브라우저 사용)
+`kibana.yml`에서 먼저 설정을 변경한다.
+```yml
+server.host: "0.0.0.0"  # 모든 인터페이스에서 접속 허용
+```
+```shell
+# 로컬 머신에서 서버에 접속할 때
+ssh -L 5601:localhost:5601 user@server_ip
+```
+이후 로컬 머신 브라우저에서 `http://localhost:5601`로 접속하면 된다.
