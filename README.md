@@ -51,7 +51,6 @@
     - 엘라스틱서치: 검색
       - [유사도 스코어](https://github.com/kyeoungchan/note/tree/main/elastic-stack/elasticsearch/query/similarity-score)
   - [설정](https://github.com/kyeoungchan/note/tree/main/elastic-stack/settings)
-- 에러 핸들링
 - [Git](https://github.com/kyeoungchan/note/tree/main/git)
 - 해킹
   - [CSRF](https://github.com/kyeoungchan/note/tree/main/hacking/csrf)
@@ -85,6 +84,7 @@
   - [PCB와 Context Switching](https://github.com/kyeoungchan/note/tree/main/operating-system/pcb-context-switching)
   - [세그먼테이션](https://github.com/kyeoungchan/note/tree/main/operating-system/segmentation)
   - [시스템 콜](https://github.com/kyeoungchan/note/tree/main/operating-system/system-call)
+- [성능 테스트](https://github.com/kyeoungchan/note/tree/main/performance-test)
 - [레디스(Redis)](https://github.com/kyeoungchan/note/tree/main/redis)
 - 보안
   - 암호화
