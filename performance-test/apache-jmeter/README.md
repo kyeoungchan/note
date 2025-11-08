@@ -7,7 +7,7 @@
 
 설치 경로: https://JMeter.apache.org/download_JMeter.cgi
 
-![apache_JMeter_installation.png](res/apache_JMeter_installation.png)
+![apache_JMeter_installation.png](res/apache_jmeter_installation.png)
 
 여기에서 `.tgz`파일을 다운로드한다.
 
@@ -35,7 +35,7 @@ For load testing, use CLI Mode (was NON GUI):
 Check : https://JMeter.apache.org/usermanual/best-practices.html
 ================================================================================
 ```
-![JMeter_init_window.png](res/JMeter_init_window.png)
+![JMeter_init_window.png](res/jmeter_init_window.png)
 
 ## ✅ JMeter 세팅 - Thread Group
 ![thread_group.png](res/thread_group.png)
