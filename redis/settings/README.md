@@ -159,6 +159,110 @@ $ sudo sysctl net.ipv4.tcp_max_syn_backlog=1024
 $ sudo sysctl net.core.somaxconn=1024
 ```
 
+<br>
+
+### 💡 레디스 설정 파일 변경
+레디스를 실행할 때에는 `redis.conf`라는 이름의 설정 파일을 이용한다.
+- port
+  - 기본값: 6379
+  - 커넥션이 지정된 포트로 레디스 서버에 접속할 수 있도록 허용한다.
+- bind
+  - 기본값: 127.0.0.1 -::1
+  - 레디스가 설치된 서버 외부에서 레디스 인스턴스로 바로 접근하는 것을 허용하기 위해서는 해당 설정값을 변경해야 한다.
+  - 예: `bind 192.168.1.100 127.0.0.1`
+    - `192.168.1.100`과 `127.0.0.1` ip 주소로 들어오는 연결을 허용함을 의미한다.
+  - 해당 값을 `0.0.0.0`으로 설정하면 레디스는 모든 ip로 들어오는 연결을 허용함을 뜻하며, 보안상 위험할 수 있다.
+- protected-mode
+  - 기본값: yes
+  - 이 설정이 yes인 경우 패스워드를 설정해야만 레디스에 접근할 수 있다.
+- requirepass / masterauth
+  - 기본값: 없음
+  - requirepass: 서버에 접속하기 위한 패스워드 값
+  - masterauth: 파라미터 복제 구조를 사용할 때 필요한데, 연결된 마스터의 패스워드 값을 의미한다.
+  - 만약 복제 연결을 사용할 예정이라면 이 두 값은 같은 값으로 설정하는 것이 좋다.
+- daemonize
+  - 기본값: no
+  - 레디스 프로세스를 데몬으로 실행시키려면 yes로 변경해야한다.
+  - 레디스를 데몬으로 실행하면 프로세스가 백그라운드에서 실행되고, pid 파일이 생성된다.
+  - pid 파일은 pidfile이라는 파라미터로 제어되며, 기본값은 `/var/run/redis_6379.pid`이다.
+- dir
+  - 기본값: ./
+  - 레디스의 워킹 디렉터리를 의미한다.
+  - 로그 파일이나 백업 파일 등 인스턴스를 실행하면서 만들어지는 파일은 기본적으로 해당 디렉터리에 저장된다.
+
+
+<br>
+
+## ✅ 레디스 실행하기
+`daemonize`를 `yes`로 설정한 경우 다음과 같은 커맨드로 레디스를 실행시킬 수 있다.
+```shell
+redis@redisvm:~/redis$ bin/redis-server redis.conf
+```
+
+<br>
+
+레디스 프로세스를 종료하려면 다음 커맨드를 사용하면 된다.
+```shell
+redis@redisvm:~/redis$ bin/redis-cli shutdown
+```
+
+## ✅ 레디스 접속하기
+레디스를 설치하면 함께 설치되는 cli(command line interface)를 이용해 레디스에 접속할 수 있다.  
+`redis-cli`는 bin 디렉터리 내에 존재해 `bin/redis-cli`와 같이 실행시켜야하지만, 다음과 같이 `PATH`를 추가해주면 어느 위치에서든지 `redis-cli`에 바로 접근할 수 있다.  
+
+```shell
+$ export PATH=$PATH:/home/redis/redis/bin
+```
+
+```shell
+# 레디스 서버에 접근하기 위한 커맨드 구조
+redis-cli -h <ip주소> -p <port> -a <패스워드>
+```
+- ip 주소 디폴트: 127.0.0.1
+- port 디폴트: 6379
+- 패스워드: `requirepass`에 패스워드를 설정해준 경우 함께 입력한다.
+
+```shell
+# 사전에 레디스를 당연히 실행시킨 상태여야 한다.
+$ bin/redis-server redis.conf
+
+# 레디스 접속
+$ redis-cli
+127.0.0.1:6379>
+```
+
+```shell
+127.0.0.1:6379> PING
+PONG
+```
+
+레디스 접속에서 나오고 싶다면
+```shell
+127.0.0.1:6379> exit
+```
+
+<br>
+
+레디스 서버에 특정 커맨드를 수행시킨 뒤 종료하고 싶다면 레디스를 커맨드라인 모드로 사용할 수 있다.  
+즉, 응답 받고 redis-cli는 종료된다.
+```shell
+redis@redisvm:~/redis$ redis-cli PING
+PONG
+```
+
+<br>
+
+## ✅ 데이터 저장과 조회
+`redis-cli`를 통해 데이터를 간단히 저장하고 삭제하는 작업이다.
+```shell
+redis@redisvm:~/redis$ redis-cli
+127.0.0.1:6379> SET hello world
+OK
+127.0.0.1:6379> GET hello
+"world"
+```
+
+
 
 
 <br>
