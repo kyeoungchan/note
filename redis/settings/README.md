@@ -30,7 +30,7 @@ make
 
 <br>
 
-기본 디렉터리 내의 bin 디렉터리에 실행 파일을 복사하기 위해 `make install` 커맨드를 프리필스 지정화 함께 수행하였다.
+기본 디렉터리 내의 bin 디렉터리에 실행 파일을 복사하기 위해 `make install` 커맨드를 프리픽스 지정화와 함께 수행하였다.
 ```shell
 # 프리픽스 경로: /home/{계정 username}/redis
 $ make PREFIX=/home/redis/redis install
