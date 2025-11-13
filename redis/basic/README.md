@@ -342,6 +342,233 @@ ZRANGE key start stop [BYSCORE | BYINDEX] [REV] [LIMIT offset count] [WITHSCORES
 10) "300"
 ```
 
+<br>
+
+**스코어로 데이터 조회**  
+```shell
+# 100 이상 150 이하 스코어로 조회
+127.0.0.1:6379> ZRANGE score:251113 100 150 BYSCORE WITHSCORES
+1) "user:B"
+2) "100"
+3) "user:A"
+4) "150"
+5) "user:C"
+6) "150"
+
+# 10 이상 150 이하 스코어로 조회
+127.0.0.1:6379> ZRANGE score:251113 10 150 BYSCORE WITHSCORES
+1) "user:B"
+2) "100"
+3) "user:A"
+4) "150"
+5) "user:C"
+6) "150"
+
+# 최소값이 최대값보다 크게 조회를 시켜도 에러는 나지 않는다. 빈 배열 출력
+127.0.0.1:6379> ZRANGE score:251113 310 150 BYSCORE WITHSCORES
+(empty array)
+
+# 당연히 존재하지 않는 범위로 조회하면 빈 배열이 출력된다.
+127.0.0.1:6379> ZRANGE score:251113 310 450 BYSCORE WITHSCORES
+(empty array)
+
+# 100 초과 150 이하 스코어로 조회
+127.0.0.1:6379> ZRANGE score:251113 (100 150 BYSCORE WITHSCORES
+1) "user:A"
+2) "150"
+3) "user:C"
+4) "150"
+
+# 100 이상 150 미만 스코어로 조회
+127.0.0.1:6379> ZRANGE score:251113 100 (150 BYSCORE WITHSCORES
+1) "user:B"
+2) "100"
+
+# 200 이상 스코어로 조회
+# +inf는 최댓값
+127.0.0.1:6379> ZRANGE score:251113 200 +inf BYSCORE WITHSCORES
+1) "user:F"
+2) "200"
+3) "user:E"
+4) "300"
+
+# 모든 스코어로 조회
+# -inf는 최솟값
+127.0.0.1:6379> ZRANGE score:251113 -inf +inf BYSCORE WITHSCORES
+ 1) "user:B"
+ 2) "100"
+ 3) "user:A"
+ 4) "150"
+ 5) "user:C"
+ 6) "150"
+ 7) "user:F"
+ 8) "200"
+ 9) "user:E"
+10) "300"
+
+# 200 이상 스코어 역순으로 조회
+# 역순 조회시 최솟값과 최댓값 스코어의 전달 순서를 바꿔야한다.
+127.0.0.1:6379> ZRANGE score:251113 +inf 200 BYSCORE WITHSCORES REV
+1) "user:E"
+2) "300"
+3) "user:F"
+4) "200"
+```
+
+<br>
+
+**사전 순으로 데이터 조회**  
+- 데이터를 저장할 때 스코어가 같으면 데이터는 사전 순으로 정렬된다.
+- 스코어가 같을 때 `BYLEX` 옵션을 사용하면 사전식 순서를 이용해 아이템을 조회할 수 있다.
+- 문자열은 ASCII 바이트 값에 따라 사전식으로 정렬되기 때문에, 한글 문자열도 이 기준에 따라 정렬하거나 사전식으로 검색할 수 있다.
+```shell
+# mySortedSet 셋팅
+127.0.0.1:6379> ZADD mySortedSet 0 apple 0 banana 0 candy 0 dream 0 egg 0 frog
+(integer) 6
+
+# b 이상, f 이하 아이템 조회
+127.0.0.1:6379> ZRANGE mySortedSet (b (f BYLEX
+1) "banana"
+2) "candy"
+3) "dream"
+4) "egg"
+```
+- 입력한 문자열을 포함하려면 `(`을, 포함하지 않을 때에는 `[` 문자를 사용한다.
+- 사전식 문자열의 가장 처음은 `-` 문자로, 가장 마지막은 `+` 문자로 대체할 수 있다.
+```shell
+# 점수가 같지 않은 아이템이 온다면 어떨까?
+127.0.0.1:6379> ZADD mySortedSet 10 cream
+(integer) 1
+
+# b 이상, f 이하로 아이템을 조회해도 cream이 조회가 되지 않는다.
+127.0.0.1:6379> ZRANGE mySortedSet (b (f BYLEX
+1) "banana"
+2) "candy"
+3) "dream"
+4) "egg"
+
+# 전체를 조회해보면 cream이 제일 뒤에 가있다.
+# 기본으로 스코어 순으로 정렬 후, 문자열 사전식 정렬 순으로 조회가 된다.
+127.0.0.1:6379> ZRANGE mySortedSet - + BYLEX
+1) "apple"
+2) "banana"
+3) "candy"
+4) "dream"
+5) "egg"
+6) "frog"
+7) "cream"
+
+# cream 멤버 삭제
+127.0.0.1:6379> ZREM mySortedSet cream
+(integer) 1
+```
+
+<br>
+
+### ❗️ 비트맵
+비트맵은 string 자료 구조에 bit 연산을 수행할 수 있도록 확장한 형태다.
+- string 자료구조가 binary safe하고 최대 512MB의 값을 저장할 수 있는 구조이기 때문에 2^32의 비트를 가지고 있는 비트맵 형태다.
+- 비트맵을 사용할 때의 가장 큰 장점은 저장 공간을 획기적으로 줄일 수 있다는 것이다.
+  - 예를 들어 각각의 유저가 정수 형태의 ID로 구분되고, 전체 유저가 40억이 넘는다고 해도 각 유저에 대한 y/n 데이터는 512MB 안에 충분히 저장할 수 있다.
+
+```shell
+# SETBIT 커맨드로 비트 저장
+127.0.0.1:6379> SETBIT mybitmap 2 1
+(integer) 0
+
+# GETBIT 커맨드로 저장된 비트 조회
+127.0.0.1:6379> GETBIT mybitmap 2
+(integer) 1
+127.0.0.1:6379> GETBIT mybitmap 1
+(integer) 0
+
+# BITFIELD 커맨드로 여러 비트를 SET
+127.0.0.1:6379> BITFIELD mybitmap SET u1 6 1 SET u1 10 1 SET u1 14 1
+1) (integer) 0
+2) (integer) 0
+3) (integer) 0
+
+# BITCOUNT 커맨드로 1로 설정된 비트의 개수 카운팅
+127.0.0.1:6379> BITCOUNT mybitmap
+(integer) 4
+```
+
+<br>
+
+### ❗️ Hyperloglog
+
+`hyperloglog`는 집합의 원소 개수인 카디널리티를 추정할 수 있는 자료 구조다.  
+- 대량 데이터에서 중복되지 않는 고유한 값을 집계할 때 유용하게 사용할 수 잇는 데이터 구조다.
+- 최대 12KBdml zmrlfmf rkwlsek.
+- 추정의 오차는 0.81%로, 비교적 정확하게 데이터를 추정할 수 있다.
+- 하나의 `hyperloglog`에는 최대 2^64개의 아이템을 저장할 수 있다.
+
+> 일반적으로 `set`과 같은 데이터 구조에서는 중복을 피하기 위해 저장된 데이터를 모두 기억하고 있어, 저장되는 데이터가 많아질수록 그만큼 많은 메모리를 사용한다.  
+> `hyperloglog`는 입력되는 데이터 그 자체를 저장하지 않고 자체적인 방법으로 데이터를 변경해 처리한다.  
+> 따라서 저장되는 데이터 개수에 구애받지 않고 계속 일정한 메모리를 유지할 수 있으며, 중복되지 않는 유일한 원소의 개수를 계산할 수 있다. 
+
+```shell
+# PFADD 커맨드로 hyperloglog에 아이템 저장
+127.0.0.1:6379> PFADD members 123
+(integer) 1
+127.0.0.1:6379> PFADD members 500
+(integer) 1
+127.0.0.1:6379> PFADD members 12
+(integer) 1
+
+# PFCOUNT 커맨드로 저장된 아이템의 개수, 즉 카디널리티 추정
+127.0.0.1:6379> PFCOUNT members
+(integer) 3
+
+# 중복된 데이터는 저장되지 않는다.
+127.0.0.1:6379> PFADD members 12
+(integer) 0
+127.0.0.1:6379> PFCOUNT members
+(integer) 3
+```
+
+<br>
+
+### ❗️ Geospatial
+`Geospatial` 자료 구조는 경도, 위도 데이터 쌍의 집합으로 간편하게 지리 데이터를 저장할 수 있는 방법이다.  
+내부적으로 데이터는 `sorted set`으로 저장되며, 하나의 자료 구조 안에 키는 중복돼 저장되지 않는다.
+
+```shell
+# GEOADD 커맨드를 통해 아이템 추가
+# sorted set과 마찬가지로 
+#   XX 옵션을 사용하면 이미 아이템이 있는 경우에만
+#   NX 옵션을 사용하면 아이템이 없는 경우에만 데이터를 저장한다.
+127.0.0.1:6379> GEOADD travel 14.399698 50.099242763 prague
+(integer) 1
+127.0.0.1:6379> GEOADD travel 127.0016985 37.5642135 seoul -122.434547622 37.78530362582 SanFrancisco
+(integer) 2
+
+# GEOPOS 커맨드를 통해 위치 데이터 조회
+127.0.0.1:6379> GEOPOS travel seoul
+1) 1) "127.00169831514359"
+   2) "37.56421398780153"
+
+# GEODIST 커맨드를 통해 두 아이템 사이의 거리 반환
+127.0.0.1:6379> GEODIST travel seoul prague KM
+"8252.9957"
+```
+
+그 외에 커맨드
+- `GEOSEARCH`: 특정 위치를 기준으로 원하는 거리 내에 있는 아이템 검색
+  - `BYRADIUS` 옵션: 반경 거리 기준
+  - `BYBOX` 옵션: 직사각형 거리 기준
+
+<br>
+
+### ❗️ stream
+`stream`은 레디스를 메시지 브로커로서 사용할 수 있게 하는 자료 구조다.
+- 전체적인 구조는 카프카에서 영향을 받아 만들어졌다.
+- 카프카에서처럼 소비자 그룹 개념을 도입해 데이터를 분산 처리할 수 있는 시스템이다.
+- 실시간 이벤트 혹은 로그성 데이터의 저장을 위해 사용할 수 있다.
+
+
+
+
 
 
 <br>
