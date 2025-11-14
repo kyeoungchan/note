@@ -88,7 +88,9 @@
   - [Apache Jmeter](https://github.com/kyeoungchan/note/tree/main/performance-test/apache-jmeter)
 - [레디스(Redis)](https://github.com/kyeoungchan/note/tree/main/redis)
   - [레디스 환경설정](https://github.com/kyeoungchan/note/tree/main/redis/settings)
-  - [레디스 기본](https://github.com/kyeoungchan/note/tree/main/redis/basic)
+  - 레디스 기본
+    - [레디스의 자료 구조](https://github.com/kyeoungchan/note/tree/main/redis/basic/data-structure)
+    - [레디스에서 키를 관리하는 법](https://github.com/kyeoungchan/note/tree/main/redis/basic/key-management)
 - 보안
   - 암호화
     - [대칭키](https://github.com/kyeoungchan/note/tree/main/security/encryption/symmetric-key)
