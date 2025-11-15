@@ -282,3 +282,67 @@
 버킷햇
 20251115165302
 ```
+
+<br>
+
+## ✅ `set`을 이용한 태그 기능
+블로그에 게시물을 작성할 때 태그를 추가하고자 한다.  
+
+> 관계형 데이터베이스에서 태그 기능을 사용하려면 적어도 2개의 테이블이 추가돼야 한다.  
+> 태그 테이블, 태그-게시물 테이블이다.
+
+```redis
+127.0.0.1:6379> SADD post:47:tags IT REDIS DataStore
+3
+127.0.0.1:6379> SADD post:22:tags IT python
+2
+127.0.0.1:6379> SADD post:53:tags DataStore IT MySQL
+3
+```
+
+특정 게시물이 어떤 태그와 연관돼 있는지 뿐만 아니라 특정한 태그를 포함한 게시물들도 확인하기 위해서는 태그를 기준으로 하는 `set`에도 데이터를 넣어주면 그 기능을 쉽게 구현할 수 있다.
+```redis
+// 53번 게시물에 태그를 등록하면서, 각 태그 set에도 53번 게시물을 등록한다.
+127.0.0.1:6379> SADD post:53:tags DataStore IT MySQL
+3
+127.0.0.1:6379> SADD tag:DataStore:posts 53
+1
+127.0.0.1:6379> SADD tag:IT:posts 53
+1
+127.0.0.1:6379> SADD tag:MySQL:posts 53
+1
+```
+
+<br>
+
+만약 IT와 DataStore 태그를 모두 포함하는 게시물을 확인하고 싶으면 교집합을 확인하는 `SINTER` 커맨드를 사용하면 된다.
+```redis
+127.0.0.1:6379> SINTER tag:IT:posts tag:DataStore:posts
+47
+53
+```
+
+<br>
+
+만약 이 기능을 관계형 데이터베이스를 이용해 구현한다면 약간 까다로울 수 있다.  
+태그-포스트 관계형 테이블을 만드는 것이 일반적이다.  
+
+|  post_id  |   tag_id    |
+|:---------:|:-----------:|
+|    47     |     IT      |
+|    47     |    REDIS    |
+|    47     |  DataStore  |
+|    22     |     IT      |
+|    22     |   Python    |
+|    53     |  DataStore  |
+|    53     |    MySQL    |
+|    53     |     IT      |
+
+```sql
+SELECT post_id 
+FROM tag_posts 
+WHERE tag_id IN ('IT', 'DataStore')
+GROUP BY post_id
+HAVING COUNT(tag_id) >= 2;
+```
+관계형 데이터베이스에서 `group by - having` 절을 사용하면 검색하는 테이블의 크기에 따라 데이터베이스 자체에 부하를 발생시킬 수 있다.
