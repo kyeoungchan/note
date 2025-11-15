@@ -346,3 +346,71 @@ GROUP BY post_id
 HAVING COUNT(tag_id) >= 2;
 ```
 관계형 데이터베이스에서 `group by - having` 절을 사용하면 검색하는 테이블의 크기에 따라 데이터베이스 자체에 부하를 발생시킬 수 있다.
+
+
+<br>
+
+## ✅ 랜덤 데이터 추출
+> 보통 관계형 데이터베이스에서 랜덤 데이터 추출을 사용할 때에는 `ORDER BY RAND()` 함수를 많이 사용한다.  
+> 조건 절에 맞는 모든 행을 읽은 뒤, 임시 테이블에 넣어 정렬한 다음 랜덤으로 `limit`에 해당할 때까지 데이터를 추출한다.  
+> 데이터가 1만 건 이상일 경우 이와 같은 쿼리는 성능이 나빠지게 돼 굉장히 부하가 많이 가는 방법일 수 있다.
+
+레디스를 사용하면 O(1)의 시간 복잡도를 이용해 랜덤한 데이터를 추출할 수 있다.
+
+`RANDOMKEY`: 레디스에 저장된 전체 키 중 하나를 무작위로 반환한다. 
+보통 하나의 레디스 인스턴스에 한 가지 종류의 데이터만 저장하지는 않기 때문에 이와 같은 랜덤 키 추출은 별로 의미가 없을 수 있다.
+```redis
+127.0.0.1:6379> RANDOMKEY
+set:111
+127.0.0.1:6379> RANDOMKEY
+myset
+```
+
+<br>
+
+`HRANDFIELD`: `hash`에 저장된 아이템 중 랜덤한 아이템 추출
+`SRANMEMBER`: `set`에 저장된 아이템 중 랜덤한 아이템 추출
+`ZRANDMEMBER`: `sorted set`에 저장된 아이템 중 랜덤한 아이템 추출
+
+```redis
+// User:hash 셋팅
+127.0.0.1:6379> HSET User:hash id:38274 garimoo id:134 SSorryry id:4615 Jinnji
+3
+
+// 랜덤 아이템 하나 추출
+127.0.0.1:6379> HRANDFIELD User:hash
+id:38274
+
+// COUNT 옵션 지정 1개 추출하되, 값도 함께
+127.0.0.1:6379> HRANDFIELD User:hash 1 WITHVALUES
+id:134
+SSorryry
+
+// 랜덤 아이템 2개 추출
+127.0.0.1:6379> HRANDFIELD User:hash 2
+id:38274
+id:4615
+
+// COUNT 옵션 지정 랜덤 아이템 중복 허용 2개 추출
+// 음수면 중복 반환이다.
+127.0.0.1:6379> HRANDFIELD User:hash -2
+id:134
+id:38274
+127.0.0.1:6379> HRANDFIELD User:hash -2
+id:134
+id:4615
+127.0.0.1:6379> HRANDFIELD User:hash -2
+id:4615
+id:4615
+```
+
+`SRANMEMBER`, `ZRANDMEMBER` 커맨드도 마찬가지로 `COUNT` 옵션을 양수와 음수로 반환시킨다. 
+
+
+
+
+
+<br>
+
+**참고 자료**  
+[개발자를 위한 레디스](https://product.kyobobook.co.kr/detail/S000210785682)
