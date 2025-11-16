@@ -559,6 +559,10 @@ ZRANGE key start stop [BYSCORE | BYINDEX] [REV] [LIMIT offset count] [WITHSCORES
 
 <br>
 
+추가로 더 보고 싶다면 [`Geospatial Index`를 이용한 위치 기반 애플리케이션 개발](https://github.com/kyeoungchan/note/tree/main/redis/basic/data-structure/example)를 참고하자.
+
+<br>
+
 ### ❗️ stream
 `stream`은 레디스를 메시지 브로커로서 사용할 수 있게 하는 자료 구조다.
 - 전체적인 구조는 카프카에서 영향을 받아 만들어졌다.
