@@ -1,5 +1,5 @@
-# 📚 Note
-## 📖 공부
+#  💻 Note
+## 📚 공부
 - 알고리즘
   - [다이나믹 프로그래밍](https://github.com/kyeoungchan/note/tree/main/algorithm/dynamic-programming)
     - [이항계수 다이나믹 프로그래밍 활용](https://github.com/kyeoungchan/note/tree/main/algorithm/dynamic-programming/binomialcoefficient)
@@ -87,6 +87,11 @@
 - [성능 테스트](https://github.com/kyeoungchan/note/tree/main/performance-test)
   - [Apache Jmeter](https://github.com/kyeoungchan/note/tree/main/performance-test/apache-jmeter)
 - [레디스(Redis)](https://github.com/kyeoungchan/note/tree/main/redis)
+  - [레디스 환경설정](https://github.com/kyeoungchan/note/tree/main/redis/settings)
+  - 레디스 기본
+    - [레디스의 자료 구조](https://github.com/kyeoungchan/note/tree/main/redis/basic/data-structure)
+      - [레디스 자료 구조 활용 사례](https://github.com/kyeoungchan/note/tree/main/redis/basic/data-structure/example)
+    - [레디스에서 키를 관리하는 법](https://github.com/kyeoungchan/note/tree/main/redis/basic/key-management)
 - 보안
   - 암호화
     - [대칭키](https://github.com/kyeoungchan/note/tree/main/security/encryption/symmetric-key)
@@ -125,6 +130,8 @@
 
 ## 🚫 트러블 슈팅
 - [엘라스틱 스택](https://github.com/kyeoungchan/note/tree/main/elastic-stack/settings)
+- [리눅스 맥 환경 설치](https://github.com/kyeoungchan/note/tree/main/linux/settings)
+- [레디스 한글 깨질 때](https://github.com/kyeoungchan/note/tree/main/redis/settings)
 
 ## ✍🏻 그냥 기록
 - [리눅스 환경설정](https://github.com/kyeoungchan/note/tree/main/linux/settings)

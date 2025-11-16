@@ -131,7 +131,7 @@ Table Footer 데이터
 ![summary_report.png](res/summary_report.png)
 - Label: 우리가 사용했던 request의 이름을 기준으로 모은다. 따라서 다르게 집계하고 싶다면 이름을 반드시 다르게 한다.
 - Samples: request 개수
-- Average: Sample Time의 최소
+- Average: Sample Time의 평균
 - Min: Sample Time의 최소
 - Max: Sample Time의 최대
 - Std. Dev.: Sample Time의 표준편차
