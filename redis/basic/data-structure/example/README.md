@@ -343,7 +343,7 @@ SELECT post_id
 FROM tag_posts 
 WHERE tag_id IN ('IT', 'DataStore')
 GROUP BY post_id
-HAVING COUNT(tag_id) >= 2;
+HAVING COUNT(tag_id) = 2;
 ```
 관계형 데이터베이스에서 `group by - having` 절을 사용하면 검색하는 테이블의 크기에 따라 데이터베이스 자체에 부하를 발생시킬 수 있다.
 
