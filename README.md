@@ -67,6 +67,7 @@
   - 지네릭스
     - [지네릭스 part1](https://kyeoungchan.tistory.com/11)
     - [지네릭스 part2](https://kyeoungchan.tistory.com/12)
+- [카프카](https://github.com/kyeoungchan/note/tree/main/kafka)
 - [코틀린](https://github.com/kyeoungchan/note/tree/main/kotlin)
 - 네트워크
   - [Blocking vs Non Blocking vs Synchronous vs Asynchronous](https://github.com/kyeoungchan/note/tree/main/network/blocking-nonblocking-syn-asyn)
