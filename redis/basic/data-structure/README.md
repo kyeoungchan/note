@@ -238,6 +238,8 @@ OK
 "C"
 ```
 
+<br>
+
 > 상황  
 > set:111 : {A, B, C, D, E}  
 > set:222 : {D, E, F, G, H}
@@ -281,7 +283,7 @@ OK
 - 모든 아이템은 스코어 순으로 정렬돼 있으므로 `list`처럼 인덱스를 이용해 각 아이템에 접근할 수 있다.
 > `list`와 `sorted set` 모두 순서를 갖는 자료구조이므로 인덱스를 이용해 아이템에 접근할 수 있다.  
 > 인덱스를 이용해 아이템에 접근할 일이 많다면 `list`가 아닌 `sorted set`을 사용하는 것이 더 효율적이다.  
-> `list`에서 인덱스를 이용해 데이터를 접근하는 것은 O(n)으로 처리되지만, `sorted set`에서는 O(long(n))으로 처리되기 때문이다.
+> `list`에서 인덱스를 이용해 데이터를 접근하는 것은 O(n)으로 처리되지만, `sorted set`에서는 O(log(n))으로 처리되기 때문이다.
 
 ```shell
 127.0.0.1:6379> ZADD score:251113 100 user:B
@@ -430,7 +432,7 @@ ZRANGE key start stop [BYSCORE | BYINDEX] [REV] [LIMIT offset count] [WITHSCORES
 3) "dream"
 4) "egg"
 ```
-- 입력한 문자열을 포함하려면 `(`을, 포함하지 않을 때에는 `[` 문자를 사용한다.
+- 입력한 문자열을 포함하려면 `[`을, 포함하지 않을 때에는 `(` 문자를 사용한다.
 - 사전식 문자열의 가장 처음은 `-` 문자로, 가장 마지막은 `+` 문자로 대체할 수 있다.
 ```shell
 # 점수가 같지 않은 아이템이 온다면 어떨까?
@@ -495,8 +497,8 @@ ZRANGE key start stop [BYSCORE | BYINDEX] [REV] [LIMIT offset count] [WITHSCORES
 ### ❗️ Hyperloglog
 
 `hyperloglog`는 집합의 원소 개수인 카디널리티를 추정할 수 있는 자료 구조다.
-- 대량 데이터에서 중복되지 않는 고유한 값을 집계할 때 유용하게 사용할 수 잇는 데이터 구조다.
-- 최대 12KBdml zmrlfmf rkwlsek.
+- 대량 데이터에서 중복되지 않는 고유한 값을 집계할 때 유용하게 사용할 수 있는 데이터 구조다.
+- 최대 12KB의 크기를 가진다.
 - 추정의 오차는 0.81%로, 비교적 정확하게 데이터를 추정할 수 있다.
 - 하나의 `hyperloglog`에는 최대 2^64개의 아이템을 저장할 수 있다.
 
@@ -557,11 +559,19 @@ ZRANGE key start stop [BYSCORE | BYINDEX] [REV] [LIMIT offset count] [WITHSCORES
 
 <br>
 
+추가로 더 보고 싶다면 [`Geospatial Index`를 이용한 위치 기반 애플리케이션 개발](https://github.com/kyeoungchan/note/tree/main/redis/basic/data-structure/example)를 참고하자.
+
+<br>
+
 ### ❗️ stream
 `stream`은 레디스를 메시지 브로커로서 사용할 수 있게 하는 자료 구조다.
 - 전체적인 구조는 카프카에서 영향을 받아 만들어졌다.
 - 카프카에서처럼 소비자 그룹 개념을 도입해 데이터를 분산 처리할 수 있는 시스템이다.
 - 실시간 이벤트 혹은 로그성 데이터의 저장을 위해 사용할 수 있다.
+
+<br>
+
+자세한 내용은 [[레디스를 메시지 브로커로](https://github.com/kyeoungchan/note/tree/main/redis/message-broker-redis)]의 스트림 파트를 보면서 참고하자. 
 
 
 <br>
