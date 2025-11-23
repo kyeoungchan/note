@@ -64,7 +64,7 @@ look aside 구조
 
 **쓰기 전략과 캐시의 일관성**  
 **1. write through**  
-![write_through.jpeg](../../res/write_through.jpeg)  
+![write_through.jpeg](../res/write_through.jpeg)  
 `write through` 방식은 데이터베이스에 업데이트할 때마다 매번 캐시에도 데이터를 함께 업데이트시키는 방식이다.  
 캐시는 항상 최신 데이터를 가지고 있을 수 있다는 장점이 있지만, 데이터는 매번 2개의 저장소에 저장돼야하기 때문에 데이터를 쓸 때마다 시간이 많이 소요될 수 있다는 단점이 있다.  
 이 방식의 경우 다시 사용되지 않을 데이터가 저장될 수 있기 때문에, 일종의 리소스 낭비가 발생할 수 있다.  
@@ -73,14 +73,14 @@ look aside 구조
 <br>
 
 **2. cache invalidation**  
-![cache_invalidation.jpeg](../../res/cache_invalidation.jpeg)  
+![cache_invalidation.jpeg](../res/cache_invalidation.jpeg)  
 데이터베이스게 값을 업데이트할 때마다 캐시에서는 데이터를 삭제하는 전략이다.  
 저장소에서 특정 데이터를 삭제하는 것이 새로운 데이터를 저장하는 것보다 훨씬 리소스를 적게 사용하기 때문에 앞선 `write through`의 단점을 보완한 방법이다.
 
 <br>
 
 **3. write behind(write back)**  
-![write_behind.jpeg](../../res/write_behind.jpeg)  
+![write_behind.jpeg](../res/write_behind.jpeg)  
 만약 쓰기가 빈번하게 발생하는 서비스라면 `write behind` 방식을 고려해볼 수 있다.  
 데이터베이스에 대량의 쓰기 작업이 발생하면 이는 많은 디스크 I/O를 유발해, 성능 저하가 발생할 수 있다.  
 ➡ 따라서 먼저 데이터를 빠르게 접근할 수 있는 캐시에 업데이트한 뒤, 이후에는 건수나 특정 시간 간격 등에 따라 비동기적으로 데이터베이스에 업데이트하는 것이다.
@@ -385,14 +385,14 @@ PER(Probabilistic Early Recomputation) 알고리즘은 캐시 값이 만료되�
 <br>
 
 ### ✅ 세션 스토어가필요한 이유
-![single_session_store.jpeg](../../res/single_session_store.jpeg)  
+![single_session_store.jpeg](../res/single_session_store.jpeg)  
 위와 같이 서비스 초창기, 혹은 프로토타입용 서비스에는 굳이 별도의 세션 스토어가 필요하지 않다.  
 각 웹 서버에 세션 스토어를 두고 자체적으로 세션을 관리할 수 있기 때문이다.  
 [로그인 처리하기 - 서블릿 HTTP 세션](https://github.com/kyeoungchan/spring-study-set/blob/main/login/src/main/java/hello/login/web/HomeController.java) 참고   
 
 <br>
 
-![session_store_sticky_session.jpeg](../../res/session_store_sticky_session.jpeg)  
+![session_store_sticky_session.jpeg](../res/session_store_sticky_session.jpeg)  
 웹서버를 늘리면 여러 개의 웹 서버에 트래픽을 분배할 수 있기 때문에 더 많은 유저를 수용할 수 있게 된다.  
 각 웹 서버별로 세션 스토어를 따로 관리하면 유저는 위와 같이 유저의 세션 정보를 갖고 있는 웹 서버에 종속돼야한다.  
 그렇지 않으면 유저 데이터 정합성에 문제가 생기기 때문이다.   
@@ -401,21 +401,21 @@ PER(Probabilistic Early Recomputation) 알고리즘은 캐시 값이 만료되�
 
 <br>
 
-![session_store_all_to_all.jpeg](../../res/session_store_all_to_all.jpeg)  
+![session_store_all_to_all.jpeg](../res/session_store_all_to_all.jpeg)  
 유저의 세션 정보를 모든 웹 서버에 복제해서 저장하는 방법을 `all-to-all` 방법이라고 한다.  
 유저를 여러 웹 서버에 분산시킬 수 있지만, 유저의 세션 데이터는 여러 서버로 복사돼 저장되기 때문에 불필요한 저장 공간을 차지하게 된다.  
 하나의 유저는 하나의 웹 서버에만 접속하기 때문에, 다른 웹 서버에 저장된 유저의 세션 정보는 무의미하게 되기 때문이다.  
 
 <br>
 
-![session_store_database.jpeg](../../res/session_store_database.jpeg)  
+![session_store_database.jpeg](../res/session_store_database.jpeg)  
 위와 같이 데이터베이스를 세션 스토어로 사용하는 방법도 고려해볼 수 있다.  
 하지만 각 유저는 세션이 활성화돼 있는 동안 세션 스토어에 활발하게 액세스한다.  
 서비스가 커져 유저가 많아질수록 데이터베이스를 세션 스토어로 사용하는 것은 서비스 전반적인 응답 속도를 저하시키는 요인이 될 수 있다.
 
 <br>
 
-![session_store_redis.jpeg](../../res/session_store_redis.jpeg)  
+![session_store_redis.jpeg](../res/session_store_redis.jpeg)  
 위와 같이 레디스를 세션 스토어로 사용해 세션을 서버, 데이터베이스와 분리시켜 놓은 뒤 여러 서버에서 세션 스토어를 바라보도록 구성한다면 모든 이슈를 해결할 수 있다.  
 - 세션 스토어에 구애받지 않고 어떤 웹 서버에 연결되더라도 동일한 세션 데이터를 조회할 수 있다.
   - 트래픽을 효율적으로 분산시킬 수 있다.
