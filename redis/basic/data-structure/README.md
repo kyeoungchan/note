@@ -569,6 +569,10 @@ ZRANGE key start stop [BYSCORE | BYINDEX] [REV] [LIMIT offset count] [WITHSCORES
 - 카프카에서처럼 소비자 그룹 개념을 도입해 데이터를 분산 처리할 수 있는 시스템이다.
 - 실시간 이벤트 혹은 로그성 데이터의 저장을 위해 사용할 수 있다.
 
+<br>
+
+자세한 내용은 [[레디스를 메시지 브로커로](https://github.com/kyeoungchan/note/tree/main/redis/message-broker-redis)]의 스트림 파트를 보면서 참고하자. 
+
 
 <br>
 
