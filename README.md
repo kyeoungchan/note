@@ -135,6 +135,8 @@
 - [엘라스틱 스택](https://github.com/kyeoungchan/note/tree/main/elastic-stack/settings)
 - [리눅스 맥 환경 설치](https://github.com/kyeoungchan/note/tree/main/linux/settings)
 - [레디스 한글 깨질 때](https://github.com/kyeoungchan/note/tree/main/redis/settings)
+- [카프카 실습환경 세팅](https://github.com/kyeoungchan/note/tree/main/kafka/settings)
+
 
 ## ✍🏻 그냥 기록
 - [리눅스 환경설정](https://github.com/kyeoungchan/note/tree/main/linux/settings)
