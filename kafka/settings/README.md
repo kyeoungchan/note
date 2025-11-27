@@ -290,13 +290,16 @@ Kafka 3.5.0 버전 이상부터는 zookeeper가 없어지고, kraft 모드가 �
 아래 명령어는 초기 1회만 실행한다.
 ```shell
 # KRaft 메타데이터를 저장하기 위해 스토리지 포맷 명령 실행
-# 컨트롤러와 브로커 서로가 uuid가 달라야 한다!
+# 컨트롤러와 브로커 서로가 uuid가 같아야 한다!
+
+# uuid 생성
+$ bin/kafka-storage.sh random-uuid
 
 # 컨트롤러 storage 포맷
-$ bin/kafka-storage.sh format -t $(bin/kafka-storage.sh random-uuid) -c config/kraft/controller.properties
+$ bin/kafka-storage.sh format -t <UUID> -c config/kraft/controller.properties
 
 # 카프카 브로커 storage 포맷
-$ bin/kafka-storage.sh format -t $(bin/kafka-storage.sh random-uuid) -c config/kraft/server.properties
+$ bin/kafka-storage.sh format -t <UUID> -c config/kraft/server.properties
 ```
 
 > 처음에는 바로 이런 에러가 나왔다.  
@@ -400,13 +403,19 @@ $ rm -rf /tmp/kraft-combined-logs
 # 컨트롤러 메타 데이터 삭제
 $ rm -rf /tmp/kraft-controller-logs
 
-# 컨트롤러 재포맷
-$ bin/kafka-storage.sh format -t $(bin/kafka-storage.sh random-uuid) -c config/kraft/controller.properties
+# uuid 생성
+$ bin/kafka-storage.sh random-uuid
 
-# 브로커 재포맷
-$ bin/kafka-storage.sh format -t $(bin/kafka-storage.sh random-uuid) -c config/kraft/server.properties
+# 컨트롤러 storage 포맷
+$ bin/kafka-storage.sh format -t <UUID> -c config/kraft/controller.properties
+
+# 카프카 브로커 storage 포맷
+$ bin/kafka-storage.sh format -t <UUID> -c config/kraft/server.properties
 
 # 그다음 컨트롤러 ➡ 브로커 순으로 실행(실행 명령어는 위에)
+
+# 에러 생겼을 때 로그 확인하기
+$ tail -n 200 logs/server.log
 ```
 
 <br>
