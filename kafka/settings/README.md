@@ -3,6 +3,8 @@
 - [주키퍼・카프카 브로커 실행](#-주키퍼카프카-브로커-실행)
   - [카프카 브로커 힙 메모리 설정](#-카프카-브로커-힙-메모리-설정)
   - [카프카 브로커 실행 옵션 설정](#-카프카-브로커-실행-옵션-설정)
+  - [🚫 실행시 에러 핸들링](#-실행시-에러-핸들링-)
+- [로컬 컴퓨터에서 카프카와 통신 확인](#-로컬-컴퓨터에서-카프카와-통신-확인)
 
 <br>
 
@@ -287,15 +289,14 @@ Kafka 3.5.0 버전 이상부터는 zookeeper가 없어지고, kraft 모드가 �
 
 아래 명령어는 초기 1회만 실행한다.
 ```shell
-# UUID 생성
-$ bin/kafka-storage.sh random-uuid
-
 # KRaft 메타데이터를 저장하기 위해 스토리지 포맷 명령 실행
+# 컨트롤러와 브로커 서로가 uuid가 달라야 한다!
+
 # 컨트롤러 storage 포맷
-$ bin/kafka-storage.sh format -t <UUID> -c config/kraft/controller.properties
+$ bin/kafka-storage.sh format -t $(bin/kafka-storage.sh random-uuid) -c config/kraft/controller.properties
 
 # 카프카 브로커 storage 포맷
-$ bin/kafka-storage.sh format -t <UUID> -c config/kraft/server.properties
+$ bin/kafka-storage.sh format -t $(bin/kafka-storage.sh random-uuid) -c config/kraft/server.properties
 ```
 
 > 처음에는 바로 이런 에러가 나왔다.  
@@ -349,6 +350,84 @@ $ bin/kafka-server-stop.sh
 $ jps -vm
 73242 Jps -vm -Dapplication.home=/usr/lib/jvm/java-17-amazon-corretto.x86_64 -Xms8m -Djdk.module.main=jdk.jcmd
 ```
+
+<br>
+
+
+### 🚫 실행시 에러 핸들링  
+> 퇴근하고 다시 실행했는데 에러가 발생했다..
+
+```shell
+# config/kraft/server.properties
+process.roles=broker
+
+node.id=2
+
+controller.quorum.voters=1@13.***.**.***:9093
+
+listeners=PLAINTEXT://:9092
+
+advertised.listeners=PLAINTEXT://13.***.**.***:9092
+
+controller.listener.names=CONTROLLER
+```
+
+```shell
+# config/kraft/controller.properties
+process.roles=controller
+
+node.id=1
+
+controller.quorum.voters=1@13.***.**.***:9093
+
+listeners=CONTROLLER://:9093
+
+advertised.listeners=PLAINTEXT://13.***.**.***:9093
+
+controller.listener.names=CONTROLLER
+```
+
+<br>
+
+설정 변경 후 재 실행
+```shell
+# 카프카 종료
+$ pkill -f kafka.Kafka
+
+# 브로커 메타 데이터 삭제
+$ rm -rf /tmp/kraft-combined-logs
+
+# 컨트롤러 메타 데이터 삭제
+$ rm -rf /tmp/kraft-controller-logs
+
+# 컨트롤러 재포맷
+$ bin/kafka-storage.sh format -t $(bin/kafka-storage.sh random-uuid) -c config/kraft/controller.properties
+
+# 브로커 재포맷
+$ bin/kafka-storage.sh format -t $(bin/kafka-storage.sh random-uuid) -c config/kraft/server.properties
+
+# 그다음 컨트롤러 ➡ 브로커 순으로 실행(실행 명령어는 위에)
+```
+
+<br>
+
+
+## ❗️ 로컬 컴퓨터에서 카프카와 통신 확인
+로컬 컴퓨터에서 원격으로 카프카 브로커로 명령을 내려 정상적으로 통신하는지 확인한다.  
+➡ 카프카가 정상 동작하는지 가장 쉽게 확인하는 방법은 카프카 브로커 정보를 요청하는 것이다.
+
+<br>
+
+카프카 바이너리 패키지는 카프카 브로커에 대한 정보를 가져올 수 있는 kafka-broker-api-versions.sh 명령어를 제공한다.  
+➡ 이 명령어를 통해 카프카 브로커와 정상적으로 연동되는지 확인할 수 있다.
+
+```shell
+# 로컬 컴퓨터에 카프카 바이너리 패키지 다운로드
+# 참고로 이 방법은 너무 느리다. 그냥 다운로드 페이지에 들어가서 다운받자..
+Kyeongchanui-MacBookPro:~ kyeongchanwoo$ curl https://archive.apache.org/dist/kafka/3.9.0/kafka_2.12-3.9.0.tgz --output kafka.tgz
+
+```
+
 
 
 
