@@ -222,6 +222,9 @@ exec $base_dir/kafka-run-class.sh $EXTRA_ARGS kafka.Kafka "$@"
 `config/server.properties`에서 카프카 브로커가 클러스터 운영에 필요한 옵션들을 지정할 수 있다.  
 ➡ 현재는 실습용 카프카 브로커를 실행할 것이기 때문에 `advertised.listener`만 설정할 것이다.  
 ➡ `advertised.listener`는 카프카 클라이언트 또는 커맨드 라인 툴을 브로커와 연결할 때 쓴다.
+
+> 아래는 옛날 설정 방식으로, 각 설정의 뜻을 참고용으로만 보고, 실제 현 설정은 더 아래에 `config/kraft/controller.properties`와 `config/kraft/server.properties` 설정을 참고하자.
+
 ```shell
 [ec2-user@ip-172-31-47-253 ~]$ vi config/server.properties
 
@@ -287,6 +290,82 @@ Kafka 3.5.0 버전 이상부터는 zookeeper가 없어지고, kraft 모드가 �
 
 <br>
 
+설정 내용
+
+
+```shell
+# config/kraft/controller.properties
+
+# The role of this server. Setting this puts us in KRaft mode
+process.roles=controller
+
+# The node id associated with this instance's roles
+node.id=1
+
+# Uncomment controller.quorum.voters to use a static controller quorum.
+controller.quorum.voters=1@localhost:9093
+controller.quorum.bootstrap.servers=127.0.0.1:9093
+
+# The address the socket server listens on.
+# Note that only the controller listeners are allowed here when `process.roles=controller`
+listeners=CONTROLLER://:9093
+
+# Listener name, hostname and port the controller will advertise to admin clients, broker nodes and controller nodes.
+# Note that the only controller listeners are allowed here when `process.roles=controller`.
+# If not set, it uses the value for "listeners".
+advertised.listeners=CONTROLLER://localhost:9093
+
+# A comma-separated list of the names of the listeners used by the controller.
+# This is required if running in KRaft mode.
+controller.listener.names=CONTROLLER
+
+# A comma separated list of directories under which to store log files
+log.dirs=/tmp/kraft-controller-logs
+```
+
+
+```shell
+# config/kraft/server.properties
+
+# The role of this server. Setting this puts us in KRaft mode
+process.roles=broker
+
+# The node id associated with this instance's roles
+node.id=2
+
+# The connect string for the controller quorum
+controller.quorum.voters=1@localhost:9093
+
+# The address the socket server listens on.
+listeners=PLAINTEXT://:9092
+
+# Name of listener used for communication between brokers.
+inter.broker.listener.name=PLAINTEXT
+
+# Listener name, hostname and port the broker or the controller will advertise to clients.
+# If not set, it uses the value for "listeners".
+advertised.listeners=PLAINTEXT://13.***.**.***:9092
+
+# A comma-separated list of the names of the listeners used by the controller.
+# If no explicit mapping set in `listener.security.protocol.map`, default will be using PLAINTEXT protocol
+# This is required if running in KRaft mode.
+controller.listener.names=CONTROLLER
+
+# Maps listener names to security protocols, the default is for them to be the same. See the config documentation for more details
+listener.security.protocol.map=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL
+
+# A comma separated list of directories under which to store log files
+log.dirs=/tmp/kraft-combined-logs
+```
+
+> EC2 특성상 퍼블릭 IP → 퍼블릭 IP loopback 은 안 된다 (AWS의 기본 정책)    
+> 따라서 컨트롤러는 `advertised.listeners=CONTROLLER://localhost:9093`로 해야 한다.  
+> 브로커는 외부에서 Kafka 접속이 가능해야 하니까 퍼블릭 IP가 필요하다.  
+> ➡ `server.properties`에는 `advertised.listeners=PLAINTEXT://13.***.**.***:9092`
+
+
+<br>
+
 아래 명령어는 초기 1회만 실행한다.
 ```shell
 # KRaft 메타데이터를 저장하기 위해 스토리지 포맷 명령 실행
@@ -329,18 +408,7 @@ $ jps -vm
 
 ```shell
 # 로그 확인
-# 나의 우여곡절을 볼 수 있다.
 $ tail -f logs/server.log
-	... 16 more
-Caused by: java.net.BindException: Address already in use
-	at java.base/sun.nio.ch.Net.bind0(Native Method)
-	at java.base/sun.nio.ch.Net.bind(Net.java:555)
-	at java.base/sun.nio.ch.ServerSocketChannelImpl.netBind(ServerSocketChannelImpl.java:337)
-	at java.base/sun.nio.ch.ServerSocketChannelImpl.bind(ServerSocketChannelImpl.java:294)
-	at java.base/sun.nio.ch.ServerSocketAdaptor.bind(ServerSocketAdaptor.java:89)
-	at kafka.network.Acceptor.openServerSocket(SocketServer.scala:731)
-	... 17 more
-[2025-11-26 22:49:02,408] INFO [controller-1-to-controller-registration-channel-manager]: Recorded new KRaft controller, from now on will use node localhost:9093 (id: 1 rack: null) (kafka.server.NodeToControllerRequestThread)
 ```
 
 <br>
@@ -357,40 +425,6 @@ $ jps -vm
 <br>
 
 
-### 🚫 실행시 에러 핸들링  
-> 퇴근하고 다시 실행했는데 에러가 발생했다..
-
-```shell
-# config/kraft/server.properties
-process.roles=broker
-
-node.id=2
-
-controller.quorum.voters=1@13.***.**.***:9093
-
-listeners=PLAINTEXT://:9092
-
-advertised.listeners=PLAINTEXT://13.***.**.***:9092
-
-controller.listener.names=CONTROLLER
-```
-
-```shell
-# config/kraft/controller.properties
-process.roles=controller
-
-node.id=1
-
-controller.quorum.voters=1@13.***.**.***:9093
-
-listeners=CONTROLLER://:9093
-
-advertised.listeners=PLAINTEXT://13.***.**.***:9093
-
-controller.listener.names=CONTROLLER
-```
-
-<br>
 
 설정 변경 후 재 실행
 ```shell
@@ -412,7 +446,11 @@ $ bin/kafka-storage.sh format -t <UUID> -c config/kraft/controller.properties
 # 카프카 브로커 storage 포맷
 $ bin/kafka-storage.sh format -t <UUID> -c config/kraft/server.properties
 
-# 그다음 컨트롤러 ➡ 브로커 순으로 실행(실행 명령어는 위에)
+# 카프카 컨트롤러 실행
+$ bin/kafka-server-start.sh -daemon config/kraft/controller.properties
+
+# 카프카 브로커 실행
+$ bin/kafka-server-start.sh -daemon config/kraft/server.properties
 
 # 에러 생겼을 때 로그 확인하기
 $ tail -n 200 logs/server.log
@@ -434,6 +472,8 @@ $ tail -n 200 logs/server.log
 # 로컬 컴퓨터에 카프카 바이너리 패키지 다운로드
 # 참고로 이 방법은 너무 느리다. 그냥 다운로드 페이지에 들어가서 다운받자..
 Kyeongchanui-MacBookPro:~ kyeongchanwoo$ curl https://archive.apache.org/dist/kafka/3.9.0/kafka_2.12-3.9.0.tgz --output kafka.tgz
+
+Kyeongchanui-MacBookPro:~ kyeongchanwoo$ bin/kafka-broker-api-versions.sh --bootstrap-server 13.209.68.207:9092
 
 ```
 
