@@ -3,8 +3,8 @@
 - [주키퍼・카프카 브로커 실행](#-주키퍼카프카-브로커-실행)
   - [카프카 브로커 힙 메모리 설정](#-카프카-브로커-힙-메모리-설정)
   - [카프카 브로커 실행 옵션 설정](#-카프카-브로커-실행-옵션-설정)
-  - [🚫 실행시 에러 핸들링](#-실행시-에러-핸들링-)
 - [로컬 컴퓨터에서 카프카와 통신 확인](#-로컬-컴퓨터에서-카프카와-통신-확인)
+  - [테스트 편의를 위한 hosts 설정](#-테스트-편의를-위한-hosts-설정)
 
 <br>
 
@@ -473,10 +473,41 @@ $ tail -n 200 logs/server.log
 # 참고로 이 방법은 너무 느리다. 그냥 다운로드 페이지에 들어가서 다운받자..
 Kyeongchanui-MacBookPro:~ kyeongchanwoo$ curl https://archive.apache.org/dist/kafka/3.9.0/kafka_2.12-3.9.0.tgz --output kafka.tgz
 
-Kyeongchanui-MacBookPro:~ kyeongchanwoo$ bin/kafka-broker-api-versions.sh --bootstrap-server 13.209.68.207:9092
+# 압축 해제
+Kyeongchanui-MacBookPro:~ kyeongchanwoo$ tar -xzvf kafka_2.12-3.9.0.tgz
 
+Kyeongchanui-MacBookPro:~ kyeongchanwoo$ cd kafka_2.12-3.9.0
+
+# 카프카 브로커 정보 요청
+Kyeongchanui-MacBookPro:~ kyeongchanwoo$ bin/kafka-broker-api-versions.sh --bootstrap-server 13.***.**.***:9092
+13.***.**.***:9092 (id: 2 rack: null) -> (
+	Produce(0): 0 to 11 [usable: 11],
+	Fetch(1): 0 to 17 [usable: 17],
+	ListOffsets(2): 0 to 9 [usable: 9],
+	Metadata(3): 0 to 12 [usable: 12],
+	LeaderAndIsr(4): UNSUPPORTED,
+	...
+)
+```
+카프카 브로커와 정상적으로 연동되었다. 
+
+<br>
+
+### ✅ 테스트 편의를 위한 hosts 설정
+hosts 파일을 설정하면 로컬 컴퓨터에서 AWS EC2에 설치한 카프카 클러스터와 통신할 때 설정한 IP를 사용자 지정 문장으로 매핑하여 통신할 수 있다.  
+EC2 인스턴스 public IP로 설정한다.
+```shell
+# Mac을 포함한 유닉스 계열에서 hosts 파일 수정
+$ sudo vi /etc/hosts
+13.***.**.*** my-kafka
 ```
 
+<br>
+
+```shell
+# 이제 ip 주소 기억 안해도 EC2 접속 가능하다.
+$ ssh -i test-kafka-server-key.pem ec2-user@my-kafka
+```
 
 
 
