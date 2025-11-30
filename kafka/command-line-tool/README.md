@@ -5,6 +5,7 @@
   - [토픽 옵션 수정](#-토픽-옵션-수정)
 - [kafka-console-producer.sh](#-kafka-console-producersh)
 - [kafka-console-consumer.sh](#-kafka-console-consumersh)
+- [kafka-consumer-groups.sh](#-kafka-consumer-groupssh)
 
 ## ❗️ kafka-topic.sh
 토픽이란, 카프카에서 데이터를 구분하는 가장 기본적인 개념이다.  
@@ -251,7 +252,38 @@ key1-no1
 
 <br>
 
+### ✅ kafka-consumer-groups.sh
+`hello-group` 컨슈머 그룹으로 생성된 컨슈머로 `hello.kafka` 토픽의 데이터를 가져갔다.  
+컨슈머 그룹은 따로 생성하는 명령을 날리지 않고, 컨슈머를 동작할 때 컨슈머 그룹 이름을 지정하면 새로 생성된다.  
+생성된 컨슈머 그룹의 리스트는 `kafka-consumer-groups.sh` 커맨드로 확인할 수 있다.  
+```shell
+Kyeongchanui-MacBookPro:kafka kyeongchanwoo$ bin/kafka-consumer-groups.sh --bootstrap-server my-kafka:9092 --list
+hello-group
+```
 
+<br>
+
+```shell
+Kyeongchanui-MacBookPro:kafka kyeongchanwoo$ bin/kafka-consumer-groups.sh --bootstrap-server my-kafka:9092 \
+> --group hello-group \
+> --describe
+
+Consumer group 'hello-group' has no active members.
+
+GROUP           TOPIC           PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID     HOST            CLIENT-ID
+hello-group     hello.kafka     3          1               1               0               -               -               -
+hello-group     hello.kafka     2          5               5               0               -               -               -
+hello-group     hello.kafka     1          1               1               0               -               -               -
+hello-group     hello.kafka     0          1               1               0               -               -               -
+```
+- `TOPIC`: `hello-group`이 마지막으로 조회한 토픽
+- `PARTITION`: `hello-group`이 마지막으로 조회한 파티션
+- `CURRENT-OFFSET`: `hello-group`이 가져간 토픽의 파티션에 가장 최신 오프셋이 몇 번인지 나타낸다.
+  - 3번 파티션은 1이 오프셋으로, 1개의 데이터가 들어갔고, 2번 파티션은 5번 오프셋으로, 5개의 데이터가 들어갔다.
+- `LOG-END-OFFSET`: 전체 데이터의 총량으로, `CURRENT-OFFSET`는 `LOG-END-OFFSET`보다 작거나 같을 수 있다.
+- `LAG`: 파티션에 있는 데이터를 가져가는 데 얼마나 지연이 발생했는지 나타내는 지표다.
+  - 커밋한 오프셋과 파티션의 가장 최신 오프셋의 차이를 나타낸다.
+  - 둘이 같으므로 0으로 돼있다.
 
 
 <br>
