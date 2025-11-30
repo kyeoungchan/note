@@ -6,6 +6,8 @@
 - [kafka-console-producer.sh](#-kafka-console-producersh)
 - [kafka-console-consumer.sh](#-kafka-console-consumersh)
 - [kafka-consumer-groups.sh](#-kafka-consumer-groupssh)
+- [kafka-verifiable-producer.sh, kafka-verifiable-consumer.sh](#-kafka-verifiable-producersh-kafka-verifiable-consumersh)
+- [kafka-delete-records.sh](#-kafka-delete-recordssh)
 
 ## ❗️ kafka-topic.sh
 토픽이란, 카프카에서 데이터를 구분하는 가장 기본적인 개념이다.  
@@ -252,7 +254,7 @@ key1-no1
 
 <br>
 
-### ✅ kafka-consumer-groups.sh
+## ❗️ kafka-consumer-groups.sh
 `hello-group` 컨슈머 그룹으로 생성된 컨슈머로 `hello.kafka` 토픽의 데이터를 가져갔다.  
 컨슈머 그룹은 따로 생성하는 명령을 날리지 않고, 컨슈머를 동작할 때 컨슈머 그룹 이름을 지정하면 새로 생성된다.  
 생성된 컨슈머 그룹의 리스트는 `kafka-consumer-groups.sh` 커맨드로 확인할 수 있다.  
@@ -284,6 +286,83 @@ hello-group     hello.kafka     0          1               1               0    
 - `LAG`: 파티션에 있는 데이터를 가져가는 데 얼마나 지연이 발생했는지 나타내는 지표다.
   - 커밋한 오프셋과 파티션의 가장 최신 오프셋의 차이를 나타낸다.
   - 둘이 같으므로 0으로 돼있다.
+
+<br>
+
+## ❗️ kafka-verifiable-producer.sh, kafka-verifiable-consumer.sh
+`kafka-verifiable`로 시작하는 2개의 스크립트를 사용하면 String 타입 메시지 값을 코드 없이 주고받을 수 있다.  
+카프카 클러스터가 설치 완료 후 토픽에 데이터를 전송하여 간단한 네트워크 통신 테스트를할 때 유용하다.  
+
+```shell
+Kyeongchanui-MacBookPro:kafka kyeongchanwoo$ bin/kafka-verifiable-producer.sh --bootstrap-server my-kafka:9092 \
+> --max-messages 10 \
+> --topic verify-test
+{"timestamp":1764489857188,"name":"startup_complete"}
+[2025-11-30 17:04:17,352] WARN [Producer clientId=producer-1] The metadata response from the cluster reported a recoverable issue with correlation id 1 : {verify-test=UNKNOWN_TOPIC_OR_PARTITION} (org.apache.kafka.clients.NetworkClient)
+{"timestamp":1764489857585,"name":"producer_send_success","key":null,"value":"0","offset":0,"partition":0,"topic":"verify-test"}
+{"timestamp":1764489857587,"name":"producer_send_success","key":null,"value":"1","offset":1,"partition":0,"topic":"verify-test"}
+{"timestamp":1764489857587,"name":"producer_send_success","key":null,"value":"2","offset":2,"partition":0,"topic":"verify-test"}
+{"timestamp":1764489857587,"name":"producer_send_success","key":null,"value":"3","offset":3,"partition":0,"topic":"verify-test"}
+{"timestamp":1764489857587,"name":"producer_send_success","key":null,"value":"4","offset":4,"partition":0,"topic":"verify-test"}
+{"timestamp":1764489857588,"name":"producer_send_success","key":null,"value":"5","offset":5,"partition":0,"topic":"verify-test"}
+{"timestamp":1764489857588,"name":"producer_send_success","key":null,"value":"6","offset":6,"partition":0,"topic":"verify-test"}
+{"timestamp":1764489857588,"name":"producer_send_success","key":null,"value":"7","offset":7,"partition":0,"topic":"verify-test"}
+{"timestamp":1764489857588,"name":"producer_send_success","key":null,"value":"8","offset":8,"partition":0,"topic":"verify-test"}
+{"timestamp":1764489857588,"name":"producer_send_success","key":null,"value":"9","offset":9,"partition":0,"topic":"verify-test"}
+{"timestamp":1764489857596,"name":"shutdown_complete"}
+{"timestamp":1764489857598,"name":"tool_data","sent":10,"acked":10,"target_throughput":-1,"avg_throughput":24.390243902439025}
+```
+- `--max-messages`: `kafka-verifiable-producer.sh`로 보내는 데이터 개수를 지정한다.
+  - 만약 `-1`을 입력하면 `kafka-verifiable-producer.sh`가 종료될 때까지 계속 데이터를 토픽으로 보낸다.
+- `--topic verify-test`: 데이터를 받을 대상 토픽을 입력한다.
+- 메시지 별로 보낸 시간과 메시지 `key`, `value`, `topic`, `partition`, `offset` 번호가 출력된다.
+- 마지막에는 통계값이 출력된다. ➡ 평균 처리량을 확인할 수 있다.
+
+<br>
+
+```shell
+Kyeongchanui-MacBookPro:kafka kyeongchanwoo$ bin/kafka-verifiable-consumer.sh --bootstrap-server my-kafka:9092 \
+> --topic verify-test \
+> --group-id test-group
+{"timestamp":1764490093945,"name":"startup_complete"}
+{"timestamp":1764490097317,"name":"partitions_assigned","partitions":[{"topic":"verify-test","partition":0}]}
+{"timestamp":1764490097492,"name":"records_consumed","count":10,"partitions":[{"topic":"verify-test","partition":0,"count":10,"minOffset":0,"maxOffset":9}]}
+{"timestamp":1764490097537,"name":"offsets_committed","offsets":[{"topic":"verify-test","partition":0,"offset":10}],"success":true}
+```
+- `--topic verify-test`: 데이터를 가져오고자 하는 토픽을 지정한다.
+- `--group-id test-group`: 컨슈머 그룹을 지정한다.
+- 컨슈머는 한 번에 다수의 메시지를 가져와서 처리하므로 한 번에 10개의 메시지를 정상적으로 받았음을 알 수 있다.  
+  메시지 수신 이후 10번 오프셋 커밋 여부도 확인할 수 있다.
+
+<br>
+
+## ❗️ kafka-delete-records.sh
+이미 적재된 토픽의 데이터를 지우는 방법으로 `kafka-delete-records.sh`를 사용할 수 있다.  
+`kafka-delete-records.sh`는 이미 적재된 토픽의 데이터 중 가장 오래된 데이터(가장 낮은 숫자의 오프셋)부터 특정 시점의 오프셋까지 삭제할 수 있다.  
+
+
+
+<br>
+
+```shell
+Kyeongchanui-MacBookPro:kafka kyeongchanwoo$ vi delete-topic.json
+
+# delete-topic.json에 새로 입력
+{"partitions": [{"topic": "test", "partition": 0, "offset": 50}], "version": 1}
+```
+```shell
+Kyeongchanui-MacBookPro:kafka kyeongchanwoo$ bin/kafka-delete-records.sh --bootstrap-server my-kafka:9092 \
+> --offset-json-file delete-topic.json
+Executing records delete operation
+Records delete operation completed:
+```
+- `delete-topic.json`: 삭제하고자 하는 데이터에 대한 정보를 파일로 저장해서 사용해야 한다.
+  - 해당 파일에는 삭제하고자 하는 토픽, 파티션, 오프셋에 대한 정보가 있어야 한다.
+- `--offset-json-file delete-topic.json`: 삭제 정보를 다음은 파일을 `--offset-json-file` 옵션 값으로 입력하여 데이터 삭제를 진행한다. 
+
+
+
+
 
 
 <br>
