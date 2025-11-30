@@ -14,6 +14,11 @@
   - [스트림이란?](#-스트림이란)
   - [데이터의 저장](#-데이터의-저장)
   - [스트림 생성과 데이터 입력](#-스트림-생성과-데이터-입력)
+  - [데이터의 조회](#-데이터의-조회)
+  - [소비자와 소비자 그룹](#-소비자와-소비자-그룹)
+  - [ACK와 보류 리스트](#-ack와-보류-리스트)
+  - [메시지의 재할당](#-메시지의-재할당)
+  - [stream 상태 확인](#-stream-상태-확인)
 
 <br>
 
@@ -437,8 +442,533 @@ $ kafka-console-consumer --brokers-list 127.0.0.1:7000 --topic Email
 자동으로 생성되는 ID가 아니라 직접 ID 값을 지정하고 싶다면 위와 같이 하면 된다.  
 이 경우 지정할 수 있는 최소 ID 값은 0-1이며, 이후에 저장된느 stream의 ID는 이전에 저장됐던 값보다 작은 값으로 지정할 수 없다.
 
+<br>
+
+### ✅ 데이터의 조회
+- 카프카
+  - 소비자는 특정 토픽을 실시간으로 리스닝하며, 새롭게 토픽에 저장되는 메시지를 전달받을 수 있다.
+  - 기본적으로는 리스닝을 시작한 시점부터 토픽에 새로 저장되는 메시지를 반환받도록 동작한다.
+  - `--from-begining` 옵션을 이용하면 카프카에 저장돼 있는 모든 데이터를 처음부터 읽겠다는 것을 뜻한다.
+  - 소비자는 더 이상 토픽에서 읽어올 데이터가 없으면 새로운 이벤트가 토픽에 들어올 때까지 계속 토픽을 리스닝하면서 기다린다.
+```shell
+$ kafka-console-producer --bootstrap-server 127.0.0.1:7000 --topic Email --from-begining
+> "I am first email"
+> "I am second email"
+```
+
+레디스 `stream`에서는 데이터를 읽어오는 방식이 두 가지가 있다.
+1. 카프카에서처럼 실시간으로 처리되는 데이터를 리스닝 하는 방법
+2. ID를 이용해 필요한 데이터를 검색하는 방법
+
+<br>
+
+**1. 실시간 리스닝**  
+```shell
+127.0.0.1:6379> XREAD [COUNT count] [BLOCK milliseconds] STREAMS key [key ...] id [id ...]
+```
+`XREAD` 커맨드를 이용하면 실시간으로 stream에 저장되는 데이터를 읽어올 수 있다.
+```shell
+127.0.0.1:6379> XREAD BLOCK 0 STREAMS Email 0
+Email
+1763856669820-0
+subject
+first
+body
+hello?
+1763856704137-0
+subject
+second
+body
+hi?
+```
+- `BLOCK 0`: 더 이상 stream에서 가져올 데이터가 없더라도 연결을 끊지 말고 계속 stream을 리스닝하라는 뜻이다.
+  - 만약 `BLOCK 1000`을 입력했다면 들어오는 데이터가 없더라도 최대 1000ms(1초) 동안 연결을 유지하며 대기하라는 뜻이다.
+- `Email 0`: Email이라는 stream에 저장된 데이터 중 ID가 0보다 큰 값을 읽어오라는 의미로, 처음부터 저장된 모든 데이터를 읽어오라는 것을 의미한다.
+  - 만약 실행한 이후의 메시지만을 가져오고 싶다면 `0` 대신 특수 ID인 `$`를 입력하면 된다.  
+    ➡ `$`: stream에 저장된 최대 ID를 의미한다.
+
+```shell
+# 1763856704136 보다 큰 데이터 ID를 갖는 데이터를 Email Stream에서 가져온다.
+127.0.0.1:6379> XREAD BLOCK 0 STREAMS Email 1763856704136
+Email
+1763856704137-0
+subject
+second
+body
+hi?
+```
+
+<br>
+
+**2. 특정한 데이터 조회**  
+```shell
+XRANGE key start end [COUNT count]
+XREVRANGE key end start [COUNT count]
+```
+`XRANGE` 커맨드를 이용하면 ID를 이용해 원하는 시간대의 데이터를 조회할 수 있다.  
+- `-`: 가장 작은 ID 값을 지정하고 싶을 때
+- `+`: 제일 마지막 ID 값을 지정하고 싶을 때
+
+`XREVRANGE`: `XRANGE`의 역순으로 데이터를 조회하고 싶을 때 사용한다.
+
+<br>
+
+```shell
+127.0.0.1:6379> XRANGE Email - +
+1763856669820-0
+subject
+first
+body
+hello?
+1763856704137-0
+subject
+second
+body
+hi?
+```
+
+<br>
+
+> `XRANGE Email - +` vs. `XREAD BLOCK 0 STREAMS Email 0`  
+> `XREAD`를 사용했을 경우에는 반환할 데이터가 없으면 계속 기다리고 있지만,  
+> `XRANGE`를 사용하면 커맨드를 수행하는 시점의 데이터가 없더라도 바로 종료된다.  
+> ```shell
+> 127.0.0.1:6379> XRANGE Email 1763935668105 +
+> 
+> 127.0.0.1:6379>
+> ```
+
+<br>
+
+만약 입력한 데이터를 포함하지 않고, 그 다음 데이터부터 조회하고 싶을 때는 타임스탬프 값에 `(` 문자를 사용할 수 있다.  
+```shell
+# 1763935668104 포함한 데이터 반환
+127.0.0.1:6379> XRANGE Email 1763935668104 +
+1763935668104-0
+subject
+third
+body
+really?
+
+# 1763935668104 이후의 데이터 반환
+127.0.0.1:6379> XRANGE Email (1763935668104 +
+
+# id에 시퀀스 넘버까지 전부 붙여도 결과는 같다.
+127.0.0.1:6379> XRANGE Email (1763935668104-0 +
+
+127.0.0.1:6379> XRANGE Email 1763935668104-0 +
+1763935668104-0
+subject
+third
+body
+really?
+```
+
+<br>
+
+### ✅ 소비자와 소비자 그룹
+
+팬아웃(fan-out): 같은 데이터를 여러 소비자에게 전달하는 것  
+![kafka_fan_out.jpeg](../res/kafka_fan_out.jpeg)  
+카프카에서 여러 소비자에게 팬아웃을 하는 방식은 위 그림과 같다.  
+
+<br>
+
+![redis_stream_fan_out.jpeg](../res/redis_stream_fan_out.jpeg)  
+레디스에서도 마찬가지의 방식으로 팬아웃이 가능하다.
+
+<br>
+
+이벤트의 처리 성능을 높이기 위해 여러 소비자가 여러 이벤트를 병렬적으로 처리되도록 구성할 수 있다.  
+레디스 stream은 데이터가 저장될 때마다 고유한 ID를 부여받아 순서대로 저장되고, 소비자에게 데이터를 전달할 때도 그 순서는 항상 보장된다.  
+하지만 카프카에서 유니크 키는 파티션 내에서만 보장되기 때문에 소비자가 여러 파티션에서 토픽을 읽어갈 때에는 데이터의 순서를 보장할 수 없다.
+
+![kafka_partition.jpeg](../res/kafka_partition.jpeg)  
+- 메시지는 토픽에 저장될 때 해시함수에 의해 3개의 파티션에 랜덤하게 분배된다.
+- 소비자가 토픽에서 데이터를 소비할 때에는 파티션의 존재를 알지 못한다.  
+  ➡ 토픽내의 전체 파티션에서 데이터를 읽어온다.
+- 여러 파티션 간 데이터의 정렬은 보장되지 않기 때문에 소비자가 데이터를 읽어올 때에는 정렬이 보장되지 않는 데이터를 읽어오게 된다.
+- 카프카에서 메시지 순서가 보장되도록 데이터를 처리하기 위해서는 소비자 그룹을 사용해야 한다.
+
+<br>
+
+**Kafka 소비자 그룹**  
+
+카프카에서는 소비자 그룹에 여러 소비자를 추가할 수 있으며, 이때 소비자는 토픽 내의 파티션과 일대일로 연결된다.
+![kafka_consumer_group.jpeg](../res/kafka_consumer_group.jpeg)  
+소비자 그룹을 통해 각 소비자가 파티션과 연결되면 순서가 보장된 메시지를 받을 수 있게 된다.  
+
+> 처리 순서가 중요한 것들은 같은 파티션으로 보내는 것이 보장돼야 한다.  
+> ➡ 파티셔닝 전략이 몇 가지 있다. (추후 카프카 다룰 때 작성 예정)  
+> 그리고 각 파티션은 그룹 내 하나의 컨슈머에만 할당되지만, 컨슈머는 여러 파티션을 처리할 수 있다.
+
+<br>
+
+**레디스 Stream 소비자 그룹**  
+
+레디스 stream에서도 소비자 그룹이라는 개념이 존재하지만, kafka와는 달리 메시지가 전달되는 순서를 신경쓰지 않아도 된다.  
+➡ 소비자 그룹 내의 한 소비자는 다른 소비자가 아직 읽지 않은 데이터만을 읽어간다.
+
+![redis_stream_consumer_group.jpeg](../res/redis_stream_consumer_group.jpeg)  
+
+```shell
+127.0.0.1:6379> XGROUP CREATE Email EmailServiceGroup $
+OK
+```
+- `XGROUP`: `Email` stream을 읽어가는 `EmailServiceGroup`이라는 소비자 그룹을 생성
+- `$`: 현재 시점 이후의 데이터부터 리스닝하겠다는 뜻
+
+<br>
+
+```shell
+127.0.0.1:6379> XREADGROUP GROUP EmailServiceGroup emailService1 COUNT 1 STREAMS Email >
+```
+- `XREADGROUP`: `XREAD`와 같은 형태로 데이터를 응답하지만, 저장한 소비자 그룹을 통해서 데이터를 읽기를 원한다는 뜻이다.
+  - `EmailServiceGroup`에 속한 `emailService1`이라는 이름의 소비자가 `Email` stream에 있는 1개의 메시지를 읽고자 한다는 뜻이다.
+  - 매번 소비자가 소비자 그룹을 이용해 작업을 수행할 때마다 그룹 내에서 이 소비자를 고유하게 식별할 수 있는 이름을 지정해야 한다.
+  - 만약 다른 소비자에게 읽히지 않은 데이터가 있다면 데이터를 1개 가져오고, 없다면 `nil` 값을 반환한다.
+- `COUNT`: `Kafka`와는 달리 각 소비자는 `COUNT` 커맨드를 통해 소비할 메시지의 개수를 지정할 수 있다.
+- `STREAMS Email >`: `Email`이라는 이름의 stream에서 다른 소비자에게 전달되지 않았던 새로운 메시지를 전달하라는 의미다.
+  - 소비자 그룹을 사용하는 이유가 다른 소비자에게 전달되지 않은 데이터를 가지고 오는 것  
+    ➡ 대부분의 상황에서 `>`를 쓰게 될 것이다.
+  - `>`외에 `0` 또는 다른 숫자 ID를 입력할 경우, 입력한 ID보다 큰 ID 중 대기 리스트(pending list)에 속하던 메시지를 반환한다.
+
+<br>
+
+위의 예제를 반환시켜보자.
+```shell
+# Email Stream에 4번째 메시지 저장
+127.0.0.1:6379> XADD Email * subject "fourth" body "안녕?"
+1763985441998-0
+
+# emailService1을 통해 수신 결과 반환
+127.0.0.1:6379> XREADGROUP GROUP EmailServiceGroup emailService1 COUNT 1 STREAMS Email >
+Email
+1763985441998-0
+subject
+fourth
+body
+안녕?
+
+# emailService1을 통해 수신 결과 없음
+127.0.0.1:6379> XREADGROUP GROUP EmailServiceGroup emailService1 COUNT 1 STREAMS Email >
+
+```
+
+<br>
+
+- 소비자는 처음 언급될 때 자동으로 생성된다.
+- `XREADGROUP`을 사용하면 읽어오는 동작 자체가 일종의 쓰기 커맨드다.  
+  ➡ 이 커맨드는 마스터에서만 호출할 수 있다.
+
+<br>
+
+**부하 분산의 관점에서..**  
+카프카: 파티션이라는 개념을 이용해 소비자의 부하 분산을 관리한다.  
+레디스의 stream: 소비자 그룹이라는 개념을 이용해 여러 소비자에게 stream의 데이터를 분산시킬 수 있다.
+
+- `Email`이라는 stream 메시지를 읽어가기 위한 소비자 그룹은 다수 각각 독립적으로 존재할 수 있다.
+- 하나의 그룹에서 a라는 메시지를 읽었다면, 같은 그룹에서는 그 메시지를 다시 읽을 수 없지만, 그 그룹에 속하지 않는 소비자는 해당 메시지를 읽을 수 있다.
+- 하나의 소비자 그룹에서 여러 개의 stream을 리스닝하는 것도 가능하다.
+
+<br>
+
+```shell
+# BIGroup 생성 및 stream 처음부터 읽기 설정
+127.0.0.1:6379> XGROUP CREATE Email BIGroup 0
+OK
+127.0.0.1:6379> XGROUP CREATE Push BIGroup 0
+OK
+
+# Email과 Push 2개의 stream 리스닝
+127.0.0.1:6379> XREADGROUP GROUP BIGroup BT1 COUNT 2 STREAMS Email Push > >
+Email
+1763856669820-0
+subject
+first
+body
+hello?
+1763856704137-0
+subject
+second
+body
+hi?
+Push
+1763856688039-0
+userid
+1000
+ttl
+3
+body
+Hey
+```
+
+<br>
+
+### ✅ ACK와 보류 리스트
+> 여러 서비스가 메시지 브로커를 이용해 데이터를 처리할 때, 예상치 못한 장애로 인해 시스템이 종료됐을 경우, 이를 인지하고 재처리할 수 있는 기능이 필요하다.
+
+메시지 브로커
+- 각 소비자에게 어떤 메시지까지 전달됐는지 알고 있어야 한다.
+- 전달된 메시지의 처리 유무를 인지하고 있어야 한다.
+
+<br>
+
+![pending_list_ack.jpeg](../res/pending_list_ack.jpeg)  
+
+1. 보류 리스트(`pending list`): 각 소비자별로 읽어간 메시지에 대한 리스트를 새로 생성한다.
+2. `last_delivered_id`: 마지막으로 읽어간 데이터의 ID  
+   ➡ 동일한 메시지를 중복으로 전달하지 않게 한다.
+
+<br>
+
+![pending_list_ack2.jpeg](../res/pending_list_ack2.jpeg)  
+만약 이메일 서비스2가 stream에게 데이터가 처리됐다는 뜻의 `ACK`를 보내면 레디스 stream은 이메일 서비스2의 보류 리스트에서 `ACK`를 받은 메시지를 삭제한다.
+
+<br>
+
+> 만약 이메일 서비스에 문제가 발생해 서비스를 재부팅해야 하는 상황에서, stream의 보류 리스트에 데이터가 남아있는 경우 해당 데이터를 먼저 불러와 처리하는 작업을 선행적으로 수행  
+> ➡ 예상치 못한 서비스 중단에도 모든 메시지를 놓치지 않고 처리할 수 있게 된다.
+
+> 만약 이메실 서버 1이 장애가 발생해 해당 서버를 당분간 사용하지 못하는 경우, 1번 서버가 작업중이던 메시지를 다른 서버에서 처리해야할 수 있다.  
+> 1번 서버의 보류 리스트에 남아있는 메시지가 있는지 확인하는 과정을 거치면 된다.
+
+
+<br>
+
+```shell
+# 소비자 그룹에서 보류 중인 리스트가 있는지 확인
+127.0.0.1:6379> XPENDING Email EmailServiceGroup
+1
+1763985441998-0
+1763985441998-0
+emailService1
+1
+```
+반환되는 값
+1. 현재 소비자 그룹에서 `ACK`를 받지 못해 보류 중인 메시지의 개수
+2. 보류 중인 메시지 ID의 최솟값
+3. 보류 중인 메시지 ID의 최댓값
+4. 각 소비자별로 보류 중인 리스트 개수(위의 경우 소비자가 하나뿐이라 그냥 1 반환)
+
+<br>
+
+```shell
+# 메시지 처리
+127.0.0.1:6379> XACK Email EmailServiceGroup 1763985441998-0
+1
+
+# 소비자 그룹에서 보류 중인 리스트가 있는지 확인 결과 없음
+127.0.0.1:6379> XPENDING Email EmailServiceGroup
+0
+
+
+
+```
+`XACK` 커맨드를 통해 데이터가 처리됐음을 알려줄 수 있다.
+
+<br>
+
+> Kafka도 레디스 Stream처럼 파티션별로 오프셋을 관리한다.  
+> 카프카는 내부적으로 `__consumer_offsets`라는 토픽에 데이터를 기록한다.  
+> 카프카에서 오프셋은 소비자가 마지막으로 읽은 위치가 아니라 다음으로 읽어야 할 위치를 기록한다는 점이 다르다.
+
+<br>
+
+> 레디스 stream에서의 `at most once` vs `at least once` vs `exactly once`  
+> - `at most once`
+>   - 메시지를 최대 한 번 보내는 것을 의미한다.
+>   - 소비자는 메시지를 받자마자 실제 처리하기 전에 먼저 `ACK`를 보낸다.
+>   - 소비자에 문제 생겨 메시지가 일부 손실되더라도 빠른 응답이 필요할 때 선택하는 전략이다.
+> - `at least once`
+>   - 소비자는 받은 메시지를 모두 처리한 뒤 `ACK`를 보낸다.
+>   - 실제로 메시지가 처리됐지만 `ACK`를 전송하기 전에 소비자가 종료되는 상황  
+>     ➡ 보류 리스트에 처리된 메시지도 남아 있어도 한 번 더 처리하게 되는 상황이 발생할 수 있다.
+>   - 멱등성이 보장되는 서비스라면 상관없지만, 그렇지 않을 경우 문제가 생길 수 있다.
+> - `exactly once`
+>   - 모든 메시지가 무조건 한 번씩 전송되는 것을 보장한다.
+>   - 레디스의 `set` 등의 추가 자료 구조를 이용해 이미 처리된 메시지인지 확인하는 과정이 필요할 수 있다.
+
+<br>
+
+### ✅ 메시지의 재할당
+소비자에게 장애가 날 경우, 보류 리스트를 참고해서 다른 소비자가 해당 메시지를 처리해야할 때가 있다.  
+이때 `XCLAIM` 커맨드를 사용한다.  
+
+<br>
+
+```shell
+XCLAIM key group consumer min-idle-time id [id ...]
+```
+`min-idle-time`: 최소 대기 시간을 지정해야 한다.
+- 메시지가 보류 상태로 최소 대기 시간을 초과한 경우에만 소유권을 변경한다.
+- 같은 메시지가 2개의 다른 소비자에게 중복으로 할당되는 것을 방지한다.
+
+<br>
+
+```shell
+127.0.0.1:6379> XCLAIM Email EmailServiceGroup EmailService3 360000 1763985441998-0
+```
+
+<br>
+
+**메시지의 자동 재할당**  
+`XAUTOCLAIM`: 소비자가 직접 보류했던 메시지 중 하나를 자동으로 가져와서 처리할 수 있도록 한다.  
+보류중인 다음 메시지의 ID를 반환한다.
+```shell
+XAUTOCLAIM key group consumer min-idle-time start [COUNT count] [JUSTID]
+```
+최소 대기 시간을 만족하는 보류 중인 메시지가 있다면 지정한 소비자에 소유권을 재할당하는 방식으로 동작한다.  
+➡ `XCLAIM`으로 할당하는 방식에 비해 대상 메시지 ID를 직접 입력해줄 필요가 없다.  
+
+<br>
+
+```shell
+127.0.0.1:6379> XAUTOCLAIM Email EmailServiceGroup EmailService1 360000 0-0 count 1
+0-0
+```
+1. 첫 번째 반환 값으로 대상 보류 메시지의 ID가 반환된다.  
+   더이상 대기 중인 보류 메시지가 없을 경우 `0-0` 반환
+2. 소유권이 이전된 메시지의 정보를 제공한다.
+
+
+<br>
+
+**메시지의 수동 재할당**  
+stream 내의 각 메시지는 `counter`라는 값을 각각 가지고 있다.  
+➡ `XREADGROUP`을 이용해 소비자에게 할당하거나, `XCLAIM`을 이용해 재할당할 경우 1씩 증가한다.
+
+<br>
+
+만약 메시지에 문제가 있어 처리되지 못할 경우 메시지는 여러 소비자에게 할당되기를 반복하면서 `counter` 값이 증가하게 된다.  
+➡ `counter`가 특정 값에 도달하면 이 메시지를 특수한 다른 stream으로 보내, 관리자가 추후에 처리해야할 수도 있는데, 이런 메시지를 `dead letter` 라고 한다.
+
+<br>
+
+### ✅ stream 상태 확인
+> 일반적인 메시징 시스템이 그렇듯, 어떤 소비자가 활성화됐는지, 보류된 메시지는 어떤 건지, 어떤 소비자 그룹이 메시지를 처리하고 있는지 등의 상태를 체크할 수 없다면 stream은 관리하기 굉장히 빡세질 것이다.
+
+`XINFO`를 통해 stream의 여러 상태를 확인할 수 있다.
+```shell
+
+127.0.0.1:6379> XINFO HELP
+XINFO <subcommand> [<arg> [value] [opt] ...]. Subcommands are:
+CONSUMERS <key> <groupname>
+    Show consumers of <groupname>.
+GROUPS <key>
+    Show the stream consumer groups.
+STREAM <key> [FULL [COUNT <count>]
+    Show information about the stream.
+HELP
+    Print this help.
+```
+
+<br>
+
+```shell
+127.0.0.1:6379> XINFO consumers email EmailServiceGroup
+ERR no such key
+
+# 소비자 그룹에 속한 소비자의 정보 확인
+127.0.0.1:6379> XINFO consumers Email EmailServiceGroup
+name
+EmailService1
+pending
+0
+idle
+404464
+inactive
+-1
+
+name
+EmailService3
+pending
+0
+idle
+900010
+inactive
+-1
+
+name
+emailService1
+pending
+0
+idle
+4588118
+inactive
+4591400
+```
+
+<br>
+
+```shell
+# stream에 속한 전체 소비자 그룹 list
+127.0.0.1:6379> XINFO GROUPS Email
+name
+BIGroup
+consumers
+1
+pending
+2
+last-delivered-id
+1763856704137-0
+entries-read
+2
+lag
+3
+
+name
+EmailServiceGroup
+consumers
+3
+pending
+0
+last-delivered-id
+1763985441998-0
+entries-read
+4
+lag
+1
+```
+
+<br>
+
+```shell
+# stream 자체의 정보
+127.0.0.1:6379> XINFO STREAM Email
+length
+5
+radix-tree-keys
+1
+radix-tree-nodes
+2
+last-generated-id
+1763989625739-0
+max-deleted-entry-id
+0-0
+entries-added
+5
+recorded-first-entry-id
+1763856669820-0
+groups
+2
+first-entry
+1763856669820-0
+subject
+first
+body
+hello?
+last-entry
+1763989625739-0
+subject
+fifth
+body
+안녕2222녕?
+```
+
 
 <br>
 
 **참고 자료**  
-[개발자를 위한 레디스](https://product.kyobobook.co.kr/detail/S000210785682)
+[개발자를 위한 레디스](https://product.kyobobook.co.kr/detail/S000210785682)  
+메시지 큐 시스템 비교 및 Kafka 활용법
