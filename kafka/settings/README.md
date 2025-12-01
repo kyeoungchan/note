@@ -274,7 +274,7 @@ log.retention.check.interval.ms=300000
 - `num.network.threads`: 네트워크를 통한 처리를 할 때 사용할 네트워크 스레드 개수 설정이다.
 - `num.io.threads`: 카프카 브로커 내부에서 사용할 스레드 개수다.
 - `log.dirs`: 통신을 통해 가져온 데이터를 파일로 저장할 디렉토리 위치다.
-- `num.partitions`; 파티션 개수를 명시하지 않고 토픽을 생성할 때 기본 설정되ㅏ는 파티션 개수다.
+- `num.partitions`: 파티션 개수를 명시하지 않고 토픽을 생성할 때 기본 설정되ㅏ는 파티션 개수다.
   - 파티션 개수가 많아지면 병렬처리 데이터 양이 늘어난다.
 - `log.retention.hours`: 카프카 브로커가 저장한 파일이 삭제되기까지 걸리는 시간을 설정할 수 있다.
   - 운영 시에는 가장 작은 단위를 기준으로 하므로 `log.retention.hours`보다는 `log.retention.ms` 값을 설정하는 것을 권장한다.
