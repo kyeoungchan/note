@@ -24,7 +24,7 @@ KTable로 데이터를 조회하면 메시지 키를 기준으로 가장 최신�
 <br>
 
 ## ✅ GlobalKTable
-GlobalKTable은 KTable과 동이랗게 메시지 키를 기준으로 묶어서 사용된다.
+GlobalKTable은 KTable과 동이랗게 메시지 키를 기준으로 묶어서 사용된다.  
 그러나 KTable로 선언된 토픽은 1개 파티션이 1개 태스크에 할당되어 사용되고, GlobalKTable로 선언된 토픽은 모든 파티션 데이터가 각 태스크에 할당되어 사용된다는 차이점이 있다.
 
 <br>
@@ -53,6 +53,10 @@ KTable과 달리 GlobalKTable로 정의된 데이터는 스트림즈 애플리�
 
 다만, GlobalKTable을 사용하면 태스크마다 GlobalKTable로 정의된 모든 데이터를 저장하고 사용하기 때문에 스트림즈 애플리케이션의 로컬 스토리지 사용량이 증가하고 네트워크, 브로커에 부하가 생기므로 되도록이면 작은 용량의 데이터일 경우에만 사용하는 것이 좋다.  
 많은 양의 데이터를 가진 토픽으로 조인할경우에는 리파티셔닝을 통해 KTable을 사용하는 것을 권장한다.  
+
+<br>
+
+[카프카 스트림즈 애플리케이션](https://github.com/kyeoungchan/simple-kafka-streams)을 참고하자.
 
 <br>
 
