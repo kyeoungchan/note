@@ -69,6 +69,7 @@
     - [지네릭스 part2](https://kyeoungchan.tistory.com/12)
 - [카프카](https://github.com/kyeoungchan/note/tree/main/kafka)
   - [카프카 커맨드 라인 툴](https://github.com/kyeoungchan/note/tree/main/kafka/command-line-tool)
+  - [카프카 커넥트](https://github.com/kyeoungchan/note/tree/main/kafka/kafkaconnect)
   - [카프카 스트림즈](https://github.com/kyeoungchan/note/tree/main/kafka/kafkastreams)
     - [스트림즈DSL](https://github.com/kyeoungchan/note/tree/main/kafka/kafkastreams/streamsdsl)
 - [코틀린](https://github.com/kyeoungchan/note/tree/main/kotlin)
