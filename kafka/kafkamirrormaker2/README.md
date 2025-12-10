@@ -70,3 +70,9 @@ offset-syncs.topic.replication.factor=1
 
 ### ✅ 허브 앤 스포크(Hub and spoke) 클러스터 운영
 각 팀에서 소규모 카프카 클러스터를 사용하고 있을 때 각 팀의 카프카 클러스터의 데이터를 한 개의 카프카 클러스터에 모아 데이터 레이크로 사용하고 싶다면 허브 앤 스포크 방식의 클러스터를 운영할 수 있다.
+
+
+<br>
+
+**참고 자료**  
+[아파치 카프카 애플리케이션 프로그래밍 with 자바](https://product.kyobobook.co.kr/detail/S000001842177)
