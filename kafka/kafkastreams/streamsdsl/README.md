@@ -24,7 +24,7 @@ KTable로 데이터를 조회하면 메시지 키를 기준으로 가장 최신�
 <br>
 
 ## ✅ GlobalKTable
-GlobalKTable은 KTable과 동이랗게 메시지 키를 기준으로 묶어서 사용된다.  
+GlobalKTable은 KTable과 동일하게 메시지 키를 기준으로 묶어서 사용된다.  
 그러나 KTable로 선언된 토픽은 1개 파티션이 1개 태스크에 할당되어 사용되고, GlobalKTable로 선언된 토픽은 모든 파티션 데이터가 각 태스크에 할당되어 사용된다는 차이점이 있다.
 
 <br>
