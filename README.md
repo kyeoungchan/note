@@ -73,6 +73,7 @@
   - [카프카 미러메이커2](https://github.com/kyeoungchan/note/tree/main/kafka/kafkamirrormaker2)
   - [카프카 스트림즈](https://github.com/kyeoungchan/note/tree/main/kafka/kafkastreams)
     - [스트림즈DSL](https://github.com/kyeoungchan/note/tree/main/kafka/kafkastreams/streamsdsl)
+  - [스프링 카프카 컨슈머](https://github.com/kyeoungchan/note/tree/main/kafka/springkafkaconsumer)
 - [코틀린](https://github.com/kyeoungchan/note/tree/main/kotlin)
 - 네트워크
   - [Blocking vs Non Blocking vs Synchronous vs Asynchronous](https://github.com/kyeoungchan/note/tree/main/network/blocking-nonblocking-syn-asyn)
