@@ -7,7 +7,7 @@
 1. 레코드 리스너(MessageListener)
    - 단 1개의 레코드를 처리한다.
    - 스프링 카프카 컨슈머의 기본 리스너 타입이다.
-2. 배치 리스터(BatchMessageListener)
+2. 배치 리스너(BatchMessageListener)
    - 기존 카프카 클라이언트 라이브러리의 `poll()` 메서드로 리턴받은 `ConsumerRecords`처럼 한 번에 여러 개 레코드들을 처리할 수 있다.
 
 
