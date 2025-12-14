@@ -58,6 +58,8 @@
   - [세션 하이재킹](https://github.com/kyeoungchan/note/tree/main/hacking/session-hijacking)
   - [SQL 삽입](https://github.com/kyeoungchan/note/tree/main/hacking/sql-injection)
   - [XSS](https://github.com/kyeoungchan/note/tree/main/hacking/xss)
+- 하둡
+  - [하둡 설정](https://github.com/kyeoungchan/note/tree/main/hadoop/settings)
 - JAVA
   - [Java 컴파일 과정](https://github.com/kyeoungchan/note/tree/main/java/compile)
   - [CountDownLatch vs. CyclicBarrier](https://github.com/kyeoungchan/note/tree/main/java/countdownlatch-cyclicbarrier)
