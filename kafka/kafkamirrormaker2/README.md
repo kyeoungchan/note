@@ -38,7 +38,7 @@ A->B.topics = test
 B->A.enabled = false
 B->A.topics = .*
 
-# 복제되어 신규 생성도니 토픽의 복제 개수를 설정한다.
+# 복제되어 신규 생성된 토픽의 복제 개수를 설정한다.
 replication.factor=1
 
 # 토픽 복제에 필요한 데이터를 저장하는 내부 토픽의 복제 개수를 설정한다.
