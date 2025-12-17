@@ -58,6 +58,8 @@
   - [세션 하이재킹](https://github.com/kyeoungchan/note/tree/main/hacking/session-hijacking)
   - [SQL 삽입](https://github.com/kyeoungchan/note/tree/main/hacking/sql-injection)
   - [XSS](https://github.com/kyeoungchan/note/tree/main/hacking/xss)
+- 하둡
+  - [하둡 설정](https://github.com/kyeoungchan/note/tree/main/hadoop/settings)
 - JAVA
   - [Java 컴파일 과정](https://github.com/kyeoungchan/note/tree/main/java/compile)
   - [CountDownLatch vs. CyclicBarrier](https://github.com/kyeoungchan/note/tree/main/java/countdownlatch-cyclicbarrier)
@@ -70,8 +72,10 @@
 - [카프카](https://github.com/kyeoungchan/note/tree/main/kafka)
   - [카프카 커맨드 라인 툴](https://github.com/kyeoungchan/note/tree/main/kafka/command-line-tool)
   - [카프카 커넥트](https://github.com/kyeoungchan/note/tree/main/kafka/kafkaconnect)
+  - [카프카 미러메이커2](https://github.com/kyeoungchan/note/tree/main/kafka/kafkamirrormaker2)
   - [카프카 스트림즈](https://github.com/kyeoungchan/note/tree/main/kafka/kafkastreams)
     - [스트림즈DSL](https://github.com/kyeoungchan/note/tree/main/kafka/kafkastreams/streamsdsl)
+  - [스프링 카프카 컨슈머](https://github.com/kyeoungchan/note/tree/main/kafka/springkafkaconsumer)
 - [코틀린](https://github.com/kyeoungchan/note/tree/main/kotlin)
 - 네트워크
   - [Blocking vs Non Blocking vs Synchronous vs Asynchronous](https://github.com/kyeoungchan/note/tree/main/network/blocking-nonblocking-syn-asyn)

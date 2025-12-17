@@ -31,9 +31,9 @@
 ### ✅ 토픽 생성
 ```shell
 Kyeongchanui-MacBookPro:kafka_2.12-3.9.0 kyeongchanwoo$ bin/kafka-topics.sh \
-> --create \
-> --bootstrap-server my-kafka:9092 \
-> --topic hello.kafka
+--create \
+--bootstrap-server my-kafka:9092 \
+--topic hello.kafka
 WARNING: Due to limitations in metric names, topics with a period ('.') or underscore ('_') could collide. To avoid issues it is best to use either, but not both.
 Created topic hello.kafka.
 ```
@@ -48,12 +48,12 @@ Created topic hello.kafka.
 
 ```shell
 Kyeongchanui-MacBookPro:kafka_2.12-3.9.0 kyeongchanwoo$ bin/kafka-topics.sh \
-> --create \
-> --bootstrap-server my-kafka:9092 \
-> --partitions 3 \
-> --replication-factor 1 \
-> --config retention.ms=172800000 \
-> --topic hello.kafka.2
+--create \
+--bootstrap-server my-kafka:9092 \
+--partitions 3 \
+--replication-factor 1 \
+--config retention.ms=172800000 \
+--topic hello.kafka.2
 WARNING: Due to limitations in metric names, topics with a period ('.') or underscore ('_') could collide. To avoid issues it is best to use either, but not both.
 Created topic hello.kafka.2.
 ```
@@ -105,14 +105,14 @@ Topic: hello.kafka.2	TopicId: Yoqy3dStRKKmz3Kwyny9Kw	PartitionCount: 3	Replicati
 ```shell
 # 파티션 개수 늘리기
 Kyeongchanui-MacBookPro:kafka_2.12-3.9.0 kyeongchanwoo$ bin/kafka-topics.sh --bootstrap-server my-kafka:9092 \
-> --topic hello.kafka \
-> --alter \
-> --partitions 4
+--topic hello.kafka \
+--alter \
+--partitions 4
 
 # 파티션 생성 결과 확인
 Kyeongchanui-MacBookPro:kafka_2.12-3.9.0 kyeongchanwoo$ bin/kafka-topics.sh --bootstrap-server my-kafka:9092 \
-> --topic hello.kafka \
-> --describe
+--topic hello.kafka \
+--describe
 Topic: hello.kafka	TopicId: uOFV_1f4Soqf4HtjpHYBmQ	PartitionCount: 4	ReplicationFactor: 1	Configs: segment.bytes=1073741824
 	Topic: hello.kafka	Partition: 0	Leader: 2	Replicas: 2	Isr: 2	Elr: 	LastKnownElr: 
 	Topic: hello.kafka	Partition: 1	Leader: 2	Replicas: 2	Isr: 2	Elr: 	LastKnownElr: 
@@ -121,16 +121,16 @@ Topic: hello.kafka	TopicId: uOFV_1f4Soqf4HtjpHYBmQ	PartitionCount: 4	Replication
 
 # retention.ms 수정
 Kyeongchanui-MacBookPro:kafka_2.12-3.9.0 kyeongchanwoo$ bin/kafka-configs.sh --bootstrap-server my-kafka:9092 \
-> --entity-type topics \
-> --entity-name hello.kafka \
-> --alter --add-config retention.ms=86400000
+--entity-type topics \
+--entity-name hello.kafka \
+--alter --add-config retention.ms=86400000
 Completed updating config for topic hello.kafka.
 
 # retention.ms 결과 확인
 Kyeongchanui-MacBookPro:kafka_2.12-3.9.0 kyeongchanwoo$ bin/kafka-configs.sh --bootstrap-server my-kafka:9092 \
-> --entity-type topics \
-> --entity-name hello.kafka \
-> --describe
+--entity-type topics \
+--entity-name hello.kafka \
+--describe
 Dynamic configs for topic hello.kafka are:
   retention.ms=86400000 sensitive=false synonyms={DYNAMIC_TOPIC_CONFIG:retention.ms=86400000}
 ```
@@ -148,7 +148,7 @@ Dynamic configs for topic hello.kafka are:
 메시지 key 없이 value로만 보내면 key는 `null`로 기본 설정되어 브로커로 전송된다.  
 ```shell
 Kyeongchanui-MacBookPro:kafka_2.12-3.9.0 kyeongchanwoo$ bin/kafka-console-producer.sh --bootstrap-server my-kafka:9092 \
-> --topic hello.kafka
+--topic hello.kafka
 >hello
 >kafka
 >5
@@ -168,9 +168,9 @@ Kyeongchanui-MacBookPro:kafka_2.12-3.9.0 kyeongchanwoo$ bin/kafka-console-produc
 아래는 메시지 key를 가지는 레코드 전송이다.
 ```shell
 Kyeongchanui-MacBookPro:kafka_2.12-3.9.0 kyeongchanwoo$ bin/kafka-console-producer.sh --bootstrap-server my-kafka:9092 \
-> --topic hello.kafka \
-> --property "parse.key=true" \
-> --property "key.separator=:"
+--topic hello.kafka \
+--property "parse.key=true" \
+--property "key.separator=:"
 >key1:no1
 >key2:no2 
 >key3:no3
@@ -211,10 +211,10 @@ Kyeongchanui-MacBookPro:kafka_2.12-3.9.0 kyeongchanwoo$ bin/kafka-console-produc
 ```shell
 # 렉이 걸려서 메시지 개수를 최대 100으로 설정했다. t2 micro 너무 성능 안 좋다..
 Kyeongchanui-MacBookPro:kafka kyeongchanwoo$ bin/kafka-console-consumer.sh \
-> --bootstrap-server my-kafka:9092 \
-> --topic hello.kafka \
-> --from-beginning \
-> --max-messages 100
+--bootstrap-server my-kafka:9092 \
+--topic hello.kafka \
+--from-beginning \
+--max-messages 100
 no2 
 hello
 kafka
@@ -230,12 +230,12 @@ no1
 ```shell
 # 메시지 키와 메시지 값 확인
 Kyeongchanui-MacBookPro:kafka kyeongchanwoo$ bin/kafka-console-consumer.sh --bootstrap-server my-kafka:9092 \
-> --topic hello.kafka \
-> --property print.key=true \
-> --property key.separator="-" \
-> --group hello-group \
-> --from-beginning \
-> --max-messages 100
+--topic hello.kafka \
+--property print.key=true \
+--property key.separator="-" \
+--group hello-group \
+--from-beginning \
+--max-messages 100
 key2-no2 
 null-hello
 null-kafka
@@ -267,8 +267,8 @@ hello-group
 
 ```shell
 Kyeongchanui-MacBookPro:kafka kyeongchanwoo$ bin/kafka-consumer-groups.sh --bootstrap-server my-kafka:9092 \
-> --group hello-group \
-> --describe
+--group hello-group \
+--describe
 
 Consumer group 'hello-group' has no active members.
 
@@ -295,8 +295,8 @@ hello-group     hello.kafka     0          1               1               0    
 
 ```shell
 Kyeongchanui-MacBookPro:kafka kyeongchanwoo$ bin/kafka-verifiable-producer.sh --bootstrap-server my-kafka:9092 \
-> --max-messages 10 \
-> --topic verify-test
+--max-messages 10 \
+--topic verify-test
 {"timestamp":1764489857188,"name":"startup_complete"}
 [2025-11-30 17:04:17,352] WARN [Producer clientId=producer-1] The metadata response from the cluster reported a recoverable issue with correlation id 1 : {verify-test=UNKNOWN_TOPIC_OR_PARTITION} (org.apache.kafka.clients.NetworkClient)
 {"timestamp":1764489857585,"name":"producer_send_success","key":null,"value":"0","offset":0,"partition":0,"topic":"verify-test"}
@@ -322,8 +322,8 @@ Kyeongchanui-MacBookPro:kafka kyeongchanwoo$ bin/kafka-verifiable-producer.sh --
 
 ```shell
 Kyeongchanui-MacBookPro:kafka kyeongchanwoo$ bin/kafka-verifiable-consumer.sh --bootstrap-server my-kafka:9092 \
-> --topic verify-test \
-> --group-id test-group
+--topic verify-test \
+--group-id test-group
 {"timestamp":1764490093945,"name":"startup_complete"}
 {"timestamp":1764490097317,"name":"partitions_assigned","partitions":[{"topic":"verify-test","partition":0}]}
 {"timestamp":1764490097492,"name":"records_consumed","count":10,"partitions":[{"topic":"verify-test","partition":0,"count":10,"minOffset":0,"maxOffset":9}]}
@@ -352,7 +352,7 @@ Kyeongchanui-MacBookPro:kafka kyeongchanwoo$ vi delete-topic.json
 ```
 ```shell
 Kyeongchanui-MacBookPro:kafka kyeongchanwoo$ bin/kafka-delete-records.sh --bootstrap-server my-kafka:9092 \
-> --offset-json-file delete-topic.json
+--offset-json-file delete-topic.json
 Executing records delete operation
 Records delete operation completed:
 ```
