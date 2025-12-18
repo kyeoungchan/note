@@ -101,6 +101,7 @@
       - [레디스 자료 구조 활용 사례](https://github.com/kyeoungchan/note/tree/main/redis/basic/data-structure/example)
     - [레디스에서 키를 관리하는 법](https://github.com/kyeoungchan/note/tree/main/redis/basic/key-management)
   - [레디스를 캐시로](https://github.com/kyeoungchan/note/tree/main/redis/cache-redis)
+  - [레디스 데이터 백업 방법](https://github.com/kyeoungchan/note/tree/main/redis/data-backup)
   - [레디스를 메시지 브로커로](https://github.com/kyeoungchan/note/tree/main/redis/message-broker-redis)
   - [레디스 환경설정](https://github.com/kyeoungchan/note/tree/main/redis/settings)
 - 보안
