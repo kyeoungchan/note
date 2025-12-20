@@ -206,5 +206,31 @@ RestController로 받은 데이터를 토픽으로 전달할 때는 스프링 �
 
 <br>
 
+#### 🧑🏻‍💻 실행 순서
+1. 하둡을 실행한다. (참고: [하둡 실행 가이드](https://github.com/kyeoungchan/note/tree/main/hadoop/settings))
+2. 엘라스틱 서치를 실행한다. (참고: [엘라스틱서치 실행 가이드](https://github.com/kyeoungchan/note/tree/main/elastic-stack/settings))
+3. [kafka-spring-producer-with-rest-controller](https://github.com/kyeoungchan/kafka-spring-producer-with-rest-controller)를 먼저 실행한다.
+4. [kafka-multi-consumer-thread-hdfs-save](https://github.com/kyeoungchan/kafka-multi-consumer-thread-hdfs-save)를 실행한다.
+5. [elasticsearch-kafka-consumer
+   ](https://github.com/kyeoungchan/elasticsearch-kafka-consumer)에 적힌 가이드대로 실행한다.
+
+<br>
+
+웹 페이지(http://127.0.0.1:5500/index.html)를 접속하고 이름을 작성하고, 색성 버튼을 무작위로 클릭한다.  
+우리는 하둡에 데이터를 저장할 때 최소 10개 이상의 데이터가 버퍼에 쌓였을 경우 HDFS에 저장하는 로직을 작성했고, 파티션은 3개로 설정했으므로 최소 30번 이상 웹 이벤트를 발생시켜야 각 파티션의 데이터가 HDFS에 쌓인다.  
+➡ 30번 이상 색상 버튼을 클릭한 후 아래의 커맨드로 확인해본다.
+```shell
+$ hdfs dfs -ls -R /
+2025-12-20 15:53:40,117 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+drwxr-xr-x   - kyeongchanwoo supergroup          0 2025-12-20 15:53 /data
+-rw-r--r--   3 kyeongchanwoo supergroup        215 2025-12-20 15:48 /data/color-0-0.log
+-rw-r--r--   3 kyeongchanwoo supergroup       2174 2025-12-20 15:53 /data/color-0-1.log
+-rw-r--r--   3 kyeongchanwoo supergroup       2176 2025-12-20 15:53 /data/color-0-11.log
+-rw-r--r--   3 kyeongchanwoo supergroup       2176 2025-12-20 15:53 /data/color-0-21.log
+```
+
+
+<br>
+
 **참고 자료**  
 [아파치 카프카 애플리케이션 프로그래밍 with 자바](https://product.kyobobook.co.kr/detail/S000001842177)
