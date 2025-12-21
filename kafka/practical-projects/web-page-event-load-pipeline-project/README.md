@@ -209,6 +209,14 @@ RestController로 받은 데이터를 토픽으로 전달할 때는 스프링 �
 <br>
 
 #### 🧑🏻‍💻 실행 순서
+0. 토픽을 생성하지 않았다면, 토픽을 생성한다.
+    ```shell
+    $ bin/kafka-topics.sh --create \
+    --bootstrap-server my-kafka:9092 \
+    --replication-factor 2 \
+    --partitions 3 \
+    --topic select-color
+    ```
 1. 하둡을 실행한다. (참고: [하둡 실행 가이드](https://github.com/kyeoungchan/note/tree/main/hadoop/settings))
 2. 엘라스틱 서치 및 키바나를 실행한다. (참고: [엘라스틱 스택 실행 가이드](https://github.com/kyeoungchan/note/tree/main/elastic-stack/settings))
 3. [kafka-spring-producer-with-rest-controller](https://github.com/kyeoungchan/kafka-spring-producer-with-rest-controller)를 먼저 실행한다.
