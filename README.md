@@ -96,6 +96,8 @@
 - [성능 테스트](https://github.com/kyeoungchan/note/tree/main/performance-test)
   - [Apache Jmeter](https://github.com/kyeoungchan/note/tree/main/performance-test/apache-jmeter)
 - [레디스(Redis)](https://github.com/kyeoungchan/note/tree/main/redis)
+  - [레디스에서의 고가용성](https://github.com/kyeoungchan/note/tree/main/redis/availability)
+    - [복제](https://github.com/kyeoungchan/note/tree/main/redis/availability/duplication)
   - 레디스 기본
     - [레디스의 자료 구조](https://github.com/kyeoungchan/note/tree/main/redis/basic/data-structure)
       - [레디스 자료 구조 활용 사례](https://github.com/kyeoungchan/note/tree/main/redis/basic/data-structure/example)
@@ -152,3 +154,5 @@
   - [리눅스 환경 엘라스틱 스택 설정](https://github.com/kyeoungchan/note/tree/main/linux/elastic-stack/settings)
 - [클러스터 백업](https://github.com/kyeoungchan/note/tree/main/elastic-stack/cluster-node/cluster)
 - [카프카 실습환경 세팅](https://github.com/kyeoungchan/note/tree/main/kafka/settings)
+- 카프카 실전 프로젝트
+  - [웹 페이지 이벤트 적재 파이프라인](https://github.com/kyeoungchan/note/tree/main/kafka/practical-projects/web-page-event-load-pipeline-project)
