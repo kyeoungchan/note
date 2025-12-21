@@ -58,8 +58,6 @@
   - [세션 하이재킹](https://github.com/kyeoungchan/note/tree/main/hacking/session-hijacking)
   - [SQL 삽입](https://github.com/kyeoungchan/note/tree/main/hacking/sql-injection)
   - [XSS](https://github.com/kyeoungchan/note/tree/main/hacking/xss)
-- 하둡
-  - [하둡 설정](https://github.com/kyeoungchan/note/tree/main/hadoop/settings)
 - JAVA
   - [Java 컴파일 과정](https://github.com/kyeoungchan/note/tree/main/java/compile)
   - [CountDownLatch vs. CyclicBarrier](https://github.com/kyeoungchan/note/tree/main/java/countdownlatch-cyclicbarrier)
@@ -155,4 +153,7 @@
 - [클러스터 백업](https://github.com/kyeoungchan/note/tree/main/elastic-stack/cluster-node/cluster)
 - [카프카 실습환경 세팅](https://github.com/kyeoungchan/note/tree/main/kafka/settings)
 - 카프카 실전 프로젝트
+  - [서버 지표 수집 파이프라인 생성과 스트림즈 활용](https://github.com/kyeoungchan/note/tree/main/kafka/practical-projects/server-indicator-collect-pipeline-projects)
   - [웹 페이지 이벤트 적재 파이프라인](https://github.com/kyeoungchan/note/tree/main/kafka/practical-projects/web-page-event-load-pipeline-project)
+- [하둡 설정](https://github.com/kyeoungchan/note/tree/main/hadoop/settings)
+- [메트릭비트 설정](https://github.com/kyeoungchan/note/tree/main/metricbeat/settings)
