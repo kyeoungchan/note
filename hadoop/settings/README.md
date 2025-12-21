@@ -83,6 +83,10 @@ $ start-dfs.sh
 
 ```shell
 # 하둡 종료
-$ sudo systemsetup -setremotelogin off
+$ stop-dfs.sh
 ```
+
+사용 다 했으면 위에서 설정했던 원격 로그인 종료도 해둔다.  
+![remote_login.png](../res/remote_login.png)  
+
 
