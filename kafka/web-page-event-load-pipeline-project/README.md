@@ -208,7 +208,7 @@ RestController로 받은 데이터를 토픽으로 전달할 때는 스프링 �
 
 #### 🧑🏻‍💻 실행 순서
 1. 하둡을 실행한다. (참고: [하둡 실행 가이드](https://github.com/kyeoungchan/note/tree/main/hadoop/settings))
-2. 엘라스틱 서치를 실행한다. (참고: [엘라스틱서치 실행 가이드](https://github.com/kyeoungchan/note/tree/main/elastic-stack/settings))
+2. 엘라스틱 서치 및 키바나를 실행한다. (참고: [엘라스틱 스택 실행 가이드](https://github.com/kyeoungchan/note/tree/main/elastic-stack/settings))
 3. [kafka-spring-producer-with-rest-controller](https://github.com/kyeoungchan/kafka-spring-producer-with-rest-controller)를 먼저 실행한다.
 4. [kafka-multi-consumer-thread-hdfs-save](https://github.com/kyeoungchan/kafka-multi-consumer-thread-hdfs-save)를 실행한다.
 5. [elasticsearch-kafka-consumer
@@ -216,7 +216,7 @@ RestController로 받은 데이터를 토픽으로 전달할 때는 스프링 �
 
 <br>
 
-웹 페이지(http://127.0.0.1:5500/index.html)를 접속하고 이름을 작성하고, 색성 버튼을 무작위로 클릭한다.  
+VS code를 통해 웹 페이지([favorite-color-webpage](https://github.com/kyeoungchan/favorite-color-webpage))를 접속하고 이름을 작성하고, 색성 버튼을 무작위로 클릭한다.  
 우리는 하둡에 데이터를 저장할 때 최소 10개 이상의 데이터가 버퍼에 쌓였을 경우 HDFS에 저장하는 로직을 작성했고, 파티션은 3개로 설정했으므로 최소 30번 이상 웹 이벤트를 발생시켜야 각 파티션의 데이터가 HDFS에 쌓인다.  
 ➡ 30번 이상 색상 버튼을 클릭한 후 아래의 커맨드로 확인해본다.
 ```shell
@@ -229,6 +229,15 @@ drwxr-xr-x   - kyeongchanwoo supergroup          0 2025-12-20 15:53 /data
 -rw-r--r--   3 kyeongchanwoo supergroup       2176 2025-12-20 15:53 /data/color-0-21.log
 ```
 
+<br>
+
+그리고 Kibana를 통해 `kafka-to-es` Data View를 생성하고, Timestamp field를 `timestamp`로 설정한다.
+
+![data_view_setting.png](../res/data_view_setting.png)
+
+그 후 Discover 탭을 활용하여 데이터가 elasticsearch에 적재된 것을 확인한다.  
+
+![check_kibana.png](../res/check_kibana.png)
 
 <br>
 
