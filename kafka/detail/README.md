@@ -152,7 +152,8 @@ AWS MSK 또는 EC2의 EBS를 사용한다면 저장소 용량이 늘어남에 �
 
 `min.cleanable.dirty.ratio`
 - 데이터의 압축 시작 시점은 `min.cleanable.dirty.ratio` 옵션값을 따른다.
-- `min.cleanable.dirty.ratio` 옵션값은 액티브 세그먼트를 제외한 세그먼트에 남아있는 데이터의 tail 영역의 레코드 개수와 head 영역의 레코드 개수의 비율을 뜻한다.
+- `min.cleanable.dirty.ratio` 옵션값은 액티브 세그먼트를 제외한 세그먼트에 남아있는 데이터의 tail 영역의 레코드 개수와 head 영역의 레코드 개수의 비율을 뜻한다.  
+  ![tail_head_active_segment.jpeg](../res/tail_head_active_segment.jpeg)  
   - tail 영역
     - 브로커의 압축 정책에 의해 압축이 완료된 레코드들을 뜻한다.  
     - tail 영역의 레코드들은 clean 로그라고 부른다.
@@ -163,6 +164,7 @@ AWS MSK 또는 EC2의 EBS를 사용한다면 저장소 용량이 늘어남에 �
   - dirty ratio
     - dirty 영역의 메시지 개수를 압축 대상 세그먼트에 남아있는 데이터의 총 레코드 수(dirty 영역 메시지 개수 + clean 영역 메시지 개수)로 나눈 비율
     - 액티브 세그먼트의 레코드는 계산에서 제외해야 한다!
+    - 위의 경우, `dirty records / clean records + dirty records = 3 / (3 + 3) = 0.5`가 된다.
   - 만약 `min.cleanable.dirty.ratio` 옵션값을 0.5로 설정할 경우, dirty 비율이 0.5가 넘어가면 압축이 수행된다.
 
 `min.cleanable.dirty.ratio`값을 0.9와 같이 크게 설정하면 한 번 압축을 할 때 많은 데이터가 줄어드므로 압축효과가 좋지만, 비율이 될 때까지 용량을 차지하므로 용량 효율이 좋지 않다.  
