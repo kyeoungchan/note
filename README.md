@@ -58,8 +58,6 @@
   - [세션 하이재킹](https://github.com/kyeoungchan/note/tree/main/hacking/session-hijacking)
   - [SQL 삽입](https://github.com/kyeoungchan/note/tree/main/hacking/sql-injection)
   - [XSS](https://github.com/kyeoungchan/note/tree/main/hacking/xss)
-- 하둡
-  - [하둡 설정](https://github.com/kyeoungchan/note/tree/main/hadoop/settings)
 - JAVA
   - [Java 컴파일 과정](https://github.com/kyeoungchan/note/tree/main/java/compile)
   - [CountDownLatch vs. CyclicBarrier](https://github.com/kyeoungchan/note/tree/main/java/countdownlatch-cyclicbarrier)
@@ -96,11 +94,14 @@
 - [성능 테스트](https://github.com/kyeoungchan/note/tree/main/performance-test)
   - [Apache Jmeter](https://github.com/kyeoungchan/note/tree/main/performance-test/apache-jmeter)
 - [레디스(Redis)](https://github.com/kyeoungchan/note/tree/main/redis)
+  - [레디스에서의 고가용성](https://github.com/kyeoungchan/note/tree/main/redis/availability)
+    - [복제](https://github.com/kyeoungchan/note/tree/main/redis/availability/duplication)
   - 레디스 기본
     - [레디스의 자료 구조](https://github.com/kyeoungchan/note/tree/main/redis/basic/data-structure)
       - [레디스 자료 구조 활용 사례](https://github.com/kyeoungchan/note/tree/main/redis/basic/data-structure/example)
     - [레디스에서 키를 관리하는 법](https://github.com/kyeoungchan/note/tree/main/redis/basic/key-management)
   - [레디스를 캐시로](https://github.com/kyeoungchan/note/tree/main/redis/cache-redis)
+  - [레디스 데이터 백업 방법](https://github.com/kyeoungchan/note/tree/main/redis/data-backup)
   - [레디스를 메시지 브로커로](https://github.com/kyeoungchan/note/tree/main/redis/message-broker-redis)
   - [레디스 환경설정](https://github.com/kyeoungchan/note/tree/main/redis/settings)
 - 보안
@@ -151,3 +152,8 @@
   - [리눅스 환경 엘라스틱 스택 설정](https://github.com/kyeoungchan/note/tree/main/linux/elastic-stack/settings)
 - [클러스터 백업](https://github.com/kyeoungchan/note/tree/main/elastic-stack/cluster-node/cluster)
 - [카프카 실습환경 세팅](https://github.com/kyeoungchan/note/tree/main/kafka/settings)
+- 카프카 실전 프로젝트
+  - [서버 지표 수집 파이프라인 생성과 스트림즈 활용](https://github.com/kyeoungchan/note/tree/main/kafka/practical-projects/server-indicator-collect-pipeline-projects)
+  - [웹 페이지 이벤트 적재 파이프라인](https://github.com/kyeoungchan/note/tree/main/kafka/practical-projects/web-page-event-load-pipeline-project)
+- [하둡 설정](https://github.com/kyeoungchan/note/tree/main/hadoop/settings)
+- [메트릭비트 설정](https://github.com/kyeoungchan/note/tree/main/metricbeat/settings)

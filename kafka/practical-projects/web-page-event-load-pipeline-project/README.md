@@ -1,4 +1,4 @@
-# 🧑🏻‍💻 카프카 실전 프로젝트
+# 🧑🏻‍💻 카프카 실전 프로젝트 - 웹 페이지 이벤트 적재 파이프라인
 - [요구 사항](#-요구-사항)
 - [적재 정책](#-적재-정책)
 - [데이터 포맷](#-데이터-포맷)
@@ -6,6 +6,8 @@
 - [토픽](#-토픽)
 - [아키텍처](#-아키텍처)
 - [프로젝트 링크](#-프로젝트-링크)
+- [상용 인프라 아키텍처](#-상용-인프라-아키텍처)
+  - [웹 이벤트가 갑자기 늘어나는 경우](#-웹-이벤트가-갑자기-늘어나는-경우)
 
 
 웹 페이지의 사용자 이벤트 수집은 서비스에 영향을 미치지 않으면서도 안정적으로 유지되어야 한다.  
@@ -186,7 +188,7 @@ RestController로 받은 데이터를 토픽으로 전달할 때는 스프링 �
 <br>
 
 ### ✅ 아키텍처
-![web_page_event_load_pipeline_architecture.jpeg](../res/web_page_event_load_pipeline_architecture.jpeg)  
+![web_page_event_load_pipeline_architecture.jpeg](../../res/web_page_event_load_pipeline_architecture.jpeg)  
 아키텍처를 구현하기 위해 필요한 작업 리스트
 - 로컬 하둡, 엘라스틱서치, 키바나 설치
 - 토픽 생성
@@ -203,6 +205,83 @@ RestController로 받은 데이터를 토픽으로 전달할 때는 스프링 �
 - [kafka-multi-consumer-thread-hdfs-save](https://github.com/kyeoungchan/kafka-multi-consumer-thread-hdfs-save)
 - [elasticsearch-kafka-consumer
   ](https://github.com/kyeoungchan/elasticsearch-kafka-consumer)
+
+<br>
+
+#### 🧑🏻‍💻 실행 순서
+0. 토픽을 생성하지 않았다면, 토픽을 생성한다.
+    ```shell
+    $ bin/kafka-topics.sh --create \
+    --bootstrap-server my-kafka:9092 \
+    --replication-factor 2 \
+    --partitions 3 \
+    --topic select-color
+    ```
+1. 하둡을 실행한다. (참고: [하둡 실행 가이드](https://github.com/kyeoungchan/note/tree/main/hadoop/settings))
+2. 엘라스틱 서치 및 키바나를 실행한다. (참고: [엘라스틱 스택 실행 가이드](https://github.com/kyeoungchan/note/tree/main/elastic-stack/settings))
+3. [kafka-spring-producer-with-rest-controller](https://github.com/kyeoungchan/kafka-spring-producer-with-rest-controller)를 먼저 실행한다.
+4. [kafka-multi-consumer-thread-hdfs-save](https://github.com/kyeoungchan/kafka-multi-consumer-thread-hdfs-save)를 실행한다.
+5. [elasticsearch-kafka-consumer
+   ](https://github.com/kyeoungchan/elasticsearch-kafka-consumer)에 적힌 가이드대로 실행한다.
+
+<br>
+
+VS code를 통해 웹 페이지([favorite-color-webpage](https://github.com/kyeoungchan/favorite-color-webpage))를 접속하고 이름을 작성하고, 색성 버튼을 무작위로 클릭한다.  
+우리는 하둡에 데이터를 저장할 때 최소 10개 이상의 데이터가 버퍼에 쌓였을 경우 HDFS에 저장하는 로직을 작성했고, 파티션은 3개로 설정했으므로 최소 30번 이상 웹 이벤트를 발생시켜야 각 파티션의 데이터가 HDFS에 쌓인다.  
+➡ 30번 이상 색상 버튼을 클릭한 후 아래의 커맨드로 확인해본다.
+```shell
+$ hdfs dfs -ls -R /
+2025-12-20 15:53:40,117 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+drwxr-xr-x   - kyeongchanwoo supergroup          0 2025-12-20 15:53 /data
+-rw-r--r--   3 kyeongchanwoo supergroup        215 2025-12-20 15:48 /data/color-0-0.log
+-rw-r--r--   3 kyeongchanwoo supergroup       2174 2025-12-20 15:53 /data/color-0-1.log
+-rw-r--r--   3 kyeongchanwoo supergroup       2176 2025-12-20 15:53 /data/color-0-11.log
+-rw-r--r--   3 kyeongchanwoo supergroup       2176 2025-12-20 15:53 /data/color-0-21.log
+```
+
+<br>
+
+그리고 Kibana를 통해 `kafka-to-es` Data View를 생성하고, Timestamp field를 `timestamp`로 설정한다.
+
+![data_view_setting.png](../../res/data_view_setting.png)
+
+그 후 Discover 탭을 활용하여 데이터가 elasticsearch에 적재된 것을 확인한다.  
+
+![check_kibana.png](../../res/check_kibana.png)
+
+<br>
+
+### ✅ 상용 인프라 아키텍처
+- [웹 이벤트가 갑자기 늘어나는 경우](#-웹-이벤트가-갑자기-늘어나는-경우)
+
+상용 환경의 웹 이벤트 수집 파이프라인을 구축하기 위해서는 요구사항과 리소스(사용하고 있는 인프라, 자금, 인적 요소 등)를 충분히 고려하여 진행해야 한다.  
+최소한으로 웹 이벤트 수집 파이프라인을 구축하여 안전하게 운영하고 싶다면 구성을 하기와 하는 것을 추천한다.   
+![minimum_infra_architecture.jpeg](../../res/minimum_infra_architecture.jpeg)  
+일부 서버의 장애에도 영향을 받지 않기 위해서 이중화가 필요하다.  
+- L4 로드 밸런서: 웹 이벤트를 받아서 프로듀서로 분배 역할
+  - 사용자의 이벤트를 L4 로드 밸런서로 받은 뒤 프로듀서로 전송함으로써 프로듀서 서버 중 1대에 이슈가 발생하더라도 다른 서버가 지속적으로 데이터를 프로듀스할 수 있다.
+- 프로듀서: 2개 이상의 서버, 각 서버 당 1개 프로듀서
+- 카프카 클러스터: 3개 이상의 브로커로 구성
+- 컨슈머: 2개 이상의 서버, 각 서버 당 1개 컨슈머
+  - 컨슈머 서버도 2대 이상 운영하기 때문에 컨슈머 서버별로 파티션을 분할 할당하여 운영할 수 있다.
+- 커넥트: 2개 이상의 서버, 분산 모드 커넥트로 구성
+  - 마찬가지로 2대 이상 운영하기 때문에 서버 이슈 발생 시, 커넥터의 태스크를 정상인 커넥트에 몰아서 운영할 수 있다.
+
+<br>
+
+#### 🧑🏻‍💻 웹 이벤트가 갑자기 늘어나는 경우
+> 웹 이벤트가 단기간 일시적으로 늘어날 경우에는 토픽의 컨슈머 랙이 잠깐 늘었다가 줄어들 것이므로 파이프라인을 운영하는 데에 큰 이슈가 없다.  
+
+웹 이벤트가 지속적으로 늘어나는 경우에는  
+➡ 컨슈머와 커넥트가 처리하는 데이터양보다 웹 이벤트로 생산되는 데이터가 많아진다면 컨슈머 랙이 계속해서 증가하게 된다.  
+➡ 데이터의 적재 지연으로 전파된다.
+
+![scale_out_infra_architecture.jpeg](../../res/scale_out_infra_architecture.jpeg)  
+
+웹 이벤트 증가 시 파티션 개수, 컨슈머 스레드 개수, 커넥트 태스크 개수를 증가시키면 병렬처리되는 양을 증가시켜서 적재 지연을 줄일 수 있다.  
+또한, 웹 이벤트의 증가로 인해 프로듀서의 리소스(CPU, 메모리) 사용량이 높다면 프로듀서 서버를 스케일 아웃함으로써 병목현상을 해소할 수 있다.  
+
+
 
 <br>
 
