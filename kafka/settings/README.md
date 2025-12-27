@@ -7,6 +7,7 @@
     - [Kafka 3.5.0 이전 버전](#-kafka-350-이전-버전)
     - [KRaft 모드 - 브로커 노드와 컨트롤러 노드 따로](#-kraft-모드---브로커-노드와-컨트롤러-노드-따로)
     - [KRaft 모드 - 브로커 노드에 컨트롤러 노드 겸용 - 가장 권장](#-kraft-모드---브로커-노드에-컨트롤러-노드-겸용---가장-권장)
+    - [카프카 브로커 클러스터로 구성](#-카프카-브로커-클러스터로-구성)
 - [로컬 컴퓨터에서 카프카와 통신 확인](#-로컬-컴퓨터에서-카프카와-통신-확인)
   - [테스트 편의를 위한 hosts 설정](#-테스트-편의를-위한-hosts-설정)
 
@@ -234,6 +235,7 @@ exec $base_dir/kafka-run-class.sh $EXTRA_ARGS kafka.Kafka "$@"
 - [Kafka 3.5.0 이전 버전](#-kafka-350-이전-버전)
 - [KRaft 모드 - 브로커 노드와 컨트롤러 노드 따로](#-kraft-모드---브로커-노드와-컨트롤러-노드-따로)
 - [KRaft 모드 - 브로커 노드에 컨트롤러 노드 겸용 - 가장 권장](#-kraft-모드---브로커-노드에-컨트롤러-노드-겸용---가장-권장)
+- [카프카 브로커 클러스터로 구성](#-카프카-브로커-클러스터로-구성)
 
 `config/server.properties`에서 카프카 브로커가 클러스터 운영에 필요한 옵션들을 지정할 수 있다.  
 ➡ 현재는 실습용 카프카 브로커를 실행할 것이기 때문에 `advertised.listener`만 설정할 것이다.  
@@ -539,6 +541,72 @@ $ tail -n 200 logs/server.log
 
 <br>
 
+#### 🧑🏻‍💻 카프카 브로커 클러스터로 구성
+
+카프카 브로커로 구성하기 위해서는 EC2를 2대를 준비한다.  
+하나의 EC2 브로커는 `node1`, domain은 `my-kafka`로 설정했고,    
+다른 EC2 브로커는 `node2`, domain은 `my-kafka2`로 설정했다.  
+
+그리고 EC2 인바운드 규칙에서 서로의 EC2 IP를 허용해줘야 한다.  
+포트는 9092, 9093 이렇게 2개씩 할당해주고, hosts 파일에 domain도 설정해주었다.    
+예를 들어, `node1`에 해당하는 EC2의 IP 번호가 `1.23.33.44`라면, `node2`에 해당하는 EC2의 보안 그룹의 인바운드 규칙에 `1.23.33.44:9092`, `1.23.33.44:9093`을 추가해준다.  
+그리고 `node1` EC2 서버 내의 `/ect/hosts` 파일에 `1.23.33.44 my-kafka`를 추가해줬다.  
+
+`node2`도 마찬가지로 `node1`과 같은 설정을 반대로 해준다.  
+
+<br>
+
+```properties
+# node1 EC2의 config/kraft/server.properties
+
+# The role of this server. Setting this puts us in KRaft mode
+process.roles=broker,controller
+
+# The node id associated with this instance's roles
+node.id=1
+
+# The connect string for the controller quorum
+controller.quorum.voters=1@localhost:9093,2@my-kafka2:9093
+
+listeners=PLAINTEXT://:9092,CONTROLLER://:9093
+
+# Name of listener used for communication between brokers.
+inter.broker.listener.name=PLAINTEXT
+
+advertised.listeners=PLAINTEXT://my-kafka:9092,CONTROLLER://localhost:9093
+
+controller.listener.names=CONTROLLER
+```
+
+`node2`의 `server.properties`도 같은 규칙으로 설정하면 된다.  
+id는 2, `my-kafka` 대신 `my-kafka2` 로 변경한다든지 등등..  
+
+<br>
+
+그리고 마찬가지로 위에서 실행하는 커맨드와 다른 게 없지만, 두 EC2가 모두 같은 `UUID`를 사용해야한다는 점을 주의한다.    
+`UUID`가 바로 클러스터 ID에 해당하기 때문이다.  
+
+```shell
+# 카프카 종료
+$ bin/kafka-server-stop.sh
+
+# 재시작시 브로커 메타 데이터 삭제
+$ rm -rf /tmp/kraft-combined-logs
+
+# uuid 생성
+$ bin/kafka-storage.sh random-uuid
+
+# 카프카 브로커 storage 포맷
+$ bin/kafka-storage.sh format -t <UUID> -c config/kraft/server.properties
+
+# 카프카 브로커 실행
+$ bin/kafka-server-start.sh -daemon config/kraft/server.properties
+
+# 에러 생겼을 때 로그 확인하기
+$ tail -n 200 logs/server.log
+```
+
+<br>
 
 ## ❗️ 로컬 컴퓨터에서 카프카와 통신 확인
 로컬 컴퓨터에서 원격으로 카프카 브로커로 명령을 내려 정상적으로 통신하는지 확인한다.  
@@ -589,6 +657,10 @@ $ sudo vi /etc/hosts
 # 이제 ip 주소 기억 안해도 EC2 접속 가능하다.
 $ ssh -i test-kafka-server-key.pem ec2-user@my-kafka
 ```
+
+<br>
+
+
 
 
 
