@@ -534,6 +534,9 @@ $ bin/kafka-storage.sh random-uuid
 # 카프카 브로커 storage 포맷
 $ bin/kafka-storage.sh format -t <UUID> -c config/kraft/server.properties
 
+# 한번에 하고 싶은 경우, 아래의 커맨드로 UUID 생성과 storage 포맷을 할 수 있다.
+# bin/kafka-storage.sh format -t $(bin/kafka-storage.sh random-uuid) -c config/kraft/server.properties
+
 # 카프카 브로커 실행
 $ bin/kafka-server-start.sh -daemon config/kraft/server.properties
 
