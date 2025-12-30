@@ -245,7 +245,48 @@ $ bin/kafka-console-consumer.sh --bootstrap-server my-kafka:9092 \
 
 <br>
 
+[스트림즈 애플리케이션 metric-kafka-streams](https://github.com/kyeoungchan/metric-kafka-streams)을 실행시키고 다음과 같은 커맨드를 통해 CPU와 메모리 지표 데이터가 분기되어 들어오는 것을 확인할 수 있다.  
 
+```shell
+$ bin/kafka-console-consumer.sh --bootstrap-server my-kafka:9092 \
+--topic metric.cpu \
+--from-beginning
+
+{"@timestamp":"2025-12-30T11:48:18.092Z","@metadata":{"beat":"metricbeat","type":"_doc","version":"9.2.3"},"event":{"dataset":"system.cpu","module":"system","duration":3533958},"service":{"type":"system"},"agent":{"type":"metricbeat","version":"9.2.3","ephemeral_id":"efe10816-c9fd-4e7e-b616-e414a1d8bc1f","id":"26da68f6-1b1c-4790-968a-62697dee69d6","name":"Kyeongchanui-MacBookPro.local"},"ecs":{"version":"8.0.0"},"system":{"cpu":{"idle":{"pct":7.4978,"norm":{"pct":0.7498}},"nice":{"pct":0,"norm":{"pct":0}},"cores":10,"total":{"pct":2.5022,"norm":{"pct":0.2502}},"user":{"pct":1.6747,"norm":{"pct":0.1675}},"system":{"pct":0.8275,"norm":{"pct":0.0827}}}},"host":{"cpu":{"usage":0.2502},"name":"Kyeongchanui-MacBookPro.local"},"metricset":{"name":"cpu","period":10000}}
+
+$ bin/kafka-console-consumer.sh --bootstrap-server my-kafka:9092 \
+--topic metric.memory \
+--from-beginning
+
+{"@timestamp":"2025-12-30T11:48:21.331Z","@metadata":{"beat":"metricbeat","type":"_doc","version":"9.2.3"},"ecs":{"version":"8.0.0"},"host":{"name":"Kyeongchanui-MacBookPro.local"},"agent":{"type":"metricbeat","version":"9.2.3","ephemeral_id":"efe10816-c9fd-4e7e-b616-e414a1d8bc1f","id":"26da68f6-1b1c-4790-968a-62697dee69d6","name":"Kyeongchanui-MacBookPro.local"},"event":{"dataset":"system.memory","module":"system","duration":1928792},"metricset":{"period":10000,"name":"memory"},"service":{"type":"system"},"system":{"memory":{"used":{"bytes":17131106304,"pct":0.9972},"free":48762880,"actual":{"free":1711955968,"used":{"pct":0.9004,"bytes":15467913216}},"swap":{"free":0,"total":0,"used":{"bytes":0}},"total":17179869184}}}
+```
+
+<br>
+
+스트림즈 애플리케이션이 실행되고 있을 때 CPU에 부하를 주면 `metric.cpu.alert` 토픽에서 스트림즈가 변환한 데이터를 확인할 수 있다. 
+
+```shell
+$ bin/kafka-console-consumer.sh --bootstrap-server my-kafka:9092 \
+--topic metric.cpu.alert \
+--from-beginning
+```
+
+<br>
+
+### ✅ 상용 인프라 아키텍처
+서비스마다 각기 다른 요구사항과 리소스를 가지겠지만 최소한으로 서버 지표 수집 파이프라인 인프라를 구축하여 안전하게 운영하고 싶다면 하기와 같이 구성할 수 있다.
+- 카프카 클러스터: 3개 이상으로 브로커 구성
+- 스트림즈: 2개 이상의 서버, 각 서버당 1개 스트림즈 애플리케이션
+- 커넥트: 서버 지표 데이터 저장용. 2개 이상의 서버, 분산 모드 커넥트로 구성
+
+연속적이고 안전하게 데이터를 받기 위해 카프카 브로커를 3개 이상 배치하고 커넥트, 스트림즈를 이중화하였다.  
+➡ 브로커, 커넥트, 스트림즈의 일부 서버에 장애가 발생하더라도 안전하게 데이터를 처리, 저장할 수 있다.  
+
+<br>
+
+스트림즈가 처리해야 할 데이터양이 많아지면  
+➡ 파티션 개수를 증가시키고  
+➡ 스트림즈용 서버와 스트림즈 애플리케이션 개수를 늘림으로써 많은 양의 데이터 처리에 대응할 수 있다.
 
 <br>
 
