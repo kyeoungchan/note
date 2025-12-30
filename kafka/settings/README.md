@@ -522,8 +522,11 @@ log.dirs=/tmp/kraft-combined-logs
 # 카프카 종료
 $ bin/kafka-server-stop.sh
 
-# 재시작시 브로커 메타 데이터 삭제
+# 기존 데이터 삭제 필요 시 브로커 메타 데이터 삭제
 $ rm -rf /tmp/kraft-combined-logs
+
+# 기존 데이터 삭제 필요 시 컨트롤러 메타 데이터 삭제
+$ rm -rf /tmp/kraft-controller-logs
 
 # uuid 생성
 $ bin/kafka-storage.sh random-uuid
@@ -590,8 +593,11 @@ id는 2, `my-kafka` 대신 `my-kafka2` 로 변경한다든지 등등..
 # 카프카 종료
 $ bin/kafka-server-stop.sh
 
-# 재시작시 브로커 메타 데이터 삭제
+# 기존 데이터 삭제 필요 시 브로커 메타 데이터 삭제
 $ rm -rf /tmp/kraft-combined-logs
+
+# 기존 데이터 삭제 필요 시 컨트롤러 메타 데이터 삭제
+$ rm -rf /tmp/kraft-controller-logs
 
 # uuid 생성
 $ bin/kafka-storage.sh random-uuid
