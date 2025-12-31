@@ -274,6 +274,7 @@ $ bin/kafka-console-consumer.sh --bootstrap-server my-kafka:9092 \
 <br>
 
 ### ✅ 상용 인프라 아키텍처
+![streams_application_scale_out.jpeg](../../res/streams_application_scale_out.jpeg)
 서비스마다 각기 다른 요구사항과 리소스를 가지겠지만 최소한으로 서버 지표 수집 파이프라인 인프라를 구축하여 안전하게 운영하고 싶다면 하기와 같이 구성할 수 있다.
 - 카프카 클러스터: 3개 이상으로 브로커 구성
 - 스트림즈: 2개 이상의 서버, 각 서버당 1개 스트림즈 애플리케이션
