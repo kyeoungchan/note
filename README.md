@@ -68,6 +68,7 @@
     - [지네릭스 part1](https://kyeoungchan.tistory.com/11)
     - [지네릭스 part2](https://kyeoungchan.tistory.com/12)
 - [카프카](https://github.com/kyeoungchan/note/tree/main/kafka)
+  - [클라우드 카프카 서비스](https://github.com/kyeoungchan/note/tree/main/kafka/cloud-kafka-service)
   - [카프카 커맨드 라인 툴](https://github.com/kyeoungchan/note/tree/main/kafka/command-line-tool)
   - [카프카 커넥트](https://github.com/kyeoungchan/note/tree/main/kafka/kafkaconnect)
   - [카프카 미러메이커2](https://github.com/kyeoungchan/note/tree/main/kafka/kafkamirrormaker2)
