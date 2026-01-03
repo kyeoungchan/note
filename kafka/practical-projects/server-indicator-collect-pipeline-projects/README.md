@@ -8,6 +8,10 @@
   - [지표 데이터를 분기처리하는 스트림즈 토폴로지](#-지표-데이터를-분기처리하는-스트림즈-토폴로지)
   - [CPU 지표 데이터를 필터링, 변환 처리하는 스트림즈 토폴로지](#-cpu-지표-데이터를-필터링-변환-처리하는-스트림즈-토폴로지)
 - [기능 구현](#-기능-구현)
+  - [토픽 생성](#-토픽-생성)
+  - [메트릭비트 설치 및 설정](#-메트릭비트-설치-및-설정)
+  - [카프카 스트림즈 개발](#-카프카-스트림즈-개발)
+- [기능 테스트](#-기능-테스트)
 
 
 
@@ -130,6 +134,18 @@ CPU 지표 중 전체 사용량이 50%가 넘는 경우에 대해 필터링하�
 생성할 토픽은 총 4개다.  
 각 토픽의 파티션은 3, 복제 개수는 2로 설정하고, 나머지 토픽 설정들은 기본값으로 생성한다.  
 
+> 상용 파이프라인 아키텍처에 적용하는 것을 고려하여 복제 개수를 2개로 잡았다.  
+> 만약 싱글 브로커로 구성된 카프카 클러스터를 사용하는 환경이라면 복제 개수로 설정할 수 있는 최댓값은 1이다.  
+> 실제로 싱글 브로커에서 복제 개수를 2개로 잡아서 토픽을 생성하려고 하면 이런 에러가 뜬다.  
+
+```shell
+Error while executing topic command : Unable to replicate the partition 2 time(s): The target replication factor of 2 cannot be reached because only 1 broker(s) are registered.
+[2025-12-26 07:54:03,202] ERROR org.apache.kafka.common.errors.InvalidReplicationFactorException: Unable to replicate the partition 2 time(s): The target replication factor of 2 cannot be reached because only 1 broker(s) are registered.
+ (org.apache.kafka.tools.TopicCommand)
+```
+
+<br>
+
 ```shell
 # 서버의 전체 지표들을 저장하는 토픽 생성
 $ bin/kafka-topics.sh --create \
@@ -180,12 +196,12 @@ $ vi metricbeat.yml
 ```yml
 # metricbeat.yml에 다음과 같이 입력한다.
 metricbeat.modules:
-  - module: system
-    metricsets:
-      - cpu
-      - memory
-    enabled: true
-    period: 10s
+- module: system
+  metricsets:
+    - cpu
+    - memory
+  enabled: true
+  period: 10s
 
 output.kafka:
   hosts: ["my-kafka:9092"]
@@ -197,6 +213,81 @@ output.kafka:
 #### 🧑🏻‍💻 카프카 스트림즈 개발
 [metric-kafka-streams](https://github.com/kyeoungchan/metric-kafka-streams) 페이지 참고
 
+
+<br>
+
+### ✅ 기능 테스트
+로컬 개발환경에서 실행하기 위해 2가지 단계를 실행한다.  
+1. 메트릭비트 실행
+2. 스트림즈 애플리케이션 실행
+
+```shell
+# metricbeat 바이너리 경로로 이동
+$ cd /opt/homebrew/Cellar/metricbeat/9.2.3/bin
+
+# 메트릭비트 실행
+# --path.config 옵션을 따로 지정하지 않으면 기존의 config yml 파일을 가져온다. (나의 경우, /opt/homebrew/etc/metricbeat/metricbeat.yml)
+$ metricbeat \
+--path.config /opt/homebrew/Cellar/metricbeat/9.2.3/bin \
+-c metricbeat.yml
+```
+
+```shell
+# metric.all 토픽에 지표 데이터가 들어오는지 확인
+$ bin/kafka-console-consumer.sh --bootstrap-server my-kafka:9092 \
+--topic metric.all \
+--from-beginning
+{"@timestamp":"2025-12-28T04:56:17.004Z","@metadata":{"beat":"metricbeat","type":"_doc","version":"9.2.3"},"agent":{"version":"9.2.3","ephemeral_id":"815c6648-8e68-49f0-8d84-aacf328437e5","id":"26da68f6-1b1c-4790-968a-62697dee69d6","name":"Kyeongchanui-MacBookPro.local","type":"metricbeat"},"metricset":{"name":"cpu","period":10000},"event":{"dataset":"system.cpu","module":"system","duration":861459},"service":{"type":"system"},"system":{"cpu":{"system":{"pct":0.4339,"norm":{"pct":0.0434}},"idle":{"pct":8.7701,"norm":{"pct":0.877}},"nice":{"pct":0,"norm":{"pct":0}},"cores":10,"total":{"pct":1.2299,"norm":{"pct":0.123}},"user":{"pct":0.7959,"norm":{"pct":0.0796}}}},"host":{"cpu":{"usage":0.123},"name":"Kyeongchanui-MacBookPro.local"},"ecs":{"version":"8.0.0"}}
+{"@timestamp":"2025-12-28T04:56:15.937Z","@metadata":{"beat":"metricbeat","type":"_doc","version":"9.2.3"},"event":{"dataset":"system.memory","module":"system","duration":1178042},"metricset":{"name":"memory","period":10000},"service":{"type":"system"},"system":{"memory":{"total":17179869184,"used":{"pct":0.9977,"bytes":17140019200},"free":39849984,"actual":{"free":1602580480,"used":{"pct":0.9067,"bytes":15577288704}},"swap":{"total":0,"used":{"bytes":0},"free":0}}},"agent":{"ephemeral_id":"815c6648-8e68-49f0-8d84-aacf328437e5","id":"26da68f6-1b1c-4790-968a-62697dee69d6","name":"Kyeongchanui-MacBookPro.local","type":"metricbeat","version":"9.2.3"},"ecs":{"version":"8.0.0"},"host":{"name":"Kyeongchanui-MacBookPro.local"}}
+{"@timestamp":"2025-12-28T04:56:27.005Z","@metadata":{"beat":"metricbeat","type":"_doc","version":"9.2.3"},"host":{"name":"Kyeongchanui-MacBookPro.local","cpu":{"usage":0.12}},"event":{"dataset":"system.cpu","module":"system","duration":782083},"metricset":{"period":10000,"name":"cpu"},"ecs":{"version":"8.0.0"},"agent":{"id":"26da68f6-1b1c-4790-968a-62697dee69d6","name":"Kyeongchanui-MacBookPro.local","type":"metricbeat","version":"9.2.3","ephemeral_id":"815c6648-8e68-49f0-8d84-aacf328437e5"},"service":{"type":"system"},"system":{"cpu":{"total":{"norm":{"pct":0.12},"pct":1.2},"user":{"norm":{"pct":0.07},"pct":0.7},"system":{"norm":{"pct":0.05},"pct":0.5},"idle":{"pct":8.8,"norm":{"pct":0.88}},"nice":{"norm":{"pct":0},"pct":0},"cores":10}}}
+{"@timestamp":"2025-12-28T04:56:25.939Z","@metadata":{"beat":"metricbeat","type":"_doc","version":"9.2.3"},"system":{"memory":{"actual":{"free":1620217856,"used":{"pct":0.9057,"bytes":15559651328}},"swap":{"total":0,"used":{"bytes":0},"free":0},"total":17179869184,"used":{"pct":0.9988,"bytes":17158909952},"free":20959232}},"event":{"dataset":"system.memory","module":"system","duration":543041},"metricset":{"period":10000,"name":"memory"},"ecs":{"version":"8.0.0"},"host":{"name":"Kyeongchanui-MacBookPro.local"},"agent":{"name":"Kyeongchanui-MacBookPro.local","type":"metricbeat","version":"9.2.3","ephemeral_id":"815c6648-8e68-49f0-8d84-aacf328437e5","id":"26da68f6-1b1c-4790-968a-62697dee69d6"},"service":{"type":"system"}}
+```
+
+<br>
+
+[스트림즈 애플리케이션 metric-kafka-streams](https://github.com/kyeoungchan/metric-kafka-streams)을 실행시키고 다음과 같은 커맨드를 통해 CPU와 메모리 지표 데이터가 분기되어 들어오는 것을 확인할 수 있다.  
+
+```shell
+$ bin/kafka-console-consumer.sh --bootstrap-server my-kafka:9092 \
+--topic metric.cpu \
+--from-beginning
+
+{"@timestamp":"2025-12-30T11:48:18.092Z","@metadata":{"beat":"metricbeat","type":"_doc","version":"9.2.3"},"event":{"dataset":"system.cpu","module":"system","duration":3533958},"service":{"type":"system"},"agent":{"type":"metricbeat","version":"9.2.3","ephemeral_id":"efe10816-c9fd-4e7e-b616-e414a1d8bc1f","id":"26da68f6-1b1c-4790-968a-62697dee69d6","name":"Kyeongchanui-MacBookPro.local"},"ecs":{"version":"8.0.0"},"system":{"cpu":{"idle":{"pct":7.4978,"norm":{"pct":0.7498}},"nice":{"pct":0,"norm":{"pct":0}},"cores":10,"total":{"pct":2.5022,"norm":{"pct":0.2502}},"user":{"pct":1.6747,"norm":{"pct":0.1675}},"system":{"pct":0.8275,"norm":{"pct":0.0827}}}},"host":{"cpu":{"usage":0.2502},"name":"Kyeongchanui-MacBookPro.local"},"metricset":{"name":"cpu","period":10000}}
+
+$ bin/kafka-console-consumer.sh --bootstrap-server my-kafka:9092 \
+--topic metric.memory \
+--from-beginning
+
+{"@timestamp":"2025-12-30T11:48:21.331Z","@metadata":{"beat":"metricbeat","type":"_doc","version":"9.2.3"},"ecs":{"version":"8.0.0"},"host":{"name":"Kyeongchanui-MacBookPro.local"},"agent":{"type":"metricbeat","version":"9.2.3","ephemeral_id":"efe10816-c9fd-4e7e-b616-e414a1d8bc1f","id":"26da68f6-1b1c-4790-968a-62697dee69d6","name":"Kyeongchanui-MacBookPro.local"},"event":{"dataset":"system.memory","module":"system","duration":1928792},"metricset":{"period":10000,"name":"memory"},"service":{"type":"system"},"system":{"memory":{"used":{"bytes":17131106304,"pct":0.9972},"free":48762880,"actual":{"free":1711955968,"used":{"pct":0.9004,"bytes":15467913216}},"swap":{"free":0,"total":0,"used":{"bytes":0}},"total":17179869184}}}
+```
+
+<br>
+
+스트림즈 애플리케이션이 실행되고 있을 때 CPU에 부하를 주면 `metric.cpu.alert` 토픽에서 스트림즈가 변환한 데이터를 확인할 수 있다. 
+
+```shell
+$ bin/kafka-console-consumer.sh --bootstrap-server my-kafka:9092 \
+--topic metric.cpu.alert \
+--from-beginning
+```
+
+<br>
+
+### ✅ 상용 인프라 아키텍처
+![streams_application_scale_out.jpeg](../../res/streams_application_scale_out.jpeg)
+서비스마다 각기 다른 요구사항과 리소스를 가지겠지만 최소한으로 서버 지표 수집 파이프라인 인프라를 구축하여 안전하게 운영하고 싶다면 하기와 같이 구성할 수 있다.
+- 카프카 클러스터: 3개 이상으로 브로커 구성
+- 스트림즈: 2개 이상의 서버, 각 서버당 1개 스트림즈 애플리케이션
+- 커넥트: 서버 지표 데이터 저장용. 2개 이상의 서버, 분산 모드 커넥트로 구성
+
+연속적이고 안전하게 데이터를 받기 위해 카프카 브로커를 3개 이상 배치하고 커넥트, 스트림즈를 이중화하였다.  
+➡ 브로커, 커넥트, 스트림즈의 일부 서버에 장애가 발생하더라도 안전하게 데이터를 처리, 저장할 수 있다.  
+
+<br>
+
+스트림즈가 처리해야 할 데이터양이 많아지면  
+➡ 파티션 개수를 증가시키고  
+➡ 스트림즈용 서버와 스트림즈 애플리케이션 개수를 늘림으로써 많은 양의 데이터 처리에 대응할 수 있다.
 
 <br>
 

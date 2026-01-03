@@ -68,6 +68,7 @@
     - [지네릭스 part1](https://kyeoungchan.tistory.com/11)
     - [지네릭스 part2](https://kyeoungchan.tistory.com/12)
 - [카프카](https://github.com/kyeoungchan/note/tree/main/kafka)
+  - [클라우드 카프카 서비스](https://github.com/kyeoungchan/note/tree/main/kafka/cloud-kafka-service)
   - [카프카 커맨드 라인 툴](https://github.com/kyeoungchan/note/tree/main/kafka/command-line-tool)
   - [카프카 커넥트](https://github.com/kyeoungchan/note/tree/main/kafka/kafkaconnect)
   - [카프카 미러메이커2](https://github.com/kyeoungchan/note/tree/main/kafka/kafkamirrormaker2)
@@ -154,6 +155,7 @@
 - [카프카 실습환경 세팅](https://github.com/kyeoungchan/note/tree/main/kafka/settings)
 - 카프카 실전 프로젝트
   - [서버 지표 수집 파이프라인 생성과 스트림즈 활용](https://github.com/kyeoungchan/note/tree/main/kafka/practical-projects/server-indicator-collect-pipeline-projects)
+  - [토픽 미러링](https://github.com/kyeoungchan/note/tree/main/kafka/practical-projects/topic-mirroring)
   - [웹 페이지 이벤트 적재 파이프라인](https://github.com/kyeoungchan/note/tree/main/kafka/practical-projects/web-page-event-load-pipeline-project)
 - [하둡 설정](https://github.com/kyeoungchan/note/tree/main/hadoop/settings)
 - [메트릭비트 설정](https://github.com/kyeoungchan/note/tree/main/metricbeat/settings)
