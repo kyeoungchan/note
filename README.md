@@ -4,6 +4,7 @@
   - [다이나믹 프로그래밍](https://github.com/kyeoungchan/note/tree/main/algorithm/dynamic-programming)
     - [이항계수 다이나믹 프로그래밍 활용](https://github.com/kyeoungchan/note/tree/main/algorithm/dynamic-programming/binomialcoefficient)
   - [파라메트릭 서치](https://github.com/kyeoungchan/note/tree/main/algorithm/parametric-search)
+- [AWS](https://github.com/kyeoungchan/note/tree/main/amazon-web-serives)
 - 데이터통신기술
   - [피코넷](https://github.com/kyeoungchan/note/tree/main/data_communications/piconet)
   - [지그비](https://github.com/kyeoungchan/note/tree/main/data_communications/zigbee)
