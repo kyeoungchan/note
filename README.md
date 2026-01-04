@@ -78,7 +78,7 @@
 - [코틀린](https://github.com/kyeoungchan/note/tree/main/kotlin)
 - 네트워크
   - [Blocking vs Non Blocking vs Synchronous vs Asynchronous](https://github.com/kyeoungchan/note/tree/main/network/blocking-nonblocking-syn-asyn)
-  - [IPv6](https://github.com/kyeoungchan/note/tree/main/network/ipv6)
+  - [IP 기초](https://github.com/kyeoungchan/note/tree/main/network/ip)
   - [온프레미스](https://github.com/kyeoungchan/note/tree/main/network/on-premise)
   - [라우팅 프로토콜](https://github.com/kyeoungchan/note/tree/main/network/routing-protocol)
   - [전송계층](https://github.com/kyeoungchan/note/tree/main/network/transport-layer)
