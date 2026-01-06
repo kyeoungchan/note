@@ -9,6 +9,8 @@
   - [사설 IP](#-사설-ip)
   - [사설 IP & 사설망 원리](#-사설-ip--사설망-원리)
   - [NAT (사설망 ↔ 외부 통신 방법)](#-nat-사설망--외부-통신-방법)
+- [IP 주소 구성](#-ip-주소-구성)
+- [IP 주소 클래스](#-ip-주소-클래스)
 
 ## ❗️ IP 종류
 IP(Internet Protocol)이란, 인터넷에 연결되어 있는 모든 장치들(컴퓨터, 서버 장비, 스마트폰 등)을 식별할 수 있도록 각각의 장비에게 부여되는 고유 주소이다.  
@@ -139,7 +141,7 @@ IP 주소는 임의로 우리가 부여하는 것이 아니라 전세계적으�
 여기서 바로 NAT(Network Address Translation)이라는 개념이 등장한다.  
 인터넷 주소 번역 기능이다.  
 
-![network_address_translation.png](network_address_translation.png)  
+![network_address_translation.png](../res/network_address_translation.png)  
 
 인터넷 주소 번역 원리는 간단하다.
 1. 공유기(라우터)에 연결되어 있는 각 사내 컴퓨터들의 사설 IP(192.168.0.XXX)를 받아와 유일한 공인 IP로 변환한다.
@@ -152,7 +154,36 @@ IP 주소는 임의로 우리가 부여하는 것이 아니라 전세계적으�
 
 <br>
 
+## ❗️ IP 주소 구성
+IP는 네트워크 ID + 호스트 ID로 구성된다.  
+- Network ID: 각 국가마다 부여된다.
+- Host ID: 국가의 국민에 해당된다.
+
+만약 `192.168.10.10=11000000.10101000.00001010.00001010` IP 주소가 있다면, 앞에 있는 `11000000.10101000.00001010`는 네트워크 주소가 되고, 뒤에 있는 `00001010`는 호스트 주소가 된다. 
+
+<br>
+
+## ❗️ IP 주소 클래스
+IP 주소 클래스는 예전에 IPv4를 사용했을 때 IP 할당하는 방법이었다.  
+지금은 더이상 사용되지 않고, 클래스 방식이 아닌 CIDR 방식으로 할당하도록 1993년도에 바뀌었지만, 서브네팅을 하기 위해서는 기본 개념은 알고 가야한다.
+
+<br>
+
+IP 주소를 8비트로 4등분을 하면, 각각을 옥텟(Octet)이라 부른다.  
+각 옥텟별로 0~255 범위가 되므로 각각 256(2^8)개가 들어갈 수 있게 된다.
+
+<br>
+
+옥텟별로 IP의 클래스를 A, B, C로 나눌 수 있다.  
+각 클래스마다 위에서 다룬 네트워크 ID 부분과 호스트 ID 부분 범위가 서로 다른 것을 알 수 있다.  
+➡ 각 클래스마다 할당되는 총 호스트 개수가 나뉘어져 보다 체계적으로 관리할 수 있게 된다.  
+![ip_address_class.png](../res/ip_address_class.png)
+
+<br>
+
+
 
 
 **참고 자료**  
-[IP 기초 (사설IP / 공인IP / NAT) 개념 정말 쉽게 정리](https://inpa.tistory.com/entry/WEB-%F0%9F%8C%90-IP-%EA%B8%B0%EC%B4%88-%EC%82%AC%EC%84%A4IP-%EA%B3%B5%EC%9D%B8IP-NAT-%EA%B0%9C%EB%85%90-%EC%A0%95%EB%A7%90-%EC%89%BD%EA%B2%8C-%EC%A0%95%EB%A6%AC)
+[IP 기초 (사설IP / 공인IP / NAT) 개념 정말 쉽게 정리](https://inpa.tistory.com/entry/WEB-%F0%9F%8C%90-IP-%EA%B8%B0%EC%B4%88-%EC%82%AC%EC%84%A4IP-%EA%B3%B5%EC%9D%B8IP-NAT-%EA%B0%9C%EB%85%90-%EC%A0%95%EB%A7%90-%EC%89%BD%EA%B2%8C-%EC%A0%95%EB%A6%AC)  
+[IP 클래스 · 서브넷 마스크 · 서브넷팅 계산법 💯 총정리](https://inpa.tistory.com/entry/WEB-IP-클래스-서브넷-마스크-서브넷팅-총정리)
