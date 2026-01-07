@@ -1,6 +1,33 @@
 # 🧑🏻‍💻 복제
+- [레디스에서 복제 구조 세팅하기](#-레디스에서-복제-구조-세팅하기)
 - [레디스에서의 복제 구조](#-레디스에서의-복제-구조)
   - [복제 구조 구성하기](#-복제-구조-구성하기)
+- [복제 메커니즘](#-복제-메커니즘)
+
+## ❗️ 레디스에서 복제 구조 세팅하기
+먼저 다음 명령어를 통해 `redis.conf`를 복제해서 `redis2.conf` 파일을 생성한다.
+```shell
+redis@redisvm:~/redis$ pwd
+/home/redis/redis
+
+redis@redisvm:~/redis$ cp redis.conf redis2.conf
+```
+![replicated_redis_conf.png](../../res/replicated_redis_conf.png)
+
+<br>
+그리고 `port`를 6380으로 바꾼다.
+
+![port_setting.png](../../res/port_setting.png)
+
+```shell
+# redis2.conf로 레디스 서버 실행
+redis@redisvm:~/redis$ bin/redis-server redis2.conf
+
+# redis2 cli 창 켜기
+redis@redisvm:~/redis$ redis-cli -h 127.0.0.1 -p 6380
+127.0.0.1:6380>
+```
+
 
 ## ❗️ 레디스에서의 복제 구조
 > 대부분의 데이터 저장소 애플리케이션은 자체적으로 복제 기능을 제공한다.  
@@ -24,6 +51,11 @@ MySQL이나 PostgreSQL은 멀티 마스터 복제 구조를 제공하기 때문�
 REPLICAOF <master-ip> <master-port>
 ```
 ![redis_replicaof.jpeg](../../res/redis_replicaof.jpeg)  
+
+```shell
+127.0.0.1:6380> REPLICAOF 127.0.0.1 6379
+OK
+```
 
 위의 그림과 같이 복제본이 될 노드 B에  `REPLICAOF` 커맨드를 입력해 마스터 노드의 정보를 입력하면 복제 연결이 시작된다.  
 레디스의 데이터를 업데이트하는 모든 커맨드는 노드 A에서 실행되기 때문에 서비스 애플리케이션은 마스터 노드인 A의 정보를 바라봐야 한다.  
@@ -124,6 +156,74 @@ repl-diskless-sync-delay 5
 
 보통 네트워크가 유실돼 재동기화를 요청할 경우 마스터에는 한 번에 여러 개의 복제본에서 복제 연결이 들어오는 것이 일반적이다.  
 ➡ `repl-diskless-sync-delay` 옵션을 활성화하는 것이 좋다.
+
+<br>
+
+### ✅ 비동기 방식으로 동작하는 복제 연결
+정상적으로 복제 연결이 된 상태에서 마스터에서 복제본으로의 데이터 전달은 비동기 방식으로 동작한다.  
+
+<br>
+
+![asynchronous_replica_connection.jpeg](../../res/asynchronous_replica_connection.jpeg)  
+위 그림에서처럼 마스터에서 데이터를 입력하는 커맨드가 수행되면 레디스는 마스터 노드에서 커맨드를 처리한 이후 클라이언트에 OK 응답을 먼저 보낸다.  
+➡ 클라이언트는 데이터를 입력할 때마다 복제본에 데이터가 정확하게 전달됐는지 확인하는 과정을 거치지 않기 때문에 복제 구조를 사용하더라도 짧은 지연 시간과 높은 성능을 갖게 된다.  
+
+(2)번 과정 이후로 레디스 마스터 노드가 비정상 종료된 경우 이 데이터는 복제본 노드에 전달되지 않은 상태이기 때문에 유실될 가능성이 존재한다.  
+하지만 실제로 데이터가 복제본에 전달되는 속도는 굉장히 빠르기 때문에 이런 데이터의 유실이 빈번하게 발생되진 않는다.
+
+<br>
+
+### ✅ 복제 ID
+모든 레디스 인스턴스는 복제 ID를 가지고 있다.  
+복제 기능을 사용하지 않는 인스턴스라도 모두 랜덤 스트링 값의 복제 ID를 가지며, 복제 ID는 오프셋과 쌍으로 존재한다.  
+➡ 레디스 내부의 데이터가 수저되는 모든 커맨드를 수행할 때마다 오프셋이 증가한다.  
+
+<br>
+
+`INFO REPLICATION` 커맨드를 사용하면 복제 연결 상태를 확인할 수 있다.  
+```redis
+127.0.0.1:6379> INFO Replication
+# Replication
+
+# 마스터 역할
+role:master
+
+# 연결된 복제본 없음
+connected_slaves:0
+master_failover_state:no-failover
+
+# 복제 ID
+master_replid:75c167e9e8702c2085299f06c3a7d242aa58f3d2
+master_replid2:0000000000000000000000000000000000000000
+
+# 오프셋
+master_repl_offset:9
+second_repl_offset:-1
+repl_backlog_active:0
+repl_backlog_size:1048576
+repl_backlog_first_byte_offset:0
+repl_backlog_histlen:0
+```
+
+<br>
+
+```shell
+# 복제본을 생성한 후
+127.0.0.1:6379> INFO Replication
+# Replication
+role:master
+connected_slaves:1
+slave0:ip=127.0.0.1,port=6380,state=online,offset=247,lag=1
+master_failover_state:no-failover
+master_replid:b20cd293995be06a9afa97001c63ca385760c513
+master_replid2:0000000000000000000000000000000000000000
+master_repl_offset:247
+second_repl_offset:-1
+repl_backlog_active:1
+repl_backlog_size:1048576
+repl_backlog_first_byte_offset:10
+repl_backlog_histlen:238
+```
 
 
 
