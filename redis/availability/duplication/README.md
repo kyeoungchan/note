@@ -3,6 +3,9 @@
 - [레디스에서의 복제 구조](#-레디스에서의-복제-구조)
   - [복제 구조 구성하기](#-복제-구조-구성하기)
 - [복제 메커니즘](#-복제-메커니즘)
+  - [비동기 방식으로 동작하는 복제 연결](#-비동기-방식으로-동작하는-복제-연결)
+  - [복제 ID](#-복제-id)
+  - [부분 재동기화](#-부분-재동기화)
 
 ## ❗️ 레디스에서 복제 구조 세팅하기
 먼저 다음 명령어를 통해 `redis.conf`를 복제해서 `redis2.conf` 파일을 생성한다.
@@ -208,22 +211,88 @@ repl_backlog_histlen:0
 <br>
 
 ```shell
-# 복제본을 생성한 후
+# 복제본을 생성한 후 마스터 노드
 127.0.0.1:6379> INFO Replication
 # Replication
 role:master
 connected_slaves:1
-slave0:ip=127.0.0.1,port=6380,state=online,offset=247,lag=1
+slave0:ip=127.0.0.1,port=6380,state=online,offset=1353,lag=0
 master_failover_state:no-failover
-master_replid:b20cd293995be06a9afa97001c63ca385760c513
+master_replid:432da49c7f3077bf893b0bf48acb05badc183a73
 master_replid2:0000000000000000000000000000000000000000
-master_repl_offset:247
+master_repl_offset:1353
 second_repl_offset:-1
 repl_backlog_active:1
 repl_backlog_size:1048576
-repl_backlog_first_byte_offset:10
-repl_backlog_histlen:238
+repl_backlog_first_byte_offset:850
+repl_backlog_histlen:504
 ```
+
+```shell
+# 복제를 시작한 후 복제본 노드
+127.0.0.1:6380> INFO Replication
+# Replication
+role:slave
+master_host:127.0.0.1
+master_port:6379
+master_link_status:up
+master_last_io_seconds_ago:1
+master_sync_in_progress:0
+slave_read_repl_offset:1339
+slave_repl_offset:1339
+replica_full_sync_buffer_size:0
+replica_full_sync_buffer_peak:0
+master_current_sync_attempts:1
+master_total_sync_attempts:1
+master_link_up_since_seconds:337
+total_disconnect_time_sec:0
+slave_priority:100
+slave_read_only:1
+replica_announced:1
+connected_slaves:0
+master_failover_state:no-failover
+
+# 마스터 노드의 master_replid와 동일 
+master_replid:432da49c7f3077bf893b0bf48acb05badc183a73
+master_replid2:0000000000000000000000000000000000000000
+
+# 마스터 노드의 복제 오프셋(정도)
+master_repl_offset:1339
+second_repl_offset:-1
+repl_backlog_active:1
+repl_backlog_size:1048576
+repl_backlog_first_byte_offset:864
+repl_backlog_histlen:476
+```
+
+레디스에서 `replication id`와 오프셋이 같을 때 두 노드는 정확히 일치된 상태라는 뜻이다.
+
+<br>
+
+### ✅ 부분 재동기화
+복제 연결이 끊길 때마다 마스터에서 RDB 파일을 새로 내려 복제본에 전달하는 과정을 거친다면 네트워크가 불안정한 상황에서 복제 기능을 사용하는 레디스의 성능은 급격히 나빠질 것이다.  
+이를 방지하기 위해 레디스는 부분 재동기화(partial resynchronization) 기능을 사용해 안정적으로 복제 연결을 유지한다.  
+
+마스터는 커넥션 유실을 대비해 백로그 버퍼라는 메모리 공간에 복제본에 전달한 커맨드 데이터들을 저장해둔다.  
+➡ 하나의 복제 그룹에서 `replication ID`와 오프셋을 이용하면 복제본이 마스터의 어느 시점까지의 데이터를 가지고 있는지 파악할 수 있다.  
+만약 복제 연결이 잠시 끊긴 뒤 재연결되면 복제본은 `PSYNC` 커맨드를 호출해 자신의 `replication ID`와 오프셋을 마스터에 전달한다.
+
+<br>
+
+예를 들어, 오프셋 900의 복제본 노드가 마스터 노드에 재연결을 시도하는 경우가 있다고 하자.  
+오프셋 901~915의 내용이 마스터의 백로그에 저장돼 있다면 마스터는 RDB 파일을 새로 저장할 필요 없이 백로그에 저장된 내용을 복제본에 전달함으로써 부분 재동기화를 진행할 수 있다.
+
+하지만 마스터의 백로그 버퍼에 원하는 데이터가 남아있지 않거나, 복제본이 보낸 `replication ID`가 현재의 마스터와 일치하지 않다면 전체 재동기화(full resync)를 시도한다.
+
+<br>
+
+복제 백로그 크기는 `repl-backlog-size` 파라미터로 설정할 수 있으며, 기본값은 1MB이다.  
+복제 연결이 끊겼을 때 백로그 크기가 클수록 복제본이 부분 재동기화를 수행할 수 있는 시간이 길어진다.  
+백로그는 1개 이상의 복제본이 연결된 경우에만 할당되며, `repl-backlog-ttl`만큼의 시간이 경과하면 메모리에서 백로그 공간을 삭제한다.  
+
+<br>
+
+
 
 
 
