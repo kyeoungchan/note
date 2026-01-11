@@ -147,6 +147,7 @@
 - [리눅스 맥 환경 설치](https://github.com/kyeoungchan/note/tree/main/linux/settings)
 - [레디스 한글 깨질 때](https://github.com/kyeoungchan/note/tree/main/redis/settings)
 - [카프카 실습환경 세팅](https://github.com/kyeoungchan/note/tree/main/kafka/settings)
+- [Git 추적하지 않게 하기](https://github.com/kyeoungchan/note/tree/main/git/gitignore)
 
 
 ## ✍🏻 그냥 기록
