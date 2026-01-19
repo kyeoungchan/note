@@ -10,6 +10,7 @@
     - [카프카 브로커 클러스터로 구성](#-카프카-브로커-클러스터로-구성)
 - [로컬 컴퓨터에서 카프카와 통신 확인](#-로컬-컴퓨터에서-카프카와-통신-확인)
   - [테스트 편의를 위한 hosts 설정](#-테스트-편의를-위한-hosts-설정)
+- [Docker Compose로 카프카 실행하기](#-docker-compose로-카프카-실행하기)
 
 <br>
 
@@ -669,6 +670,58 @@ $ ssh -i test-kafka-server-key.pem ec2-user@my-kafka
 
 <br>
 
+
+<br>
+
+## ❗️ Docker Compose로 카프카 실행하기
+```yml
+services:
+  # Kafka - 메시지 브로커
+  kafka:
+    # Confluent 사에서 제공하는 Docker 이미지 사용
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: kafka
+    ports:
+      - "9092:9092"
+      - "9093:9093"
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+    environment:
+      KAFKA_ENABLE_KRAFT: yes # KRaft 모드 활성화
+      KAFKA_PROCESS_ROLES: controller,broker
+      KAFKA_BROKER_ID: 1
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9093
+      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      # 필요한 토픽들 자동 생성 설정
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      # .enm 파일에서 KAFKA_CLUSTER_ID 이름으로 작성
+      CLUSTER_ID: ${KAFKA_CLUSTER_ID}
+
+  # Kafka UI - 카프카 모니터링 및 관리용 웹 인터페이스
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui
+    depends_on:
+      - kafka
+    ports:
+      - "8989:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+
+```
+
+`KAFKA_CLUSTER_ID` 값은 아래와 같은 명령어 수행을 통해 UUID를 얻어와서 작성하면 된다.
+```shell
+docker run --rm confluentinc/cp-kafka:7.5.0 kafka-storage random-uuid
+```
 
 
 

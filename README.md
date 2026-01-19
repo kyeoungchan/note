@@ -4,6 +4,7 @@
   - [다이나믹 프로그래밍](https://github.com/kyeoungchan/note/tree/main/algorithm/dynamic-programming)
     - [이항계수 다이나믹 프로그래밍 활용](https://github.com/kyeoungchan/note/tree/main/algorithm/dynamic-programming/binomialcoefficient)
   - [파라메트릭 서치](https://github.com/kyeoungchan/note/tree/main/algorithm/parametric-search)
+- [AWS](https://github.com/kyeoungchan/note/tree/main/amazon-web-serives)
 - 데이터통신기술
   - [피코넷](https://github.com/kyeoungchan/note/tree/main/data_communications/piconet)
   - [지그비](https://github.com/kyeoungchan/note/tree/main/data_communications/zigbee)
@@ -78,7 +79,7 @@
 - [코틀린](https://github.com/kyeoungchan/note/tree/main/kotlin)
 - 네트워크
   - [Blocking vs Non Blocking vs Synchronous vs Asynchronous](https://github.com/kyeoungchan/note/tree/main/network/blocking-nonblocking-syn-asyn)
-  - [IPv6](https://github.com/kyeoungchan/note/tree/main/network/ipv6)
+  - [IP 기초](https://github.com/kyeoungchan/note/tree/main/network/ip)
   - [온프레미스](https://github.com/kyeoungchan/note/tree/main/network/on-premise)
   - [라우팅 프로토콜](https://github.com/kyeoungchan/note/tree/main/network/routing-protocol)
   - [전송계층](https://github.com/kyeoungchan/note/tree/main/network/transport-layer)
@@ -146,6 +147,8 @@
 - [리눅스 맥 환경 설치](https://github.com/kyeoungchan/note/tree/main/linux/settings)
 - [레디스 한글 깨질 때](https://github.com/kyeoungchan/note/tree/main/redis/settings)
 - [카프카 실습환경 세팅](https://github.com/kyeoungchan/note/tree/main/kafka/settings)
+- [Git 추적하지 않게 하기](https://github.com/kyeoungchan/note/tree/main/git/gitignore)
+- [spring build 명령어 관련](https://github.com/kyeoungchan/note/tree/main/spring/build)
 
 
 ## ✍🏻 그냥 기록
@@ -159,3 +162,5 @@
   - [웹 페이지 이벤트 적재 파이프라인](https://github.com/kyeoungchan/note/tree/main/kafka/practical-projects/web-page-event-load-pipeline-project)
 - [하둡 설정](https://github.com/kyeoungchan/note/tree/main/hadoop/settings)
 - [메트릭비트 설정](https://github.com/kyeoungchan/note/tree/main/metricbeat/settings)
+- [Docker 명령어](https://github.com/kyeoungchan/note/tree/main/docker/command)
+  - [Docker 명령어로 Elastic Stack 실행](https://github.com/kyeoungchan/note/tree/main/elastic-stack/settings/docker)

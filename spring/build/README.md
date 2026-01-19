@@ -1,0 +1,22 @@
+# 🧑🏻‍💻 Spring Build 명령어
+```shell
+# Gradle 버전마다 로컬에 설치할 필요 없이 프로젝트를 빌드할 수 있게 하는 것
+./gradle wrapper
+
+# 의존성을 새로 고침하며 clean build
+./gradlew clean build --refresh-dependencies
+```
+
+## ❗️ 캐시 완전히 정리
+### ✅ Gradle 캐시 완전히 정리
+```shell
+./gradlew clean
+./gradlew --stop
+rm -rf .gradle
+./gradlew build --refresh-dependencies
+```
+
+### ✅ IntelliJ 캐시 정리
+File → Invalidate Caches → Invalidate and Restart
+![invalidate_cashes.png](../res/invalidate_cashes.png)
+
