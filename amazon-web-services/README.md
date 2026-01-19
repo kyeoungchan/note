@@ -27,7 +27,7 @@ AWS의 서울 리전(ap-northeast-2)에서는 총 4개의 AZ(ap-northeast-2a, ap
 서브넷을 만들 때는 VPC 네트워크 대역에 포함된 네트워크 영역을 지정해야 한다.  
 VPC의 네트워크 대역을 넘어가는 IP를 가진 서브넷 영역은 생성할 수 없다.  
 또한, 각 서브넷끼리는 네트워크 대역이 겹쳐서는 안 된다.  
-서브넷은 단일 AZ에만 존재하며, 여러 AZ에 걸쳐서 AZ를 생성할 수 없다.  
+서브넷은 단일 AZ에만 존재하며, 여러 AZ에 걸쳐서 서브넷을 생성할 수 없다.  
 
 ![subnet_network_range_inner_vpc.jpeg](res/subnet_network_range_inner_vpc.jpeg)  
 

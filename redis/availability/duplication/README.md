@@ -279,6 +279,9 @@ repl_backlog_histlen:476
 
 <br>
 
+![partial-resynchronization.jpeg](../../res/partial-resynchronization.jpeg)  
+
+
 예를 들어, 오프셋 900의 복제본 노드가 마스터 노드에 재연결을 시도하는 경우가 있다고 하자.  
 오프셋 901~915의 내용이 마스터의 백로그에 저장돼 있다면 마스터는 RDB 파일을 새로 저장할 필요 없이 백로그에 저장된 내용을 복제본에 전달함으로써 부분 재동기화를 진행할 수 있다.
 
