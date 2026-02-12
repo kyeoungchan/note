@@ -111,7 +111,7 @@ GRANT ALL PRIVILEGES ON *.* TO {userName}@localhost;
 ```
 사실 이 권한까지는 불필요할 수 있다. root에서 참조하기 귀찮을 때 사용하면 된다. 
 ### Work Bench에 연결하기
-![SetupNewConnection](../res/SetupNewConnection.png)
+![SetupNewConnection](../../res/SetupNewConnection.png)
 - connection name: 아무 이름 넣으면 된다.
 - hostname: 그냥 냅둔다.
     > 127.0.0.1이란  
@@ -165,5 +165,29 @@ spring.datasource.password=1234
 
 <br>
 
+## 🚀 MySQL 시작 및 종료
+> Mac 환경 기준이다.
+
+![Mac 시스템 환경설정](../res/mac_settings.png)  
+다음과 같이 시스템 환경설정에 들어가면 MySQL을 수행할 수 있다.
+
+<br>
+
+만약 터미널로 실행하거나 종료하고 싶다면 아래의 명령어를 참조하자.  
+```shell
+# MySQL 서버 시작
+sudo /usr/local/mysql/support-files/mysql.server start
+
+# MySQL 서버 종료
+sudo /usr/local/mysql/support-files/mysql.server stop
+```
+
+
+
+
+<br>
+
+
 **출처**  
-[[Spring] 스프링 mysql 데이터베이스와 jpa 연동](https://growth-coder.tistory.com/111)
+[[Spring] 스프링 mysql 데이터베이스와 jpa 연동](https://growth-coder.tistory.com/111)  
+[Real MySQL 8.0](https://product.kyobobook.co.kr/detail/S000001766482)
