@@ -18,6 +18,7 @@
     - [MySql 설정 관련](https://github.com/kyeoungchan/note/tree/main/database/mysql/mysql-settings)
     - [스토리지 엔진](https://github.com/kyeoungchan/note/tree/main/database/mysql/storage-engine)
     - [MySql 시스템 변수](https://github.com/kyeoungchan/note/tree/main/database/mysql/system-variables)
+    - [MySql 사용자 및 권한](https://github.com/kyeoungchan/note/tree/main/database/mysql/user-authorization)
   - [정규화](https://github.com/kyeoungchan/note/tree/main/database/normalization)
   - [절차형 SQL](https://github.com/kyeoungchan/note/tree/main/database/procedural-sql)
   - [회복 기법](https://github.com/kyeoungchan/note/tree/main/database/recovery)
