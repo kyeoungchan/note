@@ -58,7 +58,7 @@ MySQL 서버의 시스템 변수는 디스크에 저장돼 있는 설정 파일(
 my.cnf에 작성된 내용을 변경하더라도 MySQL 서버가 재시작하기 전에는 적용되지 않는다.  
 하지만, `SHOW` 명령으로 확인하거나, 동적 변수의 경우 `SET` 명령을 통해 값을 바꿀 수 있다.  
 ➡ 물론, `SET` 명령을 통해 변경되는 시스템 변수 값은 `my.cnf` 파일에 반영되는 것은 아니기 때문에 현재 기동 중인 MySQL 인스턴스 내에서만 유효하다.  
-➡ MySQL 8.0부터는 `SET PERSIST` 명령을 이용하면 실행 중인 MySQL 서버의 시스템 변수를 변경함과 동싱 자동으로 설정 파일로도 기록된다.
+➡ MySQL 8.0부터는 `SET PERSIST` 명령을 이용하면 실행 중인 MySQL 서버의 시스템 변수를 변경함과 동시에 자동으로 설정 파일로도 기록된다.
 
 ```mysql
 mysql> SHOW GLOBAL VARIABLES LIKE '%max_connections%';
