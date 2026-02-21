@@ -19,6 +19,8 @@
       - [메모리 할당 및 사용 구조](https://github.com/kyeoungchan/note/tree/main/database/mysql/architecture/memory-allocation-structure)
       - [쿼리 실행 구조](https://github.com/kyeoungchan/note/tree/main/database/mysql/architecture/query-execution-process)
       - [스토리지 엔진](https://github.com/kyeoungchan/note/tree/main/database/mysql/architecture/storage-engine)
+        - [InnoDB 스토리지 엔진 아키텍처](https://github.com/kyeoungchan/note/tree/main/database/mysql/architecture/storage-engine/innodb-storage-engine-architecture)
+          - [InnoDB 스토리지 엔진 아키텍처](https://github.com/kyeoungchan/note/tree/main/database/mysql/architecture/storage-engine/innodb-storage-engine-architecture/innodb-buffer-pool)
       - [스레드 풀](https://github.com/kyeoungchan/note/tree/main/database/mysql/architecture/thread-pool)
       - [스레딩 구조](https://github.com/kyeoungchan/note/tree/main/database/mysql/architecture/threading-structure)
     - [MySql 설정 관련](https://github.com/kyeoungchan/note/tree/main/database/mysql/mysql-settings)
