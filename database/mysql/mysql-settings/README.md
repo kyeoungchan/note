@@ -252,7 +252,7 @@ MySQL 서버에서는 실제 트랜잭션이 정상적으로 커밋되어도 데
 
 <br>
 
-다음과 같이 MySQL 서버의 옵셔을 변경하고 MySQL 서버를 종료하면 MySQL 서버가 종료될 때 모든 커밋된 내용을 데이터 파일에 기록하고 종료하게 할 수 있다.  
+다음과 같이 MySQL 서버의 옵션을 변경하고 MySQL 서버를 종료하면 MySQL 서버가 종료될 때 모든 커밋된 내용을 데이터 파일에 기록하고 종료하게 할 수 있다.  
 
 ```shell
 mysql> SET GLOBAL innodb_fast_shutdown=0;
