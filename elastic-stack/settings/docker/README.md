@@ -46,4 +46,14 @@ bin/elasticsearch-reset-password -u kibana_system
 
 # kibana용 서비스 토큰 생성. 위에 ELASTICSEARCH_SERVICE_ACCOUNT_TOKEN 옵션에 해당
 bin/elasticsearch-service-tokens create elastic/kibana kibana-token
+
+# 혹은 bash로 접속하지 말고 한 번에 명령어를 입력할 수도 있다.
+docker exec -it charles-elasticsearch \
+bin/elasticsearch-service-tokens create elastic/kibana kibana-token
+
+# Kibana enrollment 토큰 생성
+docker exec -it charles-elasticsearch   bin/elasticsearch-create-enrollment-token -s kibana
+
+# users 확인
+bin/elasticsearch-users list
 ```
