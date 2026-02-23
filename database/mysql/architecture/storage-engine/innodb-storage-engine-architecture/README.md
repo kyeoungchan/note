@@ -7,6 +7,7 @@
 - [✅ 잠금 없는 일관된 읽기(Non-Locking Consistent READ)](#-잠금-없는-일관된-읽기non-locking-consistent-read)
 - [✅ 자동 데드락 감지](#-자동-데드락-감지)
 - [✅ InnoDB 버퍼 풀](https://github.com/kyeoungchan/note/tree/main/database/mysql/architecture/storage-engine/innodb-storage-engine-architecture/innodb-buffer-pool)
+- [✅ 언두 로그](#-언두-로그)
 
 ## ✅ 프라이머리 키에 의한 클러스터링
 InnoDB의 모든 테이블은 기본적으로 프라이머리 키를 기준으로 클러스터링되어 저장된다.  
@@ -134,8 +135,115 @@ InnoDB 스토리지 엔진은 데드락 감지 스레드를 가지고 있어서 
 
 <br>
 
+## ✅ 언두 로그
+트랜잭션과 격리 수준을 보장하기 위해 DML(INSERT, UPDATE, DELETE)로 변경되기 이전 버전의 데이터를 별도로 백업한 데이터를 언두 로그(Undo Log)라고 한다.  
+- 트랜잭션 보장
+  - 트랜잭션이 롤백되면 트랜잭션 도중 변경된 데이터를 변경 전 데이터로 복구해야 하는데, 이때 언두 로그에 백업해둔 이전 버전의 데이터를 이용해 복구한다.
+- 격리 수준 보장
+  - 특정 커넥션에서 데이터를 변경하는 도중에 다른 커넥션에서 데이터를 조회하면 트랜잭션 격리 수준에 맞게 변경 중인 레코드를 읽지 않고, **언두 로그에 백업해둔 데이터**를 읽어서 반환하기도 한다.
 
+### ✏️ 언두 로그 모니터링
+> MySQL 5.5 이전 버전의 MySQL 서버에서는 한 번 증가한 언두 로그 공간은 다시 줄어들지 않았다.  
+> 예를 들어, 1억 건의 레코드가 저장된 100GB 크기의 테이블을 DELETE한다면, 1억 건의 레코드가 언두 로그로 복사되어야 한다.  
+> 즉, 테이블의 크기만큼 언두 로그의 공간 사용량이 늘어나 결국 로그 공간이 100GB가 되는 것이다.
 
+대용량의 데이터를 처리하는 트랜잭션뿐만 아니라, 트랜잭션이 오랜 시간 동안 실행될 때도 언두 로그의 양은 급격히 증가할 수 있다.  
+❗️ 트랜잭션이 완료됐다고 해서 해당 트랜잭션이 생성한 언두 로그를 즉시 삭제할 수 있는 것은 아니다.  
+➡️ SELECT를 한 상태에서 커밋을 하지 않은 데이터가 오랫동안 존재한다면 그 동안 해당 데이터를 변경한 트랜잭션이 커밋을 마치면 언두 로그에 반영한 채로 대기하고 있어야 한다.
+
+🤦🏻‍♂️ 일반적으로 응용 프로그램에서 트랜잭션 관리가 잘못된 경우 발생할 수도 있지만, 사용자의 실수로 인해 더 자주 문제가 되곤 한다.  
+➡️ 트랜잭션을 완료시키지 않은 상태에서 쭉 방치하면, 디스크의 언두 로그 저장 공간은 계속 증가하게 된다.  
+그러면 변경된 레코드를 조회하는 쿼리가 실행되면 InnoDB 스토리지 엔진은 언두 로그의 이력을 필요한 만큼 스캔해야만 필요한 레코드를 찾을 수 있기 때문에, 쿼리의 성능이 전반적으로 떨어지게 된다.
+
+<br>
+
+MySQL 8.0부터는 언두 로그를 돌아가면서 순차적으로 사용해 디스크 공간을 줄이는 것이 가능해졌다.  
+
+```mysql
+-- // MySQL 서버의 언두 로그 건수 확인
+mysql> SHOW ENGINE INNODB STATUS \G
+...
+------------
+TRANSACTIONS
+------------
+Trx id counter 778762
+Purge done for trx's n:o < 778759 undo n:o < 0 state: running but idle
+History list length 0
+...
+      
+mysql> SELECT count
+       FROM information_schema.innodb_metrics
+       WHERE SUBSYSTEM='transaction' AND NAME='trx_rseg_history_len';
++-------+
+| count |
++-------+
+|     0 |
++-------+
+1 row in set (0.01 sec)
+```
+
+<br>
+
+### ✏️ 언두 테이블스페이스 관리
+언두 로그가 저장되는 공간을 **언두 테이블스페이스(Undo Tablespace)** 라고 한다.  
+MySQL 8.0부터는 언두 로그는 항상 시스템 테이블스페이스 외부의 별도 로그 파일에 기록되도록 개선됐다.
+
+![undo_tablespace_structure.png](../../../res/undo_tablespace_structure.png)  
+
+- 하나의 언두 테이블스페이스에 1개 이상, 128개 이하의 롤백 세그먼트를 가진다.
+- 롤백 세그먼트는 1개 이상의 언두 슬롯(Undo Slot)을 가진다.
+- 하나의 롤백 세그먼트는 InnoDB 페이지 크기를 16Byte로 나눈 값의 개수만큼 언두 슬롯을 가진다.  
+  ➡️ InnoDB 페이지 크기가 16KB라면, 하나의 롤백 세그먼트는 1024개의 언두 슬롯을 갖게 된다.
+
+하나의 트랜잭션이 피룡로 하는 언두 슬롯의 개수는 트랜잭션이 실행하는 INSERT, UPDATE, DELETE 문장 특성에 따라 최대 4개까지 언두 슬롯을 사용하게 된다.  
+🤔 일반적으로는 트랜잭션이 임시 테이블을 사용하지 않으므로 하나의 트랜잭션은 대략 2개 정도의 언두 슬롯을 필요로 한다고 가정하면 된다.    
+❗️ 따라서 최대 동시 처리 가능한 트랜잭션의 개수는 다음 수식으로 예측해볼 수 있다.
+```text
+최대 동시 트랜잭션 개수 = (InnoDB 페이지 크기) / 16 * (롤백 세그먼트 개수) * (언두 테이블스페이스 개수) / 2  
+```
+
+<br>
+
+가장 일반적인 설정인 16KB InnoDB에서 기본 설정(innodb_undo_tablespaces=2, innodb_rollback_segments=128) 사용시 다음과 같다.  
+```text
+131,072 = 16 * 1024 / 16 * 128 * 2 / 2
+```
+> 일반적인 서비스에서 이 정도까지 동시 트랜잭션이 필요하진 않겠지만 크게 문제될 것은 없으므로 기본값으로 유지해두자.
+
+<br>
+
+호옥시나 언두 로그 관련 시스템 변수를 변경해야한다면 MySQL 8.0 버전부터는 `CREATE UNDO TABLESPACE`나 `DROP TABLESPACE` 같은 명령으로 새로운 언두 테이블 스페이스를 동적으로 추가하고 삭제할 수 있게 개선됐다.
+```mysql
+mysql> SELECT TABLESPACE_NAME, FILE_NAME
+       FROM information_schema.FILES
+       WHERE FILES.FILE_TYPE LIKE 'UNDO LOG';
++-----------------+------------+
+| TABLESPACE_NAME | FILE_NAME  |
++-----------------+------------+
+| innodb_undo_001 | ./undo_001 |
+| innodb_undo_002 | ./undo_002 |
++-----------------+------------+
+2 rows in set (0.04 sec)
+              
+mysql> CREATE UNDO TABLESPACE extra_undo_003 ADD DATAFILE '/data/undo_dir/undo_003.ibu';
+
+mysql> SELECT TABLESPACE_NAME, FILE_NAME
+       FROM information_schema.FILES
+       WHERE FILES.FILE_TYPE LIKE 'UNDO LOG';
++-----------------+-----------------------------+
+| TABLESPACE_NAME | FILE_NAME                   |
++-----------------+-----------------------------+
+| innodb_undo_001 | ./undo_001                  |
+| innodb_undo_002 | ./undo_002                  |
+| extra_undo_003  | /data/undo_dir/undo_003.ibu |
++-----------------+-----------------------------+
+
+-- // 언두 테이블스페이스 비활성화
+mysql> ALTER UNDO TABLESPACE extra_undo_003 SET INACTIVE;
+
+-- // 비활성화된 테이블스페이스 삭제
+mysql> DROP UNDO TABLESPACE extra_undo_003;
+```
 
 
 
