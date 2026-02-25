@@ -133,7 +133,7 @@ SELECT team_id, back_number FROM player WHERE team_id = 5;
 - 인덱스 자체가 큰 경우 인덱스를 탐색하는 시간도 오래 걸릴 수 있다.
 - 인덱스 엔트리를 탐색하는 시간을 줄이기 위해서 Single-Level Ordered Indexes를 디스크 상의 하나의 순서로 파일로 생각하고, 이것에 대해 다시 인덱스를 정의할 수 있다.
 - 가장 상위 단계 인덱스를 마스터 인덱스(master index)
-- 대부분은 B+ 트리를 사용한다.
+- 대부분은 B+ 트리를 사용한다.  
 ![multi_level_indexes.png](../res/multi_level_indexes.png)
 
 ## ✔️동작 방식(자료구조)
@@ -148,13 +148,14 @@ DB index에 자주 쓰이는 자료구조는 `B-Tree`, `B+Tree`, `Hash Table`이
 ### B+tree
 - B+tree는 B-tree를 확장 및 개선한 자료구조
 - 데이터의 빠른 접근을 위한 인덱스 역할만 하는 비단말 노드(not leaf)가 분리되어 있다.
-- 관계형 DB에서 가장 많이 사용한다.
-![B+tree.png](../res/B+tree.png)
+- 관계형 DB에서 가장 많이 사용한다.  
+
+![B_plus_tree.png](../res/B_plus_tree.png)
 
 ### Hash Table
 > 시간복잡도: `O(1)`
 
-![hash_table.png](hash_table.png)  
+![hash_table.png](../res/hash_table.png)  
 B-tree보다 시간복잡도가 좋은데 왜 B-tree 계열을 쓸까?
 - 해시는 등호(=) 연산에만 특화되어 있어 부등호 연산이 자주 사용되는 데이터베이스 검색에는 적합하지 않다.
 - multi column index의 경우, 전체 attributes에 대한 조회만 가능하다.
