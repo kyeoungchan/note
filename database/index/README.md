@@ -1,8 +1,34 @@
 # 인덱스(Index)
+<hr>
+
+- [✔️ DB 테이블에 인덱스가 필요한 이유](#-db-테이블에-인덱스가-필요한-이유)
+- [1. 이미 테이블과 데이터가 존재하는 경우](#1-이미-테이블과-데이터가-존재하는-경우)
+- [2. 테이블 생성 시 index 생성](#2-테이블-생성-시-index-생성)
+- [[Multi Column Index]](#multi-column-index)
+- [✔️ Index 구조](#-index-구조)
+- [✔️ 동작 방식(자료구조)](#-동작-방식자료구조)
+- [✔️ Index를 설정할 때 고려사항](#-index를-설정할-때-고려사항)
+
 ## ✔️ DB 테이블에 인덱스가 필요한 이유
 <hr>
 
-### 만약 table에 index를 걸지 않는다면?
+- [🤔 인덱스란?](#-인덱스란)
+- [✅ 만약 table에 index를 걸지 않는다면?](#-만약-table에-index를-걸지-않는다면)
+- [✅ 만약 index를 걸었다면?](#-만약-index를-걸었다면)
+
+### 🤔 인덱스란?
+> [!NOTE]
+> 보통 인덱스를 언급할 때는 항상 책의 맨 끝에 있는 찾아보기(또는 "색인")로 설명한다.  
+> ➡ 책의 내용은 데이터 파일에 해당된다.  
+> ➡ 페이지 번호는 레코드의 주소에 해당된다.  
+> ❗️ 책의 "찾아보기"와 DBMS 인덱스의 공통점 가운데 가장 중요한 것은 정렬이 되어있어야 한다는 것이다.
+
+> [!IMPORTANT]
+> DBMS에서 인덱스는 데이터의 저장(INSERT, UPDATE, DELETE) 성능을 희생하고 그 대신 데이터의 읽기 속도를 높이는 기능이다.  
+> ➡️ SELECT 쿼리 문장의 WHERE 조건절에 사용되는 컬럼이라고 해서 전부 인덱스로 생성하면 데이터 저장 성능이 떨어지고 인덱스의 크기가 비대해져 오히려 역효과만 불어올 수 있다.
+
+
+### ✅ 만약 table에 index를 걸지 않는다면?
 ```sql
 SELECT *
 FROM customer
@@ -11,7 +37,7 @@ WHERE first_name = "charles";
 => 원하는 데이터를 찾고 싶을 때 table 전체를 full scan해야한다.  
 => 따라서, 시간복잡도: `O(N)`
 
-### 만약 index를 걸었다면?
+### ✅ 만약 index를 걸었다면?
 시간복잡도: `O(logN)`
 (B-tree based Index)
 
@@ -96,7 +122,7 @@ SELECT team_id, back_number FROM player WHERE team_id = 5;
 
 <br>
 
-## ✔️Index 구조
+## ✔️ Index 구조
 ### [Single-Level Ordered Indexes]
 - 각 엔트리는 `<탐색 키, 레코드에 대한 포인터>`
 - 엔트리들은 탐색 키 값의 오름차순으로 정렬
@@ -136,23 +162,40 @@ SELECT team_id, back_number FROM player WHERE team_id = 5;
 - 대부분은 B+ 트리를 사용한다.  
 ![multi_level_indexes.png](../res/multi_level_indexes.png)
 
-## ✔️동작 방식(자료구조)
+## ✔️ 동작 방식(자료구조)
 <hr>
 
-DB index에 자주 쓰이는 자료구조는 `B-Tree`, `B+Tree`, `Hash Table`이다.
-### B-tree
+> [!NOTE]
+> DB index에 자주 쓰이는 자료구조는 `B-Tree`, `B+Tree`, `Hash Table`이다.
+
+### 🧑🏻‍💻 B-tree
+> [!NOTE]
+> B-Tree 알고리즘은 가장 일반적으로 사용되는 인덱스 알고리즘이다.  
+> 컬럼의 값을 변경하지 않고 원래의 값을 이용해 인덱싱하는 알고리즘이다.  
+
+> [!IMPORTANT]
 > 시간복잡도: `O(longN)`
 - B-tree란 자식 노드가 2개 이상인 트리
 - 균형 트리(Balanced Tree)로서, 최상위 루트 노드에서 리프 노드까지의 거리가 모두 동일하다.
+  - ❗️ Binary Tree가 아니다.
 
-### B+tree
+B-Tree에 대한 자세한 설명은 [B-Tree 페이지](https://github.com/kyeoungchan/note/tree/main/datastructure/b-tree)에서 작성하였다.
+
+
+### 🧑🏻‍💻 B+tree
 - B+tree는 B-tree를 확장 및 개선한 자료구조
 - 데이터의 빠른 접근을 위한 인덱스 역할만 하는 비단말 노드(not leaf)가 분리되어 있다.
 - 관계형 DB에서 가장 많이 사용한다.  
 
 ![B_plus_tree.png](../res/B_plus_tree.png)
 
-### Hash Table
+### 🧑🏻‍💻 Hash Table
+> [!NOTE]
+> Hash 인덱스 알고리즘은 컬럼의 값으로 해시값을 계산해서 인덱싱하는 알고리즘으로, 매우 빠른 검색을 지원한다.  
+> 값을 변형해서 인덱싱하므로 전방(Prefix) 일치와 같이 값의 일부만 검색하거나 범위를 검색할 때는 해시 인덱스를 사용할 수 없다.  
+> Hash 인덱스는 주로 메모리 기반의 데이터베이스에서 많이 사용한다.
+
+> [!IMPORTANT]
 > 시간복잡도: `O(1)`
 
 ![hash_table.png](../res/hash_table.png)  
@@ -203,4 +246,5 @@ B-tree보다 시간복잡도가 좋은데 왜 B-tree 계열을 쓸까?
 
 출처  
 [2023-CS-Study](https://github.com/devSquad-study/2023-CS-Study/blob/main/DB/db_index.md)  
-[기본 인덱스 (primary index)와 보조 인덱스 (secondary index)의 차이점](https://m.blog.naver.com/remocon33/221037713789)
+[기본 인덱스 (primary index)와 보조 인덱스 (secondary index)의 차이점](https://m.blog.naver.com/remocon33/221037713789)  
+[Real MySQL 8.0](https://product.kyobobook.co.kr/detail/S000001766482)
