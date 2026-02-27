@@ -12,6 +12,7 @@
   - [지그비](https://github.com/kyeoungchan/note/tree/main/data_communications/zigbee)
   - [UWB](https://github.com/kyeoungchan/note/tree/main/data_communications/UWB)
 - 데이터베이스
+  - [B-Tree 와 B+Tree](https://github.com/kyeoungchan/note/tree/main/database/b-tree-b-plus-tree)
   - [병행성 제어](https://github.com/kyeoungchan/note/tree/main/database/concurrency-control)
   - [인덱스](https://github.com/kyeoungchan/note/tree/main/database/index)
   - [로킹기법](https://github.com/kyeoungchan/note/tree/main/database/locking)
@@ -44,7 +45,6 @@
       - [INSERT](https://github.com/kyeoungchan/note/tree/main/database/sql/dml/insert)
       - [JOIN](https://github.com/kyeoungchan/note/tree/main/database/sql/dml/join)
 - 자료구조
-  - [B-Tree](https://github.com/kyeoungchan/note/tree/main/datastructure/b-tree)
   - [HashMap vs HashTable vs ConcurrentHashMap vs LinkedHashMap](https://github.com/kyeoungchan/note/tree/main/datastructure/map)
   - [레드-블랙 트리](https://github.com/kyeoungchan/note/tree/main/datastructure/redblacktree)
 - [버전/의존성 관리 도구](https://github.com/kyeoungchan/note/tree/main/dependency_management)

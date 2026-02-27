@@ -179,7 +179,7 @@ SELECT team_id, back_number FROM player WHERE team_id = 5;
 - 균형 트리(Balanced Tree)로서, 최상위 루트 노드에서 리프 노드까지의 거리가 모두 동일하다.
   - ❗️ Binary Tree가 아니다.
 
-B-Tree에 대한 자세한 설명은 [B-Tree 페이지](https://github.com/kyeoungchan/note/tree/main/datastructure/b-tree)에서 작성하였다.
+B-Tree에 대한 자세한 설명은 [B-Tree 페이지](https://github.com/kyeoungchan/note/tree/main/database/b-tree-b-plus-tree)에서 작성하였다.
 
 
 ### 🧑🏻‍💻 B+tree
