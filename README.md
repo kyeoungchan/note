@@ -5,11 +5,14 @@
     - [이항계수 다이나믹 프로그래밍 활용](https://github.com/kyeoungchan/note/tree/main/algorithm/dynamic-programming/binomialcoefficient)
   - [파라메트릭 서치](https://github.com/kyeoungchan/note/tree/main/algorithm/parametric-search)
 - [AWS](https://github.com/kyeoungchan/note/tree/main/amazon-web-serives)
+- 컴퓨터 구조
+  - [디스크 읽기](https://github.com/kyeoungchan/note/tree/main/computer-structure/disk-reading)
 - 데이터통신기술
   - [피코넷](https://github.com/kyeoungchan/note/tree/main/data_communications/piconet)
   - [지그비](https://github.com/kyeoungchan/note/tree/main/data_communications/zigbee)
   - [UWB](https://github.com/kyeoungchan/note/tree/main/data_communications/UWB)
 - 데이터베이스
+  - [B-Tree 와 B+Tree](https://github.com/kyeoungchan/note/tree/main/database/b-tree-b-plus-tree)
   - [병행성 제어](https://github.com/kyeoungchan/note/tree/main/database/concurrency-control)
   - [인덱스](https://github.com/kyeoungchan/note/tree/main/database/index)
   - [로킹기법](https://github.com/kyeoungchan/note/tree/main/database/locking)
@@ -88,6 +91,7 @@
     - [스트림즈DSL](https://github.com/kyeoungchan/note/tree/main/kafka/kafkastreams/streamsdsl)
   - [스프링 카프카 컨슈머](https://github.com/kyeoungchan/note/tree/main/kafka/springkafkaconsumer)
 - [코틀린](https://github.com/kyeoungchan/note/tree/main/kotlin)
+- [MongoDB](https://github.com/kyeoungchan/note/tree/main/mongodb)
 - 네트워크
   - [Blocking vs Non Blocking vs Synchronous vs Asynchronous](https://github.com/kyeoungchan/note/tree/main/network/blocking-nonblocking-syn-asyn)
   - [IP 기초](https://github.com/kyeoungchan/note/tree/main/network/ip)
