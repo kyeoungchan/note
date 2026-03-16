@@ -18,6 +18,7 @@
   - [로킹기법](https://github.com/kyeoungchan/note/tree/main/database/locking)
   - [격리수준](https://github.com/kyeoungchan/note/tree/main/database/isolation-level)
   - [잠금]
+    - [MySQL 엔진의 잠금](https://github.com/kyeoungchan/note/tree/main/database/locking/innodb-storage-engine-locking)
     - [MySQL 엔진의 잠금](https://github.com/kyeoungchan/note/tree/main/database/locking/mysql-engine-locking)
   - [MySQL](https://github.com/kyeoungchan/note/tree/main/database/mysql)
     - [MySql 아키텍처](https://github.com/kyeoungchan/note/tree/main/database/mysql/architecture)
