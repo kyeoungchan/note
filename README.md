@@ -17,6 +17,8 @@
   - [인덱스](https://github.com/kyeoungchan/note/tree/main/database/index)
   - [로킹기법](https://github.com/kyeoungchan/note/tree/main/database/locking)
   - [격리수준](https://github.com/kyeoungchan/note/tree/main/database/isolation-level)
+  - [잠금]
+    - [MySQL 엔진의 잠금](https://github.com/kyeoungchan/note/tree/main/database/locking/mysql-engine-locking)
   - [MySQL](https://github.com/kyeoungchan/note/tree/main/database/mysql)
     - [MySql 아키텍처](https://github.com/kyeoungchan/note/tree/main/database/mysql/architecture)
       - [메모리 할당 및 사용 구조](https://github.com/kyeoungchan/note/tree/main/database/mysql/architecture/memory-allocation-structure)
@@ -110,6 +112,7 @@
   - [시스템 콜](https://github.com/kyeoungchan/note/tree/main/operating-system/system-call)
 - [성능 테스트](https://github.com/kyeoungchan/note/tree/main/performance-test)
   - [Apache Jmeter](https://github.com/kyeoungchan/note/tree/main/performance-test/apache-jmeter)
+  - [NGriner](https://github.com/kyeoungchan/note/tree/main/performance-test/ngrinder)
 - [레디스(Redis)](https://github.com/kyeoungchan/note/tree/main/redis)
   - [레디스에서의 고가용성](https://github.com/kyeoungchan/note/tree/main/redis/availability)
     - [복제](https://github.com/kyeoungchan/note/tree/main/redis/availability/duplication)
