@@ -95,6 +95,8 @@
   - [스프링 카프카 컨슈머](https://github.com/kyeoungchan/note/tree/main/kafka/springkafkaconsumer)
 - [코틀린](https://github.com/kyeoungchan/note/tree/main/kotlin)
 - [MongoDB](https://github.com/kyeoungchan/note/tree/main/mongodb)
+  - [MongoDB 아키텍처](https://github.com/kyeoungchan/note/tree/main/mongodb/architecture)
+  - [MongoDB 배포 형태](https://github.com/kyeoungchan/note/tree/main/mongodb/deployment-models)
 - 네트워크
   - [Blocking vs Non Blocking vs Synchronous vs Asynchronous](https://github.com/kyeoungchan/note/tree/main/network/blocking-nonblocking-syn-asyn)
   - [IP 기초](https://github.com/kyeoungchan/note/tree/main/network/ip)
