@@ -396,7 +396,7 @@ $ bin/kafka-topics.sh --bootstrap-server my-kafka:9092 \
 <br>
 
 멀티 스레드를 생성하는 `ExcecutorService` Java 라이브러리를 사용하면 레코드를 병렬처리하는 스레드를 효율적으로 생성하고 관리할 수 있다.  
-`Executors`를 사용하여 스레드 개수를 제어하는 스레드 풀(thread pool)을 생성할 수 있는데, 데이터 처리 호나경에 맞는 스레드 풀을 사용하면 된다.  
+`Executors`를 사용하여 스레드 개수를 제어하는 스레드 풀(thread pool)을 생성할 수 있는데, 데이터 처리 환경에 맞는 스레드 풀을 사용하면 된다.  
 작업 이후 스레드가 종료되어야 한다면 `CachedThreadPool`을 사용하여 스레드를 실행한다.
 
 <br>
