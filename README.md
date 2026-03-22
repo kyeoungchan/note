@@ -98,6 +98,7 @@
   - [MongoDB 아키텍처](https://github.com/kyeoungchan/note/tree/main/mongodb/architecture)
   - [MongoDB 배포 형태](https://github.com/kyeoungchan/note/tree/main/mongodb/deployment-models)
   - [MongoDB 인덱스](https://github.com/kyeoungchan/note/tree/main/mongodb/index)
+  - [MongoDB 샤딩](https://github.com/kyeoungchan/note/tree/main/mongodb/sharding)
 - 네트워크
   - [Blocking vs Non Blocking vs Synchronous vs Asynchronous](https://github.com/kyeoungchan/note/tree/main/network/blocking-nonblocking-syn-asyn)
   - [IP 기초](https://github.com/kyeoungchan/note/tree/main/network/ip)
