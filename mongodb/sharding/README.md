@@ -3,6 +3,7 @@
 
 - [✅ 샤딩의 종류](#-샤딩의-종류)
 - [✅ MongoDB 샤딩 아키텍처](#-mongodb-샤딩-아키텍처)
+- [✅ 샤딩으로 인한 제약](#-샤딩으로-인한-제약)
 
 > [!NOTE]
 > 샤딩이란 데이터를 여러 서버에 분산해서 저장하고 처리할 수 있도록 하는 기술을 말한다.  
@@ -329,6 +330,181 @@ MongoClient client = new MongoClient(mongosList, credentials, options);
 > 그리고 `ShardingTaskExecutorPoolMinSize`는 서브 커넥션 풀 단위로 설정되는 값이므로 10 정도의 값도 충분히 큰 값일 것으로 보인다.  
 > ➡️ 만약 CPU 코어가 24개이고 `ShardingTaskExecutorPoolMinSize`가 10인 경우 MongoDB 라우터가 가지는 커넥션은 (24 * 10 * 샤드 서버 수)만큼이 될 것이다.
 
+<br>
+
+## ✅ 샤딩으로 인한 제약
+<hr>
+
+- [💡 트랜잭션](#-트랜잭션)
+- [💡 샤딩과 유니크 인덱스](#-샤딩과-유니크-인덱스)
+- [💡 조인과 그래프 쿼리](#-조인과-그래프-쿼리)
+- [💡 기존 컬렉션에 샤딩 적용](#-기존-컬렉션에-샤딩-적용)
+
+### 💡 트랜잭션
+<hr>
+
+> [!NOTE]
+> 일반적으로 트랜잭션 속성으로 ACID(Atomicity, Consistency, Isolation, Durability)를 주로 언급한다.  
+> 실제 트랜잭션 지원을 언급할 때는 하나의 쿼리로 구성되든지 여러 개의 쿼리로 구성되든지 모두를 포함해야 한다.  
+> ➡️ MongoDB에서 트랜잭션을 지원하지 않는다는 것은 여러 개의 쿼리문으로 구성된 트랜잭션을 지원하지 않는다는 의미다.
+
+```mysql
+BEGIN;
+UPDATE users SET user_name='Matt' WHERE user_id=1;
+COMMIT;
+
+BEGIN;
+INSERT INTO comments (article_id, comment_id, ...) VALUES (1, 10, ...);
+UPDATE article SET comment_count=comment_count+1 WHERE article_id=1;
+COMMIT;
+```
+
+> [!IMPORTANT]
+> MongoDB에서 단일 도큐먼트(단일 문장이 아니라 단일 도큐먼트라는 것 주의)에 대한 변경은 모두 트랜잭션을 지원한다.  
+> 물론 데이터 변경을 의도적으로 롤백하는 방법은 없지만, 성공 또는 실패 둘 중 하나로 결정된다는 것이다.  
+> ➡ 즉 MongoDB의 단일 도큐먼트 변경은 원자성을 가지고 처리된다.  
+> 하지만 여러 도큐먼트를 변경하는 작업은 원자성을 가지지 않는다.
+
+<br>
+
+### 💡 샤딩과 유니크 인덱스
+<hr>
+
+> [!NOTE]
+> MongoDB에서 데이터가 샤딩되면 샤딩된 데이터 간의 유니크 인덱스 생성은 제약을 가지게 된다.  
+> 샤딩된 컬렉션에서 유니크 인덱스는 샤드 키를 포함하는 인덱스에 대해서만 적용할 수 있다.  
+> MongoDB의 Primary Key는 샤딩과 무관하게 항상 유니크해야 하며, Secondary Key 중에서도 유니크 옵션이 설정되는 경우에는 Primary Key와 동일하게 중복을 허용하지 않도록 처리돼야 한다.  
+> Primary Key 외에 유니크한 Key를 설정하려면 다른 샤드도 전체를 뒤져야하는데 그러면 성능상 샤딩의 이점이 없어지게 되기 때문이다.
+
+
+<br>
+
+> [!TIP]
+> 실제 유니크 인덱스나 Primary Key의 중복 체크 기능은 샤드 단위로만 체크하고, MongoDB 서버가 전체 샤드에 대해서 체크를 수행하지는 않는다.  
+
+#### 🖋️ Primary Key의 중복 체크 처리
+
+> [!NOTE]
+> 아래와 같이 `user_name` 필드로 샤딩된 컬렉션에 동일한 Primary Key(_id) 값을 가지는 여러 개의 도큐먼트를 저장해 보면, 동일 샤드에 저장된 경우에는 중복 에러가 발생하지만, 동일 샤드가 아닌 경우에는 아무런 문제 없이 INSERT되는 것을 확인할 수 있다.
+
+```shell
+mongos> db.runCommand({
+  shardCollection: "mysns.users",
+  key: {user_name: "hashed"},
+  unique: false,
+  numInitialChunks: 2
+});
+
+mongos> db.users.insert({_id: 1, user_name: "matt1"});
+mongos> db.users.insert({_id: 1, user_name: "matt2"});
+mongos> db.users.insert({_id: 1, user_name: "matt3"});
+mongos> db.users.insert({_id: 1, user_name: "matt4"});
+
+# 각 도큐먼트가 어느 샤드에 저장됐는지 확인
+mongos> db.users.find({user_name: "matt1"}).explain()
+
+# 컬렉션의 청크 분포 확인
+mongos> db.adminCommand({getShardDistribution: "mysns.users"})
+```
+
+> [!IMPORTANT]
+> Primary Key 값에 자동으로 생성되는 ObjectId 값을 사용하지 않고, 응용 프로그램에서 사용자가 직접 값을 설정하는 경우에는 반드시 Primary Key 값의 중복 발생 여부를 사용자가 검증해야 한다.
+
+<br>
+
+#### 🖋️ Secondary Key의 중복 체크 처리
+<hr>
+
+우선 다음과 같이 해시 알고리즘과 레인지 알고리즘을 이용해서 샤딩된 users와 articles 컬렉션을 생각해보자.
+
+|컬렉션|샤딩 알고리즘(샤드 키)|
+|---|---|
+|users|HASH(user_id)|
+|articles|RANGE(user_id, article_id)|
+
+> [!NOTE]
+> users 컬렉션은 user_id로 샤딩됐기 때문에 user_id 필드로 시작하는 복합 인덱스에 대해서만 유니크 옵션을 설정할 수 있다.  
+> 이때 user_id 필드가 인덱스를 구성하는 필드의 중간이나 마지막에 있다면 유니크 인덱스 생성이 불가능하며, 반드시 user_id로 시작하는 복합 인덱스만 유니크 옵션을 설정할 수 있다.
+
+> [!TIP]
+> MongoDB의 해시 인덱스는 유니크 옵션을 설정할 수 없다.  
+> 그래서 해시 샤딩을 적용한 users 컬렉션에서 user_id로만 유니크 옵션을 설정하려면 다음과 같이 해시 인덱스 이외에 별도로 B-Tree 인덱스를 생성해서 유니크 옵션을 설정해야 한다.
+
+```shell
+## 샤드 키 인덱스 생성
+mongos> db.users.createIndex({user_id: "hashed"});
+
+## 유니크 인덱스 생성
+# 1이면 B-Tree의 오름차순, -1이면 B-Tree의 내림차순
+mongos> db.users.createIndex({user_id: 1}, {unique: true});
+```
+
+<br>
+
+> [!TIP]
+> articles 컬렉션의 샤드 키는 user_id 필드와 article_id 필드로 구성된 B-Tree 인덱스이다.  
+> 이 경우는 해시 인덱스가 아니므로 샤드 키 자체에 대해서 유니크 인덱스를 설정할 수 있다.
+
+```shell
+## 샤드 키 인덱스 생성
+mongos> db.articles.createIndex({user_id: 1, article_id: 1}, {unique:true});
+
+## 유니크 인덱스 생성
+mongos> db.articles.createIndex({user_id:1, article_id: 1, created_at: 1}, {unique: true});
+```
+
+<br>
+
+### 💡 조인과 그래프 쿼리
+<hr>
+
+> [!TIP]
+> MongoDB에서도 여러 컬렉션의 데이터를 조인해서 쿼리할 수 있도록 `$lookup` 오퍼레이션을 제공하고 있으며, 계층형 재귀 쿼리나 그래프 데이터를 쿼리할 수 있도록 `$graphLookup` 오퍼레이션을 지원하고 있다.
+
+```shell
+## 조인 쿼리
+mongos> db.orders.aggregate([
+  {
+    $lookup:
+      {
+        from: "inventory",
+        localField: "item",
+        foreignField: "sku",
+        as: "inventory_docs"
+      }
+  }
+])
+
+## 계층형 재귀 쿼리
+mongos> db.employees.aggregate( [
+  {
+    $graphLookup: {
+      from: "employees",
+      startWith: "$reportsTo",
+      connectFromField: "reportsTo",
+      connectToField: "name",
+      as: "reportingHierarchy"
+    }
+  }
+])
+```
+
+> [!NOTE]
+> 계층형 재귀 쿼리와 조인 쿼리 모두 하나 이상의 컬렉션을 대상으로 실행되는데, 결국 계층형 재귀 쿼리는 조인 쿼리의 또 다른 형태로 볼 수 있다.  
+> 이때 재귀 쿼리와 조인 쿼리 모두 시작 컬렉션은 Aggregation 대상 컬렉션이며, 룩업 컬렉션(Lookup, 조인 대상 컬렉션)은 Aggregation의 `from` 인자로 명시한다.  
+> 이때 `$lookUp`과 `$graphLookup` 오퍼레이션 모두 `from` 인자에 주어지는 컬렉션은 샤딩된 컬렉션은 사용할 수 없다.  
+> 이는 `$lookUp`과 `$graphLookup` 스테이지는 MongoDB 라우터가 아니라 MongoDB 샤드 서버에서 실행되는데, MongoDB 샤드 서버는 데이터 처리를 위해서 다른 샤드의 데이터를 참조할 수 없기 때문이다.
+
+<br>
+
+### 💡 기존 컬렉션에 샤딩 적용
+<hr>
+
+> [!NOTE]
+> 샤딩되지 않은 상태로 데이터를 가지고 있는 컬렉션을 샤딩할 때에는 샤딩을 적용할 수 있는 컬렉션의 사이즈에 제한이 있다.  
+> 샤딩되지 않은 컬렉션에 대해서 샤딩을 적용하면 MongoDB는 우선 그 컬렉션에 대해서 청크 스플릿을 실행한다.  
+> 청크 스플릿을 위해서 `splitVector` 명령(MongoDB 클러스터 내부적으로 실행되는 명령이다)을 실행하는데, 이때 실행되는 `splitVector` 명령이 반환할 수 있는 결과는 하나의 BSON 도큐먼트로 반환된다.  
+> 문제는 `splicVector` 명령의 결과가 BSON 도큐먼트이기 때문에 이 결과는 16MB를 초과(BSON 도큐먼트의 제한 사항)할 수 없다.
 
 
 
