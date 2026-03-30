@@ -18,7 +18,7 @@
   - [로킹기법](https://github.com/kyeoungchan/note/tree/main/database/locking)
   - [격리수준](https://github.com/kyeoungchan/note/tree/main/database/isolation-level)
   - [잠금]
-    - [MySQL 엔진의 잠금](https://github.com/kyeoungchan/note/tree/main/database/locking/innodb-storage-engine-locking)
+    - [innodb 스토리지 엔진의 잠금](https://github.com/kyeoungchan/note/tree/main/database/locking/innodb-storage-engine-locking)
     - [MySQL 엔진의 잠금](https://github.com/kyeoungchan/note/tree/main/database/locking/mysql-engine-locking)
   - [MySQL](https://github.com/kyeoungchan/note/tree/main/database/mysql)
     - [MySql 아키텍처](https://github.com/kyeoungchan/note/tree/main/database/mysql/architecture)
@@ -26,7 +26,7 @@
       - [쿼리 실행 구조](https://github.com/kyeoungchan/note/tree/main/database/mysql/architecture/query-execution-process)
       - [스토리지 엔진](https://github.com/kyeoungchan/note/tree/main/database/mysql/architecture/storage-engine)
         - [InnoDB 스토리지 엔진 아키텍처](https://github.com/kyeoungchan/note/tree/main/database/mysql/architecture/storage-engine/innodb-storage-engine-architecture)
-          - [InnoDB 스토리지 엔진 아키텍처](https://github.com/kyeoungchan/note/tree/main/database/mysql/architecture/storage-engine/innodb-storage-engine-architecture/innodb-buffer-pool)
+          - [InnoDB 버퍼 풀](https://github.com/kyeoungchan/note/tree/main/database/mysql/architecture/storage-engine/innodb-storage-engine-architecture/innodb-buffer-pool)
       - [스레드 풀](https://github.com/kyeoungchan/note/tree/main/database/mysql/architecture/thread-pool)
       - [스레딩 구조](https://github.com/kyeoungchan/note/tree/main/database/mysql/architecture/threading-structure)
     - [MySql 설정 관련](https://github.com/kyeoungchan/note/tree/main/database/mysql/mysql-settings)
