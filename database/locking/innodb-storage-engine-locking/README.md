@@ -6,6 +6,7 @@
 - [💡 넥스트 키 락](#-넥스트-키-락)
 - [💡 자동 증가 락](#-자동-증가-락)
 - [✅ 인덱스와 잠금](#-인덱스와-잠금)
+- [✅ 레코드 수준의 잠금 확인 및 해제](#-레코드-수준의-잠금-확인-및-해제)
 
 > [!NOTE]
 > InnoDB 스토리지 엔진은 레코드 기반의 잠금 기능을 제공하며, 잠금 정보가 상당히 작은 공간으로 관리되기 때문에 레코드 락이 페이지 락으로, 또는 테이블 락으로 레벨업되는 경우는 없다.  
@@ -130,10 +131,125 @@ mysql> UPDATE employees SET hire_date=NOW() WHERE first_name='Georgi' AND last_n
 > 이 테이블에 인덱스가 하나도 없다면, 테이블을 풀 스캔하면서 UPDATE 작업을 하는데, 이 과정에서 테이블에 있는 30여만 건의 모든 레코드를 잠그게 된다.  
 > ➡️ 이것이 MySQL의 방식이며, InnoDB에서 인덱스 설계가 중요한 이유이다.
 
+<br>
+
+## ✅ 레코드 수준의 잠금 확인 및 해제
+<hr>
+
+> 다음과 같은 잠금 시나리오를 가정해보자.
+
+| 커넥션1                                                                 | 커넥션2                                                                | 커넥션3                                                                                        |
+|----------------------------------------------------------------------|---------------------------------------------------------------------|---------------------------------------------------------------------------------------------
+| BEGIN;                                                               |                                                                     |                                                                                             |
+| UPDATE member SET name='우경찬' WHERE id='wkc1004' |                                                                     |                                                                                             |
+|                                                                      | UPDATE member SET name='우경찬' WHERE id='wkc1004' |                                                                                             |
+|                                                                      |                                                                     | UPDATE member SET name='우경찬' WHERE id='wkc1004' |
+
+> [!TIP]
+> 각 트랜잭션이 어떤 잠금을 기다리고 있는지, 기다리고 있는 잠금을 어떤 트랜잭션이 가지고 있는지를 쉽게 메타 정보를 통해 조회할 수 있다.  
+> MySQL 8.0부터는 `performance_schema`의 `data_locks`와 `data_lock_waits` 테이블로 대체되고 있다.  
+
+<br>
+
+```mysql
+mysql> SHOW PROCESSLIST;
++----+---------+-----------+-----------+---------+------+----------------+-------------------------------------------------------+
+| Id | User    | Host      | db        | Command | Time | State          | Info                                                  |
++----+---------+-----------+-----------+---------+------+----------------+-------------------------------------------------------+
+|  8 | root    | localhost | ssafytrip | Query   |    0 | init           | SHOW PROCESSLIST                                      |
+|  9 | root    | localhost | ssafytrip | Query   |   36 | updating       | UPDATE member SET name='우경찬' WHERE id='wkc1004'      |
+| 10 | root    | localhost | ssafytrip | Query   |    4 | updating       | UPDATE member SET name='우경찬' WHERE id='wkc1004'      |
++----+---------+-----------+-----------+---------+------+----------------+-------------------------------------------------------+
+4 rows in set, 1 warning (0.00 sec)
+```
+
+> [!NOTE]
+> 위 상태는 서로 다른 3개의 세션(다른 터미널 창에서 열어서도 테스트 가능)에서 같은 UPDATE 명령을 실행된 상태에서 프로세스의 목록을 조회한 것이다.  
+> 8번 스레드는 트랜잭션을 시작하고 UPDATE 명령이 실행 완료된 상태다.  
+> 그러나 COMMIT을 하지 않은 상태이므로 업데이트한 레코드의 잠금을 그대로 가지고 있는 상태다.  
+> 9, 10번 스레드는 잠금 대기로 인해 아직 UPDATE 명령을 실행 중인 상태다.
+
+<br>
+
+```mysql
+SELECT
+    r.trx_id waiting_trx_id,
+    r.trx_mysql_thread_id waiting_thread,
+    r.trx_query waiting_query,
+    b.trx_id blocking_trx_id,
+    b.trx_mysql_thread_id blocking_thread,
+    b.trx_query blocking_query
+FROM performance_schema.data_lock_waits w
+INNER JOIN information_schema.innodb_trx b
+        ON b.trx_id = w.blocking_engine_transaction_id
+INNER JOIN information_schema.innodb_trx r
+        ON r.trx_id = w.requesting_engine_transaction_id;
+```
+![performance_schema_result.png](../../res/performance_schema_result.png)
+
+<br>
+
+> [!NOTE]
+> 위 쿼리의 실행 결과를 보면 현재 대기 중인 스레드는 9, 10번인 것을 알 수 있다.  
+> 9번 스레드는 8번 스레드를 기다리고 있고, 10번 스레드는 8, 9번 스레드를 기다리고 있다.  
+
+<br>
+
+> [!TIP]
+> 여기서 8번 스레드가 어떤 잠금을 가지고 있는지 더 상세히 확인하고 싶다면 다음과 같이 `performance_schema`의 `data_locks` 테이블이 가진 컬럼을 모두 살펴보면 된다.
+
+```mysql
+mysql> SELECT * FROM performance_schema.data_locks\G
+*************************** 1. row ***************************
+               ENGINE: INNODB
+       ENGINE_LOCK_ID: 24889003136:1151:4420459192
+ENGINE_TRANSACTION_ID: 839203
+            THREAD_ID: 48
+             EVENT_ID: 55
+        OBJECT_SCHEMA: ssafytrip
+          OBJECT_NAME: member
+       PARTITION_NAME: NULL
+    SUBPARTITION_NAME: NULL
+           INDEX_NAME: NULL
+OBJECT_INSTANCE_BEGIN: 4420459192
+            LOCK_TYPE: TABLE
+            LOCK_MODE: IX
+          LOCK_STATUS: GRANTED
+            LOCK_DATA: NULL
+*************************** 2. row ***************************
+               ENGINE: INNODB
+       ENGINE_LOCK_ID: 24889003136:89:4:229:43801463832
+ENGINE_TRANSACTION_ID: 839203
+            THREAD_ID: 48
+             EVENT_ID: 55
+        OBJECT_SCHEMA: ssafytrip
+          OBJECT_NAME: member
+       PARTITION_NAME: NULL
+    SUBPARTITION_NAME: NULL
+           INDEX_NAME: PRIMARY
+OBJECT_INSTANCE_BEGIN: 43801463832
+            LOCK_TYPE: RECORD
+            LOCK_MODE: X,REC_NOT_GAP
+          LOCK_STATUS: GRANTED
+            LOCK_DATA: 'wkc1004'
+```
+
+> [!TIP]
+> `/G` 옵션을 뒤에 달면 쿼리 결과를 세로로 상세하게 출력할 수 있다.
+
+> [!IMPORTANT]
+> member 테이블에 대해 IX 잠금(Intentional Exclusive)을 가지고 있고, member 테이블의 특정 레코드에 대해서 쓰기 잠금을 가지고 있다는 것을 확인할 수 있다.  
+> `REC_NOT_GAP` 표시가 있으므로 레코드 잠금은 갭이 포함되지 않은 순수 레코드에 대해서만 잠금을 가지고 있다.
 
 
+<br>
 
 
+> [!TIP]
+> 만약 이 상황에서 8번 스레드가 잠금을 가진 상태에서 상당히 오랜 시간 멈춰있다면 다음과 같이 8번 스레드를 강제 종료하면 나머지 UPDATE 명령들이 진행되면서 잠금 경합이 끝난다.
+```mysql
+mysql> KILL 8;
+```
 
 
 <br>
