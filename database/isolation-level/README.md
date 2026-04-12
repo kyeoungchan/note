@@ -1,6 +1,13 @@
-# 격리 수준(Isolation Level)
+# 🧑🏻‍💻 격리 수준(Isolation Level)
+<hr>
 
-## 트랜잭션 격리수준
+- [✅ 트랜잭션 격리수준](#-트랜잭션-격리수준)
+- [✅ READ UNCOMMITTED](#-read-uncommitted)
+- [✅ READ COMMITTED](#-read-committed)
+- [✅ REPEATABLE READ](#-repeatable-read)
+- [✅ SERIALIZABLE](#-serializable)
+
+## ✅ 트랜잭션 격리수준
 
 ---
 - 정의
@@ -12,13 +19,26 @@
     - REPEATABLE READ
     - SERIALIZABLE
 
-> 아래로 내려갈수록 트랜잭션간 고립 정도가 높아지며, 성능이 떨어지는 것이 일반적이다.
->
-> 일반적인 온라인 서비스에서는 READ COMMITTED나 REPEATABLE READ 중 하나를 사용한다.
-> 
+> [!TIP]
+> 아래로 내려갈수록 트랜잭션간 고립 정도가 높아지며, 성능이 떨어지는 것이 일반적이다.  
+> 일반적인 온라인 서비스에서는 READ COMMITTED나 REPEATABLE READ 중 하나를 사용한다.  
 > (oracle = READ COMMITTED, mysql = REPEATABLE READ)
 
-## **READ UNCOMMITTED**
+<br>
+
+> [!IMPORTANT]
+> 데이터베이스의 격리 수준을 이야기하면 항상 함께 언급되는 3가지 부정합의 문제점이 있다.  
+
+|                  | DIRTY READ | NON-REPEATABLE READ | PHANTOM READ    |
+|------------------|------------|---------------------|-----------------|
+| READ UNCOMMITTED | 발생         | 발생                  | 발생              |
+| READ COMMITTED   | 없음         | 발생                  | 발생              |
+| REPEATABLE READ  | 없음         | 없음                  | 발생(InnoDB는 없음)  |
+| SERIALIZABLE     | 없음         | 없음                  | 없음              |
+
+<br>
+
+## ✅ READ UNCOMMITTED
 
 ---
 - 정의
@@ -31,7 +51,12 @@
     5. A 트랜잭션에서 문제가 발생해 ROLLBACK함
     6. B 트랜잭션은 10번 사원이 여전히 28살이라고 생각하고 로직을 수행함
 
-## **READ COMMITTED**
+> [!IMPORTANT]
+> Dirty Read를 유발하는 READ UNCOMMITTED는 RDBMS 표준에서는 트랜잭션의 격리 수준으로 인정하지 않을 정도로 정합성에 문제가 많은 격리 수준이다.  
+
+<br>
+
+## ✅ READ COMMITTED
 
 ---
 
@@ -45,7 +70,7 @@
     4. **27살이 조회된다.(커밋되지 않았기 때문에)**
         - (이는 언두(UNDO) 영역에 저장된 데이터이다. )
     5. A 트랜잭션에서 최종 커밋하면 B 트랜잭션에서 28살 이라는 값을 받아볼 수 있다.
-- 발생할 수 있는 문제점 : **NON-REPETABLE READ**
+- 발생할 수 있는 문제점 : **NON-REPEATABLE READ**
     1. B 트랜잭션에서 10번 사원의 나이를 조회
     2. 27살이 조회됨
     3. A 트랜잭션에서 10번 사원의 나이를 27살에서 28살로 바꾸고 커밋
@@ -55,24 +80,37 @@
     - 일반적인 웹 어플리케이션에서는 크게 문제되지 않지만, 작업이 금전적인 처리와 연결되어 있다면 문제가 발생할 수 있다.
     - 예를 들어 여러 트랜잭션에서 입금/출금 처리가 계속 진행되는 트랜잭션들이 있고 오늘의 입금 총 합을 보여주는 트랜잭션이 있다고하면, 총합을 계산하는 SELECT 쿼리는 실행될 때마다 다른 결과값을 가져올 것이다.
 
-## **REPETABLE READ**
+<br>
+
+## ✅ REPEATABLE READ
 
 ---
 
 - 정의
-    - REPETABLE READ 격리수준은 간단하게 말해서 **트랜잭션이 시작되기 전에 커밋된 내용에 대해서만 조회할 수 있는 격리수준**이다.
-    - MySQL DBMS에서 기본으로 사용하고 있고, 이 격리수준에서는 NON-REPETABLE READ 부정합이 발생하지 않는다.
+    - REPEATABLE READ 격리수준은 간단하게 말해서 **트랜잭션이 시작되기 전에 커밋된 내용에 대해서만 조회할 수 있는 격리수준**이다.
+    - MySQL DBMS에서 기본으로 사용하고 있고, 이 격리수준에서는 NON-REPEATABLE READ 부정합이 발생하지 않는다.
 - 예제
     1. 10번 트랜잭션이 500000번 사원을 조회
-    2. 12번 트랜잭션이 500000번 사원의 이름을 변경하고 커밋
+    2. 12번 트랜잭션이 500000번 사원의 이름을 변경하고 커밋
     3. 10번 트랜잭션이 500000번 사원을 다시 조회
     4. 언두 영역에 백업된 데이터 반환
-- 즉, 간단하게 말해서 **자신의 트랜잭션 번호보다 낮은 트랜잭션 번호에서 변경된(+커밋된) 것만 보게 되는 것이다.**
+- 즉, 간단하게 말해서 **자신의 트랜잭션 번호보다 낮은 트랜잭션 번호에서 변경된(+커밋된) 것만 보게 되는 것이다.**
 
-> (모든 InnoDB의 트랜잭션은 고유한 트랜잭션 번호(순차적으로 증가하는)를 가지고 있으며, 언두 영역에 백업된 모든 레코드는 변경을 발생시킨 트랜잭션의 번호가 포함되어 있다.)
->
+> [!NOTE]
+> 모든 InnoDB의 트랜잭션은 고유한 트랜잭션 번호(순차적으로 증가하는)를 가지고 있으며, 언두 영역에 백업된 모든 레코드는 변경을 발생시킨 트랜잭션의 번호가 포함되어 있다.  
+> 이러한 변경 방식을 MVCC(Multi Version Concurrency Control)이라 한다.  
+> 사실 READ COMMITTED도 MVCC를 이용해 COMMIT되기 전의 데이터를 보여주지만, REPEATABLE READ는 언두 영역에 백업된 레코드의 여러 버전 가운데 몇 번째 이전 버전까지 찾아간다는 점에서 다르다.
 
-### 발생할 수 있는 문제점
+<br>
+
+> [!CAUTION]
+> 사실 하나의 레코드에 대해 백업이 하나 이상 존재할 수 있다.  
+> 한 사용자가 BEGIN으로 트랜잭션을 시작하고 장시간 트랜잭션을 종료하지 않으면 언두 영역이 백업된 데이터로 무한정 커질 수 있다.  
+> ➡ 언두에 백업된 레코드가 많아지면 RDBMS의 처리 성능이 떨어질 수 있다.
+
+
+
+### ❗️ 발생할 수 있는 문제점
 
 1. **UPDATE 부정합**
 
@@ -97,17 +135,18 @@
    | Select | 1 | joont | junyoung | False |
    | Update | 1 | joont | junyoung | True
     0 row(s) affected |
-    - 최종 결과 : `name = joont`가 된다.
-    - REPETABLE READ이기 때문에
-        - 2번 트랜잭션에서 `name = joont`로 변경하고 COMMIT을 하면 `name = junyoung`의 내용을 언두로그에 남겨놔야 한다.
+    - 최종 결과 : `name = joont`가 된다.
+    - REPEATABLE READ이기 때문에
+        - 2번 트랜잭션에서 `name = joont`로 변경하고 COMMIT을 하면 `name = junyoung`의 내용을 언두로그에 남겨놔야 한다.
             - ⇒ 그래야 1번 트랜잭션에서 일관되게 데이터를 보는 것을 보장해줄 수 있기 때문이다.
-        - 이 상황에서 아래 구문에서 UPDATE 문을 실행하게 되는데, **UPDATE의 경우 변경을 수행할 로우에 대해 잠금이 필요하다**.
-        - 하지만 현재 1번 트랜잭션이 바라보고 있는 `name = junyoung` 의 경우 레코드 데이터가 아닌 언두영역의 데이터이고, 언두영역에 있는 데이터에 대해서는 쓰기 잠금을 걸 수가 없다.
-        - 그러므로 위의 UPDATE 구문은 레코드에 대해 쓰기 잠금을 시도하려고 하지만 `name = junyoung`인 레코드는 존재하지 않으므로, `0 row(s) affected`가 출력되고, 아무 변경도 일어나지 않게 된다.
-        - 그러므로 최종적으로 결과는 `name = joont`가 된다. **자이언티가 되지 못해 아쉽다.**
+        - 이 상황에서 아래 구문에서 UPDATE 문을 실행하게 되는데, **UPDATE의 경우 변경을 수행할 로우에 대해 잠금이 필요하다**.
+        - 하지만 현재 1번 트랜잭션이 바라보고 있는 `name = junyoung`의 경우 레코드 데이터가 아닌 언두영역의 데이터이고, 언두영역에 있는 데이터에 대해서는 쓰기 잠금을 걸 수가 없다.
+        - 그러므로 위의 UPDATE 구문은 레코드에 대해 쓰기 잠금을 시도하려고 하지만 `name = junyoung`인 레코드는 존재하지 않으므로, `0 row(s) affected`가 출력되고, 아무 변경도 일어나지 않게 된다.
+        - 그러므로 최종적으로 결과는 `name = joont`가 된다.  
+          **자이언티가 되지 못해 아쉽다.**
 2. **Phantom READ**
     - 한 트랜잭션 내에서 같은 쿼리를 두 번 실행했는데, 첫 번째 쿼리에서 없던 유령(Phantom) 레코드가 두 번째 쿼리에서 나타나는 현상을 말한다.
-    - REPETABLE READ 이하에서만 발생하고(SERIALIZABLE은 발생하지 않음), INSERT에 대해서만 발생한다.
+    - REPEATABLE READ 이하에서만 발생하고(SERIALIZABLE은 발생하지 않음), INSERT에 대해서만 발생한다.
 
     ```sql
     START TRANSACTION; -- transaction id : 1 
@@ -123,7 +162,7 @@
     COMMIT;
     ```
 
-    - REPETABLE READ에 에 의하면 원래 출력되지 않아야 하는데 UPDATE 문의 영향을 받은 후 부터 출력된다.
+    - REPEATABLE READ에 에 의하면 원래 출력되지 않아야 하는데 UPDATE 문의 영향을 받은 후 부터 출력된다.
         - 이 시점에 스냅샷을 적용시키는 것 같다.
     - 참고로 DELETE에 대해서는 적용되지 않는다.
 
@@ -146,14 +185,24 @@
       ![phantom_read](../res/phantom_read.png)
 
 
-## **SERIALIZABLE**
+## ✅ SERIALIZABLE
 
 ---
 
 - 가장 단순하고 가장 엄격한 격리수준이다.
-- InnoDB에서 기본적으로 순수한 SELECT 작업은 아무런 잠금을 걸지않고 동작하는데, 격리수준이 SERIALIZABLE일 경우 읽기 작업에도 공유 잠금을 설정하게 되고, 이러면 동시에 다른 트랜잭션에서 이 레코드를 변경하지 못하게 된다.
+- InnoDB에서 기본적으로 순수한 SELECT 작업은 아무런 잠금을 걸지않고 동작하는데, 격리수준이 SERIALIZABLE일 경우 읽기 작업에도 공유 잠금을 설정하게 되고, 이러면 동시에 다른 트랜잭션에서 이 레코드를 변경하지 못하게 된다.
 - 이러한 특성 때문에 동시처리 능력이 다른 격리수준보다 떨어지고, 성능저하가 발생하게 된다.
 
+<br>
+
+> [!WARNING]
+> InnoDB 테이블에서 기본적으로 순수한 SELECT 작업은 아무런 레코드 잠금도 설정하지 않고 실행된다.  
+> 하지만 SERIALIZABLE에서는 읽기 작업도 공유 잠금을 획득해야한다.  
+> ➡️ InnoDB 스토리지 엔진에서는 갭 락과 넥스트 키 락 덕분에 REPEATABLE READ 격리 수준에서도 이미 PHANTOM READ가 발생하지 않기 때문에 굳이 SERIALIZABLE을 사용할 필요성은 없다.
+
+<br>
+
 출처  
-[[db] 트랜잭션 격리 수준(isolation level)](https://joont92.github.io/db/트랜잭션-격리-수준-isolation-level/)  
-[데이터베이스 트랜잭션 격리 수준과 격리 수준에 따른 문제점](https://hudi.blog/transaction-isolation-level/)
+- [[db] 트랜잭션 격리 수준(isolation level)](https://joont92.github.io/db/트랜잭션-격리-수준-isolation-level/)  
+- [데이터베이스 트랜잭션 격리 수준과 격리 수준에 따른 문제점](https://hudi.blog/transaction-isolation-level/)
+- [Real MySQL 8.0](https://product.kyobobook.co.kr/detail/S000001766482)
