@@ -54,6 +54,25 @@
 
 <br>
 
+```mysql
+-- id 1, 3, 5가 저장된 orders 테이블
+
+-- 트랜잭션 A 시작
+START TRANSACTION;
+
+-- 트랜잭션 A 1-3과 3-5 사이의 갭과 3 레코드 락 설정(넥스트키 락)
+SELECT * FROM orders WHERE orders_id BETWEEN 2 AND 4 FOR UPDATE;
+
+-- 트랜잭션 B 시작
+START TRANSACTION;
+
+-- 트랜잭션 B가 id 4에 데이터 삽입 시도 시, 갭락으로 인해 삽입이 차단되어 대기
+INSERT INTO orders (orders_id, orders_amount) VALUES (4, 200);
+```
+> [!NOTE]
+> 위의 경우, 넥스트 키 락으로 인해 잠금의 범위가 (1,5]가 된다.  
+> 범위 안에 실제 존재하는 레코드들 + 범위 바로 밖 첫 레코드까지가 잠금의 범위다.
+
 ### 💡 자동 증가 락
 <hr>
 
