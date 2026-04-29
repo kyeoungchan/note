@@ -87,6 +87,14 @@ docker run -d -p 4000:80 nginx
 <br>
 
 ```shell
+# Volume 디렉토리 설정하여 실행
+docker run -v []
+```
+
+
+<br>
+
+```shell
 # 컨테이너 정상 종료
 docker stop {container_id}
 

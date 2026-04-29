@@ -5,7 +5,8 @@
 - [✅ Docker Container란](#-docker-container란)
 - [✅ Docker 이미지란](#-docker-이미지란)
 - [✅ Docker Image vs Docker Container](#-docker-image-vs-docker-container)
-- [✅ Docker file이란](#-docker-file이란)
+- [✅ Docker Volume이란](#-docker-volume이란)
+- [✅ Docker File이란](#-docker-file이란)
 
 > [!TIP]
 > Docker를 쓰는 핵심 장점은 특정 프로그램을 다른 곳으로 쉽게 옮겨서 설치 및 실행할 수 있는 특성인 이식성이다.  
@@ -111,18 +112,59 @@
 >   `docker build -t=myimage .`
 > - Container가 삭제되면 Container Layer도 같이 사라지고, Image Layer들은 그대로 남아있는다.
 
+<br>
+
+## ✅ Docker Volume이란
+
+---
+
+<br>
+
+> [!TIP]
+> Docker를 활용한 프로그램에 새로운 기능이 추가되면 새로운 이미지를 만들어서 Container를 실행시켜야 한다.  
+> 이때, Docker는 기존 컨테이너에서 변경된 부분을 수정하지 않고, 새로운 Container를 만들어서 통째로 갈아끼우는 방식으로 교체한다.
+>
+> 이때 Container 내부에 있던 데이터도 같이 삭제가 되어버리기 때문에, 데이터가 삭제되면 안 되는 경우에 Volume이라는 개념을 활용해야 한다.
+
+<br>
+
+> [!NOTE]
+> Docker Volume이란 Docker Container에서 데이터를 영속적으로 저장하기 위한 방법이다.  
+> Volume은 Container 자체의 저장 공간을 사용하지 않고, 호스트 자체의 저장 공간을 공유해서 사용하는 형태다.
+
+기존에 호스트 디렉토리가 존재하는 경우  
+![volume_directory.png](res/volume_directory.png)
+
+<br>
+
+기존에 호스트 디렉토리가 존재하지 않는 경우  
+![volume_directory2.png](res/volume_directory2.png)
 
 <br>
 
 
-## ✅ Docker file이란
+## ✅ Docker File이란
 
 ---
- 
-- 환경 정보를 저장하는 파일
-  - image를 빌드하는 방법을 정의하는 스크립트
-  - container의 구동에 필요한 정보가 담긴 스크립트
 
+> [!NOTE]
+> - 환경 정보를 저장하는 파일
+>   - image를 빌드하는 방법을 정의하는 스크립트
+>   - container의 구동에 필요한 정보가 담긴 스크립트
+> - Docker 이미지를 만들게 해주는 파일이라고 보면 된다.
+
+<br>
+
+## ✅ Docker Compose란
+
+---
+
+> [!NOTE]
+> 여러 개의 Docker Container들을 하나의 서비스로 정의하고 구성해 하나의 묶음으로 관리할 수 있게 도와주는 툴이다.  
+> 
+> 1. 여러 개의 Container를 편하게 관리한다.  
+> 2. 복잡한 명령어로 실행시키던 걸 간소화시킬 수 있다.  
+>    `docker compose up`
 
 <br>
 
