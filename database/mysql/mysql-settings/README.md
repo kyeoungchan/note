@@ -307,7 +307,34 @@ mysqlx-bind-address = 127.0.0.1
 
 <br>
 
+## ✅ Docker 명령어
+
+---
+
+```shell
+# mysql 최신 버전을 {password} 값으로, 데이터 저장은 {volume}으로 세팅해서 컨테이너 실행시키기
+docker run -e MYSQL_ROOT_PASSWORD={password} -d -p -v {volume}:/var/lib/mysql 3306:3306 mysql
+
+# 3306 포트가 이미 사용 중이면 아래 명령어로 뭐가 잡아먹고 있는지 확인
+lsof -i:3306
+
+# container_id나 name 확인
+docker ps
+
+# mysql container 접속
+docker exec -it {container_id} bash
+
+# 이러면 환경 변수에 있는 패스워드도 확인 가능
+bash-5.1# echo $MYSQL_ROOT_PASSWORD
+
+# mysql 서버 접속
+mysql -u root -p
+```
+
+
+<br>
 
 **출처**  
-[[Spring] 스프링 mysql 데이터베이스와 jpa 연동](https://growth-coder.tistory.com/111)  
-[Real MySQL 8.0](https://product.kyobobook.co.kr/detail/S000001766482)
+- [[Spring] 스프링 mysql 데이터베이스와 jpa 연동](https://growth-coder.tistory.com/111)  
+- [Real MySQL 8.0](https://product.kyobobook.co.kr/detail/S000001766482)
+- [비전공자도 이해할 수 있는 Docker 입문/실전](https://www.inflearn.com/course/%EB%B9%84%EC%A0%84%EA%B3%B5%EC%9E%90-docker-%EC%9E%85%EB%AC%B8-%EC%8B%A4%EC%A0%84/dashboard?cid=334085)

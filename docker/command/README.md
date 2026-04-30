@@ -87,10 +87,29 @@ docker run -d -p 4000:80 nginx
 <br>
 
 ```shell
+# 바인드 마운트 디렉토리 설정하여 실행
+docker run -v [호스트 디렉토리의 절대 경로]:[컨테이너 디렉토리 절대 경로] [이미지명]:[태그명]
+
 # Volume 디렉토리 설정하여 실행
-docker run -v []
+docker run -v {my-volume}:/컨테이너/경로 이미지명:태그명
+# 볼륨이 없으면 자동으로 생성됨
 ```
 
+> [!NOTE]
+> 컨테이너 경로는 설치하려는 프로그램의 docker hub에서 확인할 수 있다.
+
+<br>
+
+```shell
+# 볼륨 목록 확인
+docker volume ls
+
+# 볼륨 상세 정보 확인
+docker volume inspect {volume_name}
+
+# 볼륨 삭제
+docker volume rm {my-volume}
+```
 
 <br>
 
