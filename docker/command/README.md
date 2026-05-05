@@ -175,6 +175,9 @@ docker compose up -d
 
 # 특정 컨테이너만 실행
 docker-compose up -d {container_name}
+
+# docker 이미지를 재빌드해서 실행
+docker compose up -d --build
 ```
 
 <br>
@@ -189,6 +192,27 @@ docker compose down
 ```shell
 # docker 재실행
 docker compose restart {container_name}
+```
+
+<br>
+
+```shell
+# docker compose로 띄운 컨테이너 목록 확인
+docker compose ps
+```
+
+<br>
+
+```shell
+# docker compose에 있는 image들을 docker hub에서 최신 버전으로 가져오기
+docker compose pull
+```
+
+<br>
+
+```shell
+# docker compose로 띄운 컨테이너 목록의 로그 확인
+docker compose logs
 ```
 
 <br>

@@ -172,7 +172,7 @@ RUN apt update && apt install -y git
 EXPOSE 8080
 
 # 컨테이너 실행 시 jar 실행
-ENTRYPOINT ["java", "-jar", "/app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
 ```
 
 <br>
@@ -220,7 +220,7 @@ EXPOSE [포트 번호]
 > 
 > 1. 여러 개의 Container를 편하게 관리한다.  
 > 2. 복잡한 명령어로 실행시키던 걸 간소화시킬 수 있다.  
->    `docker compose up`
+>    `docker compose up -d`
 
 <br>
 
