@@ -155,6 +155,62 @@
 
 <br>
 
+```dockerfile
+# jdk 17 이미지
+FROM eclipse-temurin:17-jdk
+
+# 작업 디렉터리 설정
+WORKDIR /my-spring-server
+
+# jar 라이브러리 app.jar 파일로 복사. 경로는 WORKDIR
+COPY build/libs/*SNAPSHOT.jar app.jar
+
+# 이미지 생성 시 git 설치
+RUN apt update && apt install -y git
+
+# 8080 포트에서 사용됨을 명시(기능 동작에는 영향 X)
+EXPOSE 8080
+
+# 컨테이너 실행 시 jar 실행
+ENTRYPOINT ["java", "-jar", "/app.jar"]
+```
+
+<br>
+
+> [!NOTE]
+> `FROM`은 베이스 이미지를 생성하는 역할을 한다.
+>   - Docker 컨테이너를 특정 초기 이미지를 기반으로 추가적인 세팅을 할 수 있다.
+>   - 누군가는 JDK가 깔려있는 컴퓨터 환경이 셋팅되기를 바랄 수 있고, 누군가는 Node가 깔려있는 컴퓨터 환경이 셋팅되기를 바랄 수 있다.
+
+```dockerfile
+# 태그명이 없으면 이미지의 최신 버전을 사용한다.
+FROM [이미지명]
+FROM [이미지명]:[태그명]
+```
+
+
+> [!NOTE]
+> `ENTRYPOINT`는 컨테이너가 생성되고 최초로 실행할 때 수행되는 명령어를 뜻한다.
+
+<br>
+
+> [!TIP]
+> `RUN` VS `ENTRYPOINT`
+> - `RUN`: 이미지 생성 과정에서 필요한 명령어를 실행할 때 사용한다.
+> - `ENTRYPOINT`: 생성된 이미지를 기반으로 컨테이너를 생성한 직후에 명령어를 실행시킬 때 사용한다.
+
+<br>
+
+> [!NOTE]
+> `EXPOSE`는 컨테이너 내부에서 어떤 프로그램이 실행되는지를 문서화하는 역할을 한다.  
+
+```dockerfile
+# 단순히 포트 번호가 몇번인지 알려만 주고, 실제 기능에 영향을 주지는 않는다.
+EXPOSE [포트 번호]
+```
+
+<br>
+
 ## ✅ Docker Compose란
 
 ---

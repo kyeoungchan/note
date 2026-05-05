@@ -191,3 +191,10 @@ docker compose down
 docker compose restart {container_name}
 ```
 
+<br>
+
+## ✅ Dockerfile 명령어
+
+```shell
+docker build -t {image_name}:{tag_name}
+```
