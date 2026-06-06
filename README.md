@@ -121,6 +121,7 @@
 - [레디스(Redis)](https://github.com/kyeoungchan/note/tree/main/redis)
   - [레디스에서의 고가용성](https://github.com/kyeoungchan/note/tree/main/redis/availability)
     - [복제](https://github.com/kyeoungchan/note/tree/main/redis/availability/duplication)
+    - [센티널](https://github.com/kyeoungchan/note/tree/main/redis/availability/sentinel)
   - 레디스 기본
     - [레디스의 자료 구조](https://github.com/kyeoungchan/note/tree/main/redis/basic/data-structure)
       - [레디스 자료 구조 활용 사례](https://github.com/kyeoungchan/note/tree/main/redis/basic/data-structure/example)
