@@ -93,7 +93,7 @@
 
 <br>
 
-![sentinel_arrangement2.png](sentinel_arrangement2.png)
+![sentinel_arrangement2.png](../../res/sentinel_arrangement2.png)
 
 > [!NOTE]
 > 위와 같이 서버 A에 문제가 생겨 마스터 노드와 센티널에 접근할 수 없게 되면 서버 B, C에 있는 센티널 인스턴스가 마스터 인스턴에 접근이 불가능한 상태라는 것을 동의한 뒤, 페일오버를 진행시킨다.  
@@ -111,7 +111,110 @@
 > 경우에 따라서 1개의 복제본으로도 충분한 서비스가 있을 수 있는데, 이 경우에는 2대의 서버에는 레디스와 센티널 인스턴스를 동시에 실행시키고, 나머지 1대의 서버에는 센티널 프로세스만 실행시키도록 배치할 수 있다.  
 > 이때 센티널만 실행될 서버는 데이터를 직접 저장하지도, 클라이언트의 요청을 받지도 않는 서버이기 때문에 최저 사양의 스펙으로 구성돼도 괜찮다.
 
+<br>
 
+## ✅ 센티널 인스턴스 실행하기
+
+![redis_sentinel_example.png](../../res/redis_sentinel_example.png)
+
+<br>
+
+`sentinel.conf`에 다음과 같은 내용이 있어야한다.  
+```text
+port 26379
+sentinel monitor mymaster 192.168.64.6 6379 2
+daemonize yes
+```
+> [!TIP]
+> sentinel monitor는 모니터링할 마스터의 이름을 지정하고, 마스터에 이름을 부여하며, 쿼럼 값을 지정한다.  
+
+<br>
+
+마스터 노드의 redis.conf에서 다음과 같이 bind를 전체로 해제하고, protected-mode를 no로 바꾼다.
+
+```text
+redis-cli config set bind 0.0.0.0
+redis-cli config set protected-mode no
+```
+
+
+
+
+<br>
+
+> [!NOTE]
+> 센티널은 마스터와 복제본을 포함한 모든 레디스 프로세스를 모니터링하지만, 구성 파일에는 복제본 정보를 직접 입력하지 않아도 된다.  
+> 센티널 프로세스가 시작하면 마스터에 연결된 복제본을 자동으로 찾아내는 과정을 거친다.  
+
+<br>
+
+`sentinel.conf` 파일을 이용해 센티널 인스턴스를 시작하기 위해서는 아래 두 명령어 중 하나를 사용하면 된다.
+```shell
+# redis-sentinel을 이용하는 방법
+bin/redis-sentinel sentinel.conf
+
+# redis-server를 이용하는 방법
+bin/redis-server sentinel.conf --sentinel
+```
+
+<br>
+
+센티널에 접속은 다음과 같이 할 수 있다.
+```shell
+# 실행 명령어
+redis-cli -p 26379
+
+# 종료 명렁어
+redis-cli -p 26379 shutdown
+```
+
+<br>
+
+
+```shell
+# SENTINEL master 커맨드를 통해 원하는 마스터의 IP, 포트, 복제본의 개수 등을 다양하게 알 수 있다.
+127.0.0.1:26379> SENTINEL master mymaster
+ 1) "name"
+ 2) "mymaster"
+ 3) "ip"
+ 4) "192.168.64.6"
+ 5) "port"
+ 6) "6379"
+ 7) "runid"
+ 8) "145250e49351da02fd34e717bdd7b3b0fb66af36"
+ 9) "flags"
+10) "master"
+11) "link-pending-commands"
+12) "0"
+13) "link-refcount"
+14) "1"
+15) "last-ping-sent"
+16) "0"
+17) "last-ok-ping-reply"
+18) "853"
+19) "last-ping-reply"
+20) "853"
+21) "down-after-milliseconds"
+22) "30000"
+23) "info-refresh"
+24) "6767"
+25) "role-reported"
+26) "master"
+27) "role-reported-time"
+28) "463526"
+29) "config-epoch"
+30) "0"
+31) "num-slaves"
+32) "0"
+33) "num-other-sentinels"
+34) "2"
+35) "quorum"
+36) "2"
+37) "failover-timeout"
+38) "180000"
+39) "parallel-syncs"
+40) "1"
+```
 
 
 

@@ -73,7 +73,7 @@ CD를 클릭하고 꺼내기를 누른다.
 
 <br>
 
-![virtual_machine23.png](../res/virtual_machine23.png)
+![virtual_machine23.png](../res/virtual_machine23.png)  
 성공이다.
 
 
