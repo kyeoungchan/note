@@ -4,6 +4,7 @@
 
 - [✅ 고가용성 기능의 필요성](#-고가용성-기능의-필요성)
 - [✅ 센티널이란?](#-센티널이란)
+- [✅ 센티널 인스턴스 실행하기](#-센티널-인스턴스-실행하기)
 
 
 ## ✅ 고가용성 기능의 필요성
@@ -119,6 +120,14 @@
 
 <br>
 
+먼저 복제 연결을 시작해야한다.  
+192.68.64.7에서 다음과 같은 커맨드를 통해 복제 연결을 하였다.  
+```shell
+REPLICAOF 192.168.64.6 6379
+```
+
+<br>
+
 `sentinel.conf`에 다음과 같은 내용이 있어야한다.  
 ```text
 port 26379
@@ -130,10 +139,12 @@ daemonize yes
 
 <br>
 
-마스터 노드의 redis.conf에서 다음과 같이 bind를 전체로 해제하고, protected-mode를 no로 바꾼다.
+마스터 노드의 redis.conf에서 다음과 같이 bind에 기존 ip에서 본인 IP를 하나 더 추가시키고, protected-mode를 no로 바꾼다.
 
-```text
-redis-cli config set bind 0.0.0.0
+```shell
+# 마스터노드와 복제본 노드 각각 다 수행 필요
+redis-cli config set bind "127.0.0.1 -::1 {본인 IP}(예: 192.168.64.6)"
+
 redis-cli config set protected-mode no
 ```
 
@@ -181,7 +192,7 @@ redis-cli -p 26379 shutdown
  5) "port"
  6) "6379"
  7) "runid"
- 8) "145250e49351da02fd34e717bdd7b3b0fb66af36"
+ 8) "d2116ec542fb3ae840f29b745b07274af9e114fd"
  9) "flags"
 10) "master"
 11) "link-pending-commands"
@@ -191,21 +202,21 @@ redis-cli -p 26379 shutdown
 15) "last-ping-sent"
 16) "0"
 17) "last-ok-ping-reply"
-18) "853"
+18) "808"
 19) "last-ping-reply"
-20) "853"
+20) "808"
 21) "down-after-milliseconds"
 22) "30000"
 23) "info-refresh"
-24) "6767"
+24) "258"
 25) "role-reported"
 26) "master"
 27) "role-reported-time"
-28) "463526"
+28) "502415"
 29) "config-epoch"
 30) "0"
 31) "num-slaves"
-32) "0"
+32) "1"
 33) "num-other-sentinels"
 34) "2"
 35) "quorum"
@@ -215,6 +226,229 @@ redis-cli -p 26379 shutdown
 39) "parallel-syncs"
 40) "1"
 ```
+
+<br>
+
+> [!NOTE]
+> - `num-other-sentinels`
+>   - 마스터를 모니터링하고 있는 다른 센티널의 정보를 나타낸다.
+>   - 위에서는 2로, 현재 `mymaster` 마스터를 모니터링하고 있는 다른 센티널 노드가 추가로 2대가 더 존재한다는 것을 인지하고 있음을 의미한다.
+> - `flags`
+>   - 마스터의 상태를 뜻한다.
+>   - 마스터의 상태가 정상 상태가 아니면 `s_down` 또는 `o_down` 등으로 값이 변경된다.
+> - `num-slaves`
+>   - 현재 마스터에 연결된 복제본의 개수를 의미한다.
+>   - 위의 경우에는 1로, 마스터에 연결된 복제본이 1개 존재한다는 것을 센티널이 인지하고 있음을 뜻한다.
+
+<br>
+
+```shell
+# 마스터에 연결된 복제본의 자세한 정보 확인
+127.0.0.1:26379> SENTINEL replicas mymaster
+1)  1) "name"
+    2) "192.168.64.7:6379"
+    3) "ip"
+    4) "192.168.64.7"
+    5) "port"
+    6) "6379"
+    7) "runid"
+    8) ""
+    9) "flags"
+   10) "s_down,slave,disconnected"
+```
+
+<br>
+
+```shell
+# 마스터에 연결된 센티널의 자세한 정보 확인
+127.0.0.1:26379> SENTINEL sentinels mymaster
+1)  1) "name"
+    2) "5f356f32f4925897f83792d167f75abd4c9d6afc"
+    3) "ip"
+    4) "192.168.64.6"
+    5) "port"
+    6) "26379"
+    7) "runid"
+    8) "5f356f32f4925897f83792d167f75abd4c9d6afc"
+    9) "flags"
+   10) "sentinel"
+```
+
+<br>
+
+> [!NOTE]
+> `SENTINEL ckquorum` 커맨드를 통해 마스터를 바라보고 있는 센티널 인스턴스가 설정한 쿼럼 값보다 큰지 확인할 수 있다.  
+> 예를 들어 정상 상태의 센티널이 3대, 쿼럼이 2일 경우 모두 정상이라면 다음과 같은 값을 반환한다.
+
+```shell
+127.0.0.1:26379> SENTINEL ckquorum mymaster
+OK 3 usable Sentinels. Quorum and failover authorization can be reached
+```
+
+<br>
+
+> [!TIP]
+> 1대의 센티널에 문제가 생겨 정상적인 세닡널이 2대가 됐을 경우를 생각해보자.  
+> 정상적인 센티널 대수가 쿼럼 값인 2 이상이기 때문에 전체 센티널 구성은 정상적이라 판단할 수 있다.
+```shell
+127.0.0.1:26379> SENTINEL ckquorum mymaster
+OK 2 usable Sentinels. Quorum and failover authorization can be reached
+```
+
+<br>
+
+> [!CAUTION]
+> 만약 이 상황에서 다른 1대의 센티널이 또 비정상적인 상태가 된다면, 정상적인 센티널의 수는 1대로, 설정한 쿼럼 값보다 작아지게 된다.  
+> 이런 상황에서 레디스 마스터에 장애가 발생해도 쿼럼 이상의 센티널 인스턴스에게 동의를 받을 수 없기 때문에 비정상적인 센티널의 상태라 볼 수 있다.
+
+```shell
+127.0.0.1:26379> SENTINEL ckquorum mymaster
+(error) NOQUORUM 1 usable Sentinels. Not enough available Sentinels to reach the specified quorum for this master
+```
+
+> [!WARNING]
+> 정상적인 센티널의 대수가 쿼럼보다 작기 때문에 마스터 노드에 장애가 발생해도 투표를 진행할 수 없어 페일오버를 자동으로 실행할 수 없다.  
+
+<br>
+
+> [!TIP]
+> 센티널을 연결을 해제하기 위해서는 다른 두 노드에서 `redis-cli -p 26379 shutdown` 커맨드를 수행 후, 살아있는 노드에서 `SENTINEL RESET mymaster` 커맨드를 수행하면 된다.
+
+<br>
+
+### ⭐️ 페일오버 테스트
+```shell
+# 수동 페일오버
+SENTINEL FAILOVER mymaster
+```
+> [!NOTE]
+> 센티널에 접속한 뒤 이 커맨드를 사용하면 다른 센티널의 동의를 구하지 않고도 페일오버를 발생시킬 수 있다.  
+> 실제 마스터의 상태가 정상이었을 때도 이 커맨드를 사용하면 마스터와 복제본 간 롤 체인지가 발생한다.  
+
+<br>
+
+> [!IMPORTANT]
+> 센티널과 복제본 노드 간 네트워크 단절 등의 이슈로 인해 페일오버가 살패하진 않는지, 센티널에 연결된 애플리케이션의 커넥션이 정상적으로 롤 체인지된 마스터에 연결되는지 등의 정보를 확인할 수 있다.
+
+```shell
+# 마스터가 192.168.64.7 노드로 바뀌었다. 
+127.0.0.1:26379> SENTINEL master mymaster
+ 1) "name"
+ 2) "mymaster"
+ 3) "ip"
+ 4) "192.168.64.7"
+ 5) "port"
+ 6) "6379"
+```
+
+<br>
+
+```shell
+# 마스터 노드를 동작 중지시켜 페일오버 발생(자동 페일오버)
+redis-cli -h 192.168.64.6 -p 6379 shutdown
+```
+```shell
+# 대략 30초 뒤 확인해보면 마스터 노드 변경
+127.0.0.1:26379> SENTINEL master mymaster
+ 1) "name"
+ 2) "mymaster"
+ 3) "ip"
+ 4) "192.168.64.7"
+```
+
+> [!NOTE]
+> 센티널은 주기적으로 마스터 노드에 PING을 보내 응답이 정상적으로 돌아오는지 확인함으로 마스터 인스턴스의 상태를 파악한다.  
+> 이때 `sentinel.conf`에 지정한 `down-after-milliseconds` 시간 동안 마스터에서 응답이 오지 않으면 마스터의 상태가 정상적이지 않다고 판단해 페일오버를 트리거한다.
+
+<br>
+
+## ✅ 센티널 운영하기
+
+> [!NOTE]
+> 마스터와 복제본 노드에 `requirepass/masterauth` 옵션을 이용해 패스워드를 설정한 경우 센티널의 설정 파일에서도 패스워드를 지정해야 한다.  
+> 센티널을 이용한 구성에서는 장애 상황에 센티널이 자동으로 페일오버를 시키기 때문에 복제 구성 내의 모든 레디스 노드는 마스터 노드가 될 가능성이 있다고 볼 수 있어, 하나의 복제 그룹에서는 모두 `requirepass`와 `masterauth` 값을 동일하게 설정해야 한다.
+```text
+# sentinel.conf
+sentinel auth-pass <master-name> <password>
+```
+
+<br>
+
+> [!NOTE]
+> 모든 레디스 인스턴스는 `replica-priority` 파라미터를 가지고 있다.  
+> 센티널은 페일오버를 진행할 때 복제본 노드의 `replica-priority`를 확인하며, 가장 작은 값을 가진 노드를 마스터로 선출한다.  
+> 기본값은 100이며, 0인 복사본은 절대로 마스터로 선출되지 않는다.
+
+<br>
+
+### ⭐️ 운영 중 센티널 구성 정보 변경
+> [!IMPORTANT]
+> 센티널은 실행 도중 모니터링할 마스터를 추가, 제거, 변경할 수 있다.  
+> 설정을 변경했다고 해서 그 정보들이 다른 센티널로 전파되진 않기 때문에, 각각의 센티널에 모두 설정을 적용해야 한다.
+
+<br>
+
+```shell
+# 센티널이 새로운 마스터를 모니터링하게 설정
+SENTINEL MONITOR <master name> <ip> <port> <quorum>
+```
+
+<br>
+
+```shell
+# 더이상 지정하는 마스터를 모니터링하지 않도록 설정
+SENTINEL REMOVE <master name>
+```
+
+<br>
+
+```shell
+# 특정 마스터에 대해 지정한 파라미터를 변경할 수 있다.
+SENTINEL SET <name> [<option> <value> ...]
+
+# 마스터가 다운됐는지 판단하는 시간을 1000ms 이후로 변경
+SENTINEL SET mymaster down-after-milliseconds 1000
+
+# 쿼럼 값 변경
+SENTINEL SET mymaster quorum 1
+```
+
+<br>
+
+```shell
+# 센티널의 고유한 설정값 확인
+SENTINEL CONFIG GET <configuration name>
+
+# 센티널의 고유한 설정값 런타임 중 변경
+SENTINEL CONFIG SET <configuration name> <value> 
+
+SENTINEL CONFIG GET announce*
+1) "announce-hostnames"
+2) "no"
+3) "announce-ip"
+4) ""
+5) "announce-port"``
+6) "0"
+```
+
+### ⭐️ 센티널 초기화
+
+![sentinel_arrangement2.png](../../res/sentinel_arrangement2.png)
+
+> [!NOTE]
+> 192.68.64.6을 1번 노드, 192.68.64.7을 2번 노드, 192.68.64.9를 3번 노드라고 가정하자.  
+> 1번 노드에 장애가 발생한 뒤, 2번 노드가 마스터 노드로 승격되었다.  
+> 2번, 3번 노드의 센티널은 1번 노드의 레디스 인스턴스에 주기적으로 PING을 하며 상태를 확인하고 있다.  
+> 만약 해당 인스턴스에 대한 모니터링을 중단하려면 `SENTINEL RESET` 커맨드를 통해 센티널 인스턴스의 정보를 초기화해야 한다.  
+> 위에 [센티널 인스턴스 실행하기](#-센티널-인스턴스-실행하기)에 마지막에서도 사용해본적이 있다.  
+> 
+> 마스터 이름 대신 `*`를 입력해 센티널이 모니터링하고 있는 전체 마스터 정보를 초기화할 수도 있다.
+
+
+<br>
+
+
+
 
 
 
