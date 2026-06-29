@@ -21,12 +21,12 @@
 
 <br>
 
-![virtual_machine3.png](../res/virtual_machine3.png)
-부탕 이미지 종류를 선택하고, 사전에 다운받은 우분투 이미지 파일을 지정한다.
+![virtual_machine3.png](../res/virtual_machine3.png). 
+부팅 이미지 종류를 선택하고, 사전에 다운받은 우분투 이미지 파일을 지정한다.
 
 <br>
 
-![virtual_machine4.png](../res/virtual_machine4.png)
+![virtual_machine4.png](../res/virtual_machine4.png)  
 나의 경우, 20GiB로 세팅했다.
 
 <br>
@@ -73,7 +73,7 @@ CD를 클릭하고 꺼내기를 누른다.
 
 <br>
 
-![virtual_machine23.png](../res/virtual_machine23.png)
+![virtual_machine23.png](../res/virtual_machine23.png)  
 성공이다.
 
 

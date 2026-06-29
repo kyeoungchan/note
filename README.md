@@ -121,6 +121,7 @@
 - [레디스(Redis)](https://github.com/kyeoungchan/note/tree/main/redis)
   - [레디스에서의 고가용성](https://github.com/kyeoungchan/note/tree/main/redis/availability)
     - [복제](https://github.com/kyeoungchan/note/tree/main/redis/availability/duplication)
+    - [센티널](https://github.com/kyeoungchan/note/tree/main/redis/availability/sentinel)
   - 레디스 기본
     - [레디스의 자료 구조](https://github.com/kyeoungchan/note/tree/main/redis/basic/data-structure)
       - [레디스 자료 구조 활용 사례](https://github.com/kyeoungchan/note/tree/main/redis/basic/data-structure/example)
@@ -185,5 +186,7 @@
   - [웹 페이지 이벤트 적재 파이프라인](https://github.com/kyeoungchan/note/tree/main/kafka/practical-projects/web-page-event-load-pipeline-project)
 - [하둡 설정](https://github.com/kyeoungchan/note/tree/main/hadoop/settings)
 - [메트릭비트 설정](https://github.com/kyeoungchan/note/tree/main/metricbeat/settings)
-- [Docker 명령어](https://github.com/kyeoungchan/note/tree/main/docker/command)
-  - [Docker 명령어로 Elastic Stack 실행](https://github.com/kyeoungchan/note/tree/main/elastic-stack/settings/docker)
+- Docker
+  - [Docker 명령어](https://github.com/kyeoungchan/note/tree/main/docker/command)
+    - [Docker 명령어로 Elastic Stack 실행](https://github.com/kyeoungchan/note/tree/main/elastic-stack/settings/docker)
+  - [Docker 배포](https://github.com/kyeoungchan/note/tree/main/docker/deployment)
