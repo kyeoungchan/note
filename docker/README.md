@@ -86,7 +86,7 @@
 ## ✅ Docker Image vs Docker Container
 
 ---
-> - [!NOTE]
+> [!NOTE]
 > - Container는 Image가 있어야 존재할 수 있지만, Image는 Container가 없어도 존재할 수 있다.
 >   - 즉, Container는 Image에 종속되어 런타임 환경을 구성하고 애플리케이션을 실행하는 데 사용된다.
 > - Docker Image는 Docker Container에서 코드를 실행한다.  
