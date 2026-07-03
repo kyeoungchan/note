@@ -94,6 +94,8 @@
     - [스트림즈DSL](https://github.com/kyeoungchan/note/tree/main/kafka/kafkastreams/streamsdsl)
   - [스프링 카프카 컨슈머](https://github.com/kyeoungchan/note/tree/main/kafka/springkafkaconsumer)
 - [코틀린](https://github.com/kyeoungchan/note/tree/main/kotlin)
+- [쿠버네티스](https://github.com/kyeoungchan/note/tree/main/kubernetes)
+  - [파드(Pod)](https://github.com/kyeoungchan/note/tree/main/kubernetes/pod)
 - [MongoDB](https://github.com/kyeoungchan/note/tree/main/mongodb)
   - [MongoDB 아키텍처](https://github.com/kyeoungchan/note/tree/main/mongodb/architecture)
   - [MongoDB 배포 형태](https://github.com/kyeoungchan/note/tree/main/mongodb/deployment-models)

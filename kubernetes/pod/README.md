@@ -130,6 +130,136 @@ $ kubectl get pods
 No resources found in default namespace.
 ```
 
+<br>
+
+### ✅ Image Pull 정책(`ImagePullBackOff` 에러)
+> [!NOTE]
+> 직접 Spring Boot 프로젝트를 빌드해서 파드를 띄울 때 `ImagePullBackOff`가 발생한다면 이미지 풀 정책을 봐야한다.  
+> 이미지 풀 정책(Image Pull Policy)이란 쿠버네티스가 yaml 파일을 읽어들여 파드를 생성할 때, 이미지를 어떻게 Pull을 받아올 건지에 대한 정책을 의미한다.
+> 1. **`Always`**  
+>    - 로컬에서 이미지를 가져오지 않고, 무조건 **레지스트리(= Dockerhub, ECR과 같은 원격 이미지 저장소)에서 가져온다.**  
+>    - 이미지 태그가 `latest`거나 명시되지 않은 경우 자동으로 `always`로 설정된다.
+> 2. **`IfNotPresent`**
+>    - 로컬에서 이미지를 먼저 가져온다. 만약 로컬에 이미지가 없는 경우에만 레지스트리에서 가져온다.
+>    - 이미지의 태그가 `latest`가 아닌 경우 자동으로 `IfNotPresent`로 설정된다.
+> 3. **`Never`**  
+   로컬에서만 이미지를 가져온다.
+
+```yaml
+# 이렇게 하면 로컬에 있는 이미지를 가져올 수 있게 된다.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: spring-pod
+spec:
+  containers:
+    - name: spring-container
+      image: spring-server
+      ports:
+        - containerPort: 8080
+      imagePullPolicy: IfNotPresent
+```
+
+```shell
+# spring boot 서버 빌드
+$ ./gradlew clean build
+
+
+# 도커 이미지 생성
+$ docker build -t spring-server .
+
+# 도커 이미지 확인
+$ docker image ls
+
+# 기존에 잘못 올린 파드 삭제
+$ kubectl delete pod spring-pod
+
+# 파드 실행
+$ kubectl apply -f spring-pod.yaml
+
+# 파드 조회
+$ kubectl get pods
+```
+
+<br>
+
+### ✅ Nest.js 서버를 파드로 띄우기
+```shell
+$ sudo npm i -g @nestjs/cli
+
+# 원하는 경로로 이동 후
+$ nest new nest-server
+
+# nest-server 디렉터리로 이동 후
+# 의존성 설치
+$ npm i
+
+$ npm run start
+```
+
+<br>
+
+```
+# Dockerfile
+FROM node
+
+WORKDIR /app
+
+COPY . .
+
+RUN npm install
+
+RUN npm run build
+
+EXPOSE 3000
+
+ENTRYPOINT ["node", "dist/main.js"]
+```
+```
+# .dockerignore
+node_modules
+```
+```shell
+# nest-server image 생성
+$ docker build -t nest-server .
+
+# image 생성 여부 확인
+$ docker image ls
+```
+
+<br>
+
+```yaml
+# nest-pod.yaml
+apiVersion: v1
+kind: Pod
+
+metadata:
+  name: nest-pod
+
+spec:
+  containers:
+    - name: nest-container
+      image: nest-server
+      imagePullPolicy: IfNotPresent
+```
+```shell
+$ kubectl apply -f nest-pod.yaml
+
+$ kubectl get pods
+NAME       READY   STATUS    RESTARTS   AGE
+nest-pod   1/1     Running   0          55s
+
+# 로컬 컴퓨터에 3000번 포트로 포트 포워딩
+$ kubectl port-forward nest-pod 3000:3000
+Forwarding from 127.0.0.1:3000 -> 3000
+Forwarding from [::1]:3000 -> 3000
+Handling connection for 3000
+Handling connection for 3000
+
+# localhost:3000 잘 접속되는 거 확인 후 파드 삭제
+$ kubectl delete pod nest-pod
+```
 
 <br>
 
