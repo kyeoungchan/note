@@ -220,5 +220,6 @@ docker compose logs
 ## ✅ Dockerfile 명령어
 
 ```shell
+# Dockerfile이 있는 경로에서 커맨드 실행
 docker build -t {image_name}:{tag_name}
 ```
