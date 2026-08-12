@@ -25,7 +25,7 @@
 <details>
 <summary><strong>AWS</strong></summary>
 
-- [AWS](https://github.com/kyeoungchan/note/tree/main/amazon-web-serives)
+- [AWS](https://github.com/kyeoungchan/note/tree/main/amazon-web-services)
 
 </details>
 
@@ -197,6 +197,7 @@
 <summary><strong>쿠버네티스</strong></summary>
 
 - [쿠버네티스](https://github.com/kyeoungchan/note/tree/main/kubernetes)
+  - [Deployment](https://github.com/kyeoungchan/note/tree/main/kubernetes/deployment)
   - [파드](https://github.com/kyeoungchan/note/tree/main/kubernetes/pod)
 
 </details>
