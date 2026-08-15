@@ -14,7 +14,7 @@
 - `ClusterIP` : 쿠버네티스 내부에서만 통신할 수 있는 IP 주소를 부여. 외부에서는 요청할 수 없다.
 - `LoadBalancer` : 외부의 로드밸런서(AWS의 로드밸런서 등)를 ㄹ활용해 외부에서 접속할 수 있도록 연결한다.
 
-![kubernetes_nodes.png](kubernetes_nodes.png)
+![kubernetes_nodes.png](../res/kubernetes_nodes.png)
 
 
 
