@@ -199,6 +199,8 @@
 - [쿠버네티스](https://github.com/kyeoungchan/note/tree/main/kubernetes)
   - [Deployment](https://github.com/kyeoungchan/note/tree/main/kubernetes/deployment)
   - [파드](https://github.com/kyeoungchan/note/tree/main/kubernetes/pod)
+  - [서비스](https://github.com/kyeoungchan/note/tree/main/kubernetes/service)
+  - [볼륨](https://github.com/kyeoungchan/note/tree/main/kubernetes/volume)
 
 </details>
 
