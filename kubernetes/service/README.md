@@ -16,8 +16,47 @@
 
 ![kubernetes_nodes.png](../res/kubernetes_nodes.png)
 
+<br>
 
+## ✅ DB에 직접 접근 가능한 보안 조치
 
+> [!NOTE]
+> 보안적인 문제점 해결을 위해 `Service`의 종류 중 `NodePort`를 사용하지 않고 `ClusterIP`를 활용해야 한다.  
+> `ClusterIP`를 활용함으로써 외부에서 아무나 MySQL에 접근하지 못하게 막아야 한다.
+
+<br>
+
+```yaml
+apiVersion: v1
+kind: Service
+
+# Service 기본 정보
+metadata:
+  name: mysql-service # Service 이름
+
+# Service 세부 정보
+spec:
+  type: ClusterIP # Service의 종류
+  selector:
+    app: mysql-db # 실행되고 있는 파드 중 'app: mysql-db'이라는 값을 가진 파드와 서비스를 연결
+  ports:
+    - protocol: TCP # 서비스에 접속하기 위한 프로토콜
+      port: 3306 # 쿠버네티스 내부에서 Service에 접속하기 위한 포트 번호
+      targetPort: 3306 # 매핑하기 위한 파드의 포트 번호
+      nodePort: 30002 # 외부에서 사용자들이 접근하게 될 포트 번호
+```
+
+![not_direct_db.png](../res/not_direct_db.png)
+
+<br>
+
+### ⭐️ DB를 관리하기 위해 접속해야할 때는?
+> [!NOTE]
+> 쿠버네티스의 포트 포워딩을 활용해서 접속하면 된다.  
+> 아래 포트 포워딩 명령어를 사용하면 내 로컬 컴퓨터에서만 해당 파드와 연결을 허용시킬 수 있게 된다.
+```shell
+$ kubectl port-forward pod/[MySQL 파드명] 3306:3306
+```
 
 
 
