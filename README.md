@@ -25,7 +25,7 @@
 <details>
 <summary><strong>AWS</strong></summary>
 
-- [AWS](https://github.com/kyeoungchan/note/tree/main/amazon-web-serives)
+- [AWS](https://github.com/kyeoungchan/note/tree/main/amazon-web-services)
 
 </details>
 
@@ -176,13 +176,18 @@
 <summary><strong>카프카</strong></summary>
 
 - [카프카](https://github.com/kyeoungchan/note/tree/main/kafka)
+  - [브로커](https://github.com/kyeoungchan/note/tree/main/kafka/broker)
   - [클라우드 카프카 서비스](https://github.com/kyeoungchan/note/tree/main/kafka/cloud-kafka-service)
   - [카프카 커맨드 라인 툴](https://github.com/kyeoungchan/note/tree/main/kafka/command-line-tool)
+  - [컨슈머](https://github.com/kyeoungchan/note/tree/main/kafka/consumer)
+  - [컨트롤러](https://github.com/kyeoungchan/note/tree/main/kafka/controller)
   - [카프카 커넥트](https://github.com/kyeoungchan/note/tree/main/kafka/kafkaconnect)
   - [카프카 미러메이커2](https://github.com/kyeoungchan/note/tree/main/kafka/kafkamirrormaker2)
   - [카프카 스트림즈](https://github.com/kyeoungchan/note/tree/main/kafka/kafkastreams)
     - [스트림즈DSL](https://github.com/kyeoungchan/note/tree/main/kafka/kafkastreams/streamsdsl)
+  - [프로듀서](https://github.com/kyeoungchan/note/tree/main/kafka/producer)
   - [스프링 카프카 컨슈머](https://github.com/kyeoungchan/note/tree/main/kafka/springkafkaconsumer)
+  - [토픽과 파티션](https://github.com/kyeoungchan/note/tree/main/kafka/topic-partition)
 
 </details>
 
@@ -197,7 +202,10 @@
 <summary><strong>쿠버네티스</strong></summary>
 
 - [쿠버네티스](https://github.com/kyeoungchan/note/tree/main/kubernetes)
+  - [Deployment](https://github.com/kyeoungchan/note/tree/main/kubernetes/deployment)
   - [파드](https://github.com/kyeoungchan/note/tree/main/kubernetes/pod)
+  - [서비스](https://github.com/kyeoungchan/note/tree/main/kubernetes/service)
+  - [볼륨](https://github.com/kyeoungchan/note/tree/main/kubernetes/volume)
 
 </details>
 
