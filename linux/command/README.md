@@ -4,6 +4,10 @@
 
 - [✅ 파일/권한 기본기](#-파일권한-기본기)
 - [✅ 프로세스 및 리소스 확인](#-프로세스-및-리소스-확인)
+- [✅ 로그 확인 및 텍스트 처리](#-로그-확인-및-텍스트-처리)
+- [✅ 네트워크 상태 점검](#-네트워크-상태-점검)
+- [✅ 디스크 및 시스템 리소스 점검](#-디스크-및-시스템-리소스-점검)
+- [✅ Java Application 장애 진단 도구](#-java-application-장애-진단-도구)
 
 
 ## ✅ 파일/권한 기본기
@@ -168,4 +172,249 @@ nohup java -jar app.jar > app.log 2>&1 &
 | `&&` | AND  | 앞 명령이 성공(종료코드 0)했을 때만 다음 명령을 실행          |
 | `ㅣㅣ` | OR   | 앞 명령이 실패(종료코드 0이 아님)했을 대만 다음 명령을 실행      |
 | `ㅣ`  | 파이프  | 앞 명령의 출력을 다음 명령의 입력으로 그대로 연결             |
+
+<br>
+
+## ✅ 로그 확인 및 텍스트 처리
+
+### 🚀 `tail` - 파일 끝부분 확인(실시간 모니터링)
+```shell
+tail -f app.log
+tail -n 200 app.log
+```
+> [!NOTE]
+> - `-f`: follow. 파일에 새로운 로그가 쌇이는 걸 실시간으로 화면에 보여줌.
+> - `-n 200`: 마지막 200줄만 출력
+
+<br>
+
+### 🚀 `head` -  파일 앞부부 확인
+```shell
+head -n 50 app.log
+```
+> [!NOTE]
+> 로그 파일이 언제부터 기록되기 시작했는지, 헤더 정보를 볼 때 사용.
+
+<br>
+
+### 🚀 `grep` -  패턴 검색
+```shell
+grep "ERROR" app.log
+grep -i "exception" app.log
+grep -n "OutOfMemory" app.log
+grep -c "ERROR" app.log
+grep -A 5 -B 2 "NullPointerException" app.log
+```
+> [!NOTE]
+> global regular expression print
+> - `-i`: 대소문자 구분 안 함(ignore case)
+> - `-n`: 매칭된 줄의 줄 번호까지 표시
+> - `-c`: 매칭된 줄의 개수만 카운트. "오늘 에러가 몇 건 났지?" 확인용
+> - `-A 5`: 매칭된 줄 이후(After) 5줄까지 함께 출력
+> - `-B 5`: 매칭된 줄 이전(Before) 2wnf cnffur
+
+<br>
+
+### 🚀 `awk` -  컬럼 단위 텍스트 처리
+```shell
+awk '{print $1 $4}' access.log
+awk -F',' '{print $3}' data.csv
+```
+> [!NOTE]
+> - 기본적으로 공백을 구분자로 컬럼을 나눈다. `$1`은 첫 번째 컬럼, `$4`는 네 번째 컬럼.
+> - `-F','`: 구분자를 콤마로 지정. CSV 형태의 로그나 데이터 파싱에 사용.
+
+<br>
+
+### 🚀 `sed` - 텍스트 치환
+```shell
+sed 's/ERROR/WARN/g' app.log
+sed -n '10,20p' app.log
+```
+> [!NOTE]
+> - `s/찾을 것/바꿀 것/g`: 전체(global) 치환. `g`가 없으면 각 줄에서 첫 번째만 치환됨.
+> - `-n '10,20p'`: 10번째부터 20번째 줄까지만 출럭(print). `tail`/`head`로 안 되는 중간 범위를 볼 때 유용.
+
+<br>
+
+### 🚀 `less` - 대용량 파일 보기
+```shell
+less app.log
+```
+> [!NOTE]
+> - `cat`과 달리 파일 전체를 메모리에 올리지 않고 필요한 부분만 읽어서, 몇 GB짜리 로그 파일도 가볍게 열 수 있다.
+> - `/검색어` + Enter: 검색.
+> - `n`: 다음 매칭으로 이동
+> - `q`: 종료
+
+<br>
+
+### 🚀 `wc` - 개수 세기(Word Count)
+```shell
+wc -l app.log
+```
+> [!NOTE]
+> - `-l`: 줄의 개수. 로그 총 건수 파악할 때
+
+<br>
+
+## ✅ 네트워크 상태 점검
+
+### 🚀 `netstat`/`ss` - 포트 및 연결 상태(network statistic/socket statistic)
+```shell
+netstat -an | grep 8080
+ss -tnlp
+```
+> [!NOTE]
+> - `-a`: 모든 연결 표시
+> - `-n`: 호스트명 대신 IP/포트 번호로 표시
+> - `ss`는 `netstat`의 최신 명령어(더 빠름)
+>   - `-t`: TCP만
+>   - `-n`: 숫자로 표시
+>   - `-l`: listening 상태만.
+>   - `-p`: 
+
+<br>
+
+### 🚀 `ping` - 네트워크 연결 확인
+```shell
+ping -c 4 10.0.0.5
+```
+> [!NOTE]
+> `-c 4`: 4번만 보내고 종료.
+
+<br>
+
+### 🚀 `curl` - HTTP 요청 테스트(client URL / see URL 말장난)
+```shell
+curl -I http://localhost:8080/health
+curl -v http://localhost:8080/api/test
+```
+> [!NOTE]
+> - `-I`: 헤더만 요청(HEAD 요청). 응답 코드만 빠르게 확인할 때
+> - `-v`: verbose. 요청/응답 전체 과정을 상세히 출력. API 연동 장애 디버깅에 필수
+
+<br>
+
+### 🚀 `traceroute` - 경로 추적(trace + route)
+```shell
+traceroute 10.0.0.5
+```
+> [!NOTE]
+> 목적지까지 거치는 네트워크 구간을 순서대로 보여줘서, 어느 구간에서 지연/차단이 생기는지 파악할 때 사용
+
+<br>
+
+## ✅ 디스크 및 시스템 리소스 점검
+
+### 🚀 `df` - 디스크 사용량(disk free)
+```shell
+df -h
+```
+> [!NOTE]
+> - `-h`: human-readable. GB/MB 단위로 표시.
+> - `Use%`가 90% 이상이면 위험 신호.
+
+<br>
+
+### 🚀 `du` - 디렉터리/파일 용량(disk usage)
+```shell
+du -sh /home/was01/logs/*
+```
+> [!NOTE]
+> - `-s`: summary. 하위 디렉토리 용량을 합산해서 한 줄로.
+> - `-h`: human-readable
+> - 어떤 디렉토리가 용량을 많이 차지하는지 찾을 때 사용
+
+<br>
+
+### 🚀 `free` - 메모리 상태
+```shell
+free -h
+```
+> [!NOTE]
+> - `total`, `used`, `free`, `available` 컬럼 확인.
+> - `available`이 실제로 새 프로세스가 쓸 수 있는 여유 메모리다.
+
+<br>
+
+### 🚀 `vmstat`(virtual memory statistics) - 시스템 전반 상태(CPU/메모리/스왑)
+```shell
+vmstat 2 5
+```
+> [!NOTE]
+> - 2초 간격으로 5번 반복 출력
+> - `si`, `so`(swap in/out) 값이 0이 아니라면 메모리 부족으로 스왑이 발생 중이라는 뜻 - 성능 저하의 주요 원인
+
+<br>
+
+### 🚀 `uptime` - 시스템 부하 확인
+```shell
+uptime
+```
+> [!NOTE]
+> - load average(1분/5분/15분 평균 부하)를 보여줌.
+> - CPU 코어 수 대비 이 값이 지속적으로 높으면 부하 과다 상태다.
+
+<br>
+
+## ✅ Java Application 장애 진단 도구
+
+### 🚀 `jps`(Java Process Status) - JVM 프로세스 목록
+```shell
+jps -l
+```
+> [!NOTE]
+> - `-l`: 클래스 전체 경로 또는 jar 경로까지 표시.
+> - `ps -ef | grep java`보다 Java 프로세스만 깔끔하게 확인 가능
+
+<br>
+
+### 🚀 `jstack`(Java Stack, 스레드의 콜 스택 덤프) - 스레드 덤프(데드락/행 진단)
+```shell
+jstack 12345 > threaddump.txt
+```
+> [!NOTE]
+> - 특정 시점의 모든 스레드 상태를 스냅샷으로 뜸.
+> - 결과에서 `BLOCKED`, `WAITING` 상태의 스레드와, `Found one Java-Level deadlock` 메시지 유무를 확인.
+> - 응답이 멈춘(hang) 상황에서 원인 파악에 가장 결정적인 도구다.
+
+<br>
+
+### 🚀 `jstat`(Java statistics monitoring tool) - GC 및 메모리 상태 모니터링
+```shell
+jstat -gcutil 12345 1000 10
+```
+> [!NOTE]
+> - `-gcutil`: GC 영역별 사용률(%)을 보여줌.
+> - `1000 10`: 1000ms(1초) 간격으로 10번 출력
+> - Full GC가 너무 자주 발생하는지, Old 영역이 계속 차오르는지(메모리 누수 의심) 확인할 때 사용
+
+<br>
+
+### 🚀 `jmap`(Java memory map) - 힙 덤프(메모리 누수 분석)
+```shell
+jmap -dump:format=b,file=heapdump.hprof 12345
+```
+> [!NOTE]
+> - 힙 메모리 전체를 파일로 떠서, 이후 Eclipse MAT 같은 툴로 분석
+> - `-dump:format=b,file=heapdump.hprof`: `-dump` 옵션에 콤마로 세부 설정 2가지를 붙인 것이다.
+>   - `format=b`: 덤프 파일의 형식 지정
+>     - `b`는 binary의 약자로, Eclipse MAT 같은 분석 도구가 읽을 수 있는  이진 형식으로 저장하라는 뜻이다.
+>     - 현재 jmap에서는 사실상 `b`가 유일하게 쓰이는 표준 포맷이다.
+>   - `file=heapdump.hprof`: 결과를 저장할 파일 경로와 이름 지정
+>     - `.hprof`는 관례적으로 붙이는 확장자(Heap Profile)로, Eclipse MAT 등 분석 도구들이 이 확장자를 보고 힙 덤프 파일임을 인식한다.
+
+> [!WARNING]
+> OutOfMemoryError 원인 분석 시 사용하지만, 덤프 자체가 무겁고 서비스에 영향을 줄 수 있어 운영 환경에서는 신중하게 사용해야 한다.
+
+
+
+
+
+
+
+
+
+
 
