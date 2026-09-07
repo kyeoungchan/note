@@ -359,6 +359,7 @@
 
 ## ✍🏻 그냥 기록
 
+- [리눅스 명령어](https://github.com/kyeoungchan/note/tree/main/linux/command)
 - [리눅스 환경설정](https://github.com/kyeoungchan/note/tree/main/linux/settings)
   - [리눅스 환경 엘라스틱 스택 설정](https://github.com/kyeoungchan/note/tree/main/linux/elastic-stack/settings)
 - [클러스터 백업](https://github.com/kyeoungchan/note/tree/main/elastic-stack/cluster-node/cluster)
