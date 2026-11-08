@@ -375,3 +375,4 @@
   - [Docker 명령어](https://github.com/kyeoungchan/note/tree/main/docker/command)
     - [Docker 명령어로 Elastic Stack 실행](https://github.com/kyeoungchan/note/tree/main/elastic-stack/settings/docker)
   - [Docker 배포](https://github.com/kyeoungchan/note/tree/main/docker/deployment)
+- [파이썬 정규 표현식](https://github.com/kyeoungchan/note/tree/main/python/regular-expression)
