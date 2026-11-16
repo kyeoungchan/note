@@ -62,7 +62,68 @@ p = re.compile("패턴")
 
 > [!NOTE]
 > `()` 괄호로 그룹을 묶을 수 있다.  
-> 예를 들어, `(\d)-(\d-\d)`으로 묶었다면 group(1)은 `\d`, group(2)는 `\d-\d`가 된다.
+> 그룹 안에서 `|`를 사용하거나 그룹 뒤에 수량자를 붙이는 패턴이 자주 사용된다.
+> 예를 들어, `(\d)-(\d-\d)`으로 묶었다면 group(1)은 `\d`, group(2)는 `\d-\d`가 된다.  
+> `(my|your)name`은 `myname`, `yourname`과 매치된다.  
+> `(slow|quick){2}`는 `slowslow`, `quickquick`, `slowquick`, `quickslow`와 매치된다.
+
+
+<br>
+
+### 🚀 그룹의 재사용
+> [!NOTE]
+> 패턴에서 그룹을 지정하면 만들어진 순서대로 1번부터 번호를 사용하면 패턴 내에서 재사용할 수 있다.  
+> `(test)data₩₩1`은 `testdatatest`와 매치된다.
+
+<br>
+
+### 🚀 그룹 사용 예시
+
+> [!TIP]
+> `dog`, `dogog`, `dogogog`...처럼 `d` 문자 뒤에 `og`라는 문자열이 1개 이상 반복되는 문자열을 매치하고 싶을 때 다음과 같이 사용 가능하다.  
+> `d(og)+`
+
+<br>
+
+```python
+import re
+
+text = "dogogogogogog"
+
+p1 = "dog"
+p2 = "d(og)+"
+
+m1 = re.search(p1, text)
+m2 = re.search(p2. text)
+
+print("m1 결과: ", m1.group()) # dog
+print("m2 결과: ", m2.group()) # dogogogogogog 
+```
+
+<br>
+
+### 🚀 비캡쳐
+> [!NOTE]
+> 그룹은 사용하되 캡처하지 않겠다고 명시하여 문자열을 매칭하는 것이 비캡쳐링 그룹이다.  
+> `(?:)`로 사용한다.  
+> - 캡처링 그룹: (패턴) -> 매칭 시 match.group(1), match.group(2) 등으로 결과가 저장됨
+> - 비캡쳐링 그룹: (?:패턴) -> 매칭은 이루어지지만 결과 메모리에 저장되지 않음.
+
+```python
+import re
+
+text = '123-456-7890'
+
+# 첫 번째 그룹은 비캡처(?:), 두 번째와 세 번째는 캡처()
+pattern = r'(?:\d+)-(\d+)-(\d+)'
+match = re.search(pattern, text)
+
+if match:
+    print('전체 매치:', match.group(0))  # 123-456-7890
+    print('첫 번째 그룹(비캡처):', match.groups())  # ('456', '7890') -> 첫 번째 123은 그룹 결과에 포함되지 않음
+    print('두 번째 그룹:', match.group(1))      # 456
+    print('세 번째 그룹:', match.group(2))      # 7890
+```
 
 
 <br>
@@ -101,4 +162,5 @@ p = re.compile("패턴")
 <br>
 
 **참고 출처**  
-[파이썬 | 정규표현식(re) re.compile 사용을 위한 표현법](https://namhandong.tistory.com/65)
+- [파이썬 | 정규표현식(re) re.compile 사용을 위한 표현법](https://namhandong.tistory.com/65)
+- [#4 파이썬 정규표현식 그룹](https://m.blog.naver.com/jdjhaha/222132531534)
